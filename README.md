@@ -17,7 +17,7 @@ There will be 4 branches
 - backend
 - ml
 
-__*NOBODY SHOULD MAKE PULL REQUEST TO MASTER BRANCH. All changes should be made to either frontend or backend or ml depending on where you are working.*__
+__*NOBODY SHOULD MAKE PULL REQUEST TO MAIN BRANCH. All changes should be made to either frontend or backend or ml depending on where you are working.*__
 
 # Commit Guidelines
 See how a [minor change](#examples) to your commit message style can make a difference. 
