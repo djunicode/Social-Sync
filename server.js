@@ -1,4 +1,6 @@
-const fastify = require('fastify')();
+const fastify = require('fastify')({
+    logger:true
+});
 
 require('dotenv').config();
 
