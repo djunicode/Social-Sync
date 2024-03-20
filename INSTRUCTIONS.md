@@ -1,7 +1,7 @@
 ```markdown
 ### Basic Flow:
 
-1. **schemaPrototype -> model in prisma/schema.prisma**
+1. **schemaPrototype.txt -> model in prisma/schema.prisma**
    
    - Run:
      ```
