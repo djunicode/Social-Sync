@@ -1,0 +1,74 @@
+Schema(v0):
+
+User:
+userId (uuid)
+firstName
+lastName
+username
+email
+password
+salt
+dob (date)
+createdAt (date)
+
+Stream:
+streamId (uuid)
+creatorId
+thumbnailUrl
+startTimestamp (date)
+endTimestamp (date)
+storageUrl
+title
+description
+tags
+createdAt (date)
+
+Vote:
+streamId 
+userId
+type (like/dislike)
+(streamId + userId is primary key)
+createdAt (date)
+videoTimestamp (date)
+
+Comment:
+commentId (uuid)
+streamId
+userId
+content
+createdAt (date)
+videoTimestamp (date)
+
+CommentVote:
+commentId 
+userId
+type (like/dislike)
+(commentId + userId is primary key)
+createdAt (date)
+
+StreamView:
+viewId (uuid)
+streamId
+userId
+createdAt (date)
+
+streamPayment
+paymentId (primary key) //from razorpay/stripe
+amount (number)
+userId
+streamId
+createdAt (date)
+
+streamExit:
+streamExitId (uuid)
+streamId
+userId
+videoTimestamp (date)
+createdAt (date)
+
+subscriptions:
+userId
+creatorId
+(userId+creatorId primarykey)
+streamId? //only if a user subscribes a creator while watching any of his streams
+createdAt (date)
