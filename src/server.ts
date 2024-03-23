@@ -1,7 +1,11 @@
 import Fastify, { FastifyReply, FastifyRequest } from "fastify";
 import userRoutes from "./modules/user/userRoutes";
 import { userSchemas } from "./modules/user/userSchema";
+import { streamSchemas } from "./modules/stream/streamSchema"
 import fjwt, { JWT } from "@fastify/jwt"
+import streamRoutes from "./modules/stream/streamRoutes";
+import { voteSchemas } from "./modules/vote/voteSchema";
+import voteRoutes from "./modules/vote/voteRoutes";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -46,8 +50,17 @@ function buildServer() {
     server.addSchema(schema);
   }
 
-  server.register(userRoutes, { prefix: "api/user" });
+  for (const schema of [...streamSchemas]) {
+    server.addSchema(schema);
+  }
 
+  for (const schema of [...voteSchemas]) {
+    server.addSchema(schema);
+  }
+
+  server.register(userRoutes, { prefix: "api/user" });
+  server.register(streamRoutes, { prefix: "api/stream"});
+  server.register(voteRoutes,{ prefix: "api/vote"});
   return server;
 }
 
