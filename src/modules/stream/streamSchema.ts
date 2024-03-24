@@ -1,19 +1,19 @@
 import { z } from "zod";
 import { buildJsonSchemas } from "fastify-zod";
+import { start } from "repl";
 
 const streamBase = {
   thumbnailUrl:z.string(),
   startTimestamp: z.date(),
-  endTimestamp: z.date(),
-  storageUrl: z.string().optional(),
+  endTimestamp: z.date().optional(),
+  storageUrl: z.string().default(""),
   title: z.string(),
-  description: z.string().optional(),
-  tags: z.string().optional(),
+  description: z.string().default(""),
+  tags: z.array(z.string()).default([]),
 };
 
 const createStreamSchema = z.object({
   ...streamBase,
-  userUserId: z.string(),
 });
 
 const createStreamResponseSchema = z.object({

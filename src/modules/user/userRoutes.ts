@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { $ref } from "./userSchema";
 import { createUser, deleteUser, getMe, getUser, getUsers, loginUser, updateUser } from "./userControllers";
+import { $globalRef } from "../../utils/globalSchemas";
 
 async function userRoutes(app: FastifyInstance) {
 
@@ -48,7 +49,7 @@ async function userRoutes(app: FastifyInstance) {
   // get all users route
   app.get("/all", {
     schema: {
-      querystring: $ref("getUserQuerySchema"),
+      querystring: $globalRef("paginationQuerySchema"),
     }
   },
     getUsers

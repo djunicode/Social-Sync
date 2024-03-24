@@ -4,6 +4,7 @@ import { hashPassword, verifyPassword } from "../../utils/hash";
 import prisma from "../../utils/prisma";
 import { isExistingEmailMine, isExistingUsernameMine, userExists } from "../../utils/user";
 import { FastifyReply, FastifyRequest } from "fastify";
+import { PaginationQuery } from "../../utils/globalSchemas";
 
 export async function createUser(request: FastifyRequest<{ Body: CreateUserInput }>, reply: FastifyReply) {
     const input = request.body;
@@ -85,11 +86,11 @@ export async function getUser(request: FastifyRequest<{ Params: GetUserParams }>
     }
 }
 
-export async function getUsers(request: FastifyRequest<{ Querystring: GetUsersQuery }>, reply: FastifyReply) {
+export async function getUsers(request: FastifyRequest<{ Querystring: PaginationQuery }>, reply: FastifyReply) {
     try {
-        const limit = request.query.limit ? request.query.limit : 10;
         const users = await prisma.user.findMany({
-            take: limit,
+            take: request.query.limit,
+            skip: request.query.limit * (request.query.page),
             select: {
                 userId: true,
                 email: true,

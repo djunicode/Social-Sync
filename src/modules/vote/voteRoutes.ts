@@ -1,11 +1,12 @@
 import { FastifyInstance } from "fastify";
 import { $ref } from "./voteSchema";
 import { createVote, deleteVote , getVotes , getMyVotes , updateVote } from "./voteControllers";
+import { $globalRef } from "../../utils/globalSchemas";
 
 async function voteRoutes(app: FastifyInstance) {
 
-  // signup route
-  app.post("/newVote",
+  // create vote route
+  app.post("/",
     {
       preHandler: [app.authenticate],
       schema:
@@ -17,37 +18,44 @@ async function voteRoutes(app: FastifyInstance) {
     createVote
   );
 
-// get me route
-  app.get("/my/:userUserId",
+// get my votes route
+  app.get("/my",
     {
-      preHandler: [app.authenticate]
+      preHandler: [app.authenticate],
+      schema: {
+        querystring: $globalRef("paginationQuerySchema"),
+      }
   },
     getMyVotes
   );
 
+  // get votes by stream id route
   app.get("/:streamStreamId", {
     schema: {
-      querystring: $ref("getVoteQuerySchema"),
+      querystring: $globalRef("paginationQuerySchema"),
+      params: $ref("getVoteParamsSchema"),
     }
   },
     getVotes
   );
 
-  // update user route
-  app.put("/update/:streamStreamId/:userUserId", {
+  // update vote route
+  app.put("/update/:streamStreamId", {
     preHandler: [app.authenticate],
     schema: {
       body: $ref("updateVoteSchema"),
+      params: $ref("getVoteParamsSchema"),
       response: { 200: $ref("createVoteResponseSchema") }
     }
   },
     updateVote
   );
 
-  // patch user route
-  app.delete("/delete/:streamStreamId/:userUserId", {
+  // delete vote route
+  app.delete("/delete/:streamStreamId", {
     preHandler: [app.authenticate],
     schema: {
+      params: $ref("getVoteParamsSchema"),
       response: { 200: $ref("createVoteResponseSchema") }
     }
   },
