@@ -2,14 +2,13 @@ import { z } from "zod";
 import { buildJsonSchemas } from "fastify-zod";
 
 const voteBase = {
-    type:z.boolean(),
+    dislike:z.boolean().default(false),
     videoTimestamp:z.date(),
 };
 
 const createVoteSchema = z.object({
   ...voteBase,
   streamStreamId: z.string(),
-  userUserId: z.string(),
 });
 
 const createVoteResponseSchema = z.object({
@@ -20,7 +19,6 @@ const createVoteResponseSchema = z.object({
 
 const getVoteParamsSchema = z.object({
     streamStreamId: z.string(),
-    userUserId: z.string(),
   });
 
 const updateVoteSchema = z.object({

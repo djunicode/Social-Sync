@@ -3,15 +3,35 @@
 import { CreateVoteInput, GetVoteParams , UpdateVoteInput, GetVotesQuery } from "./voteSchema";
 import prisma from "../../utils/prisma";
 import { FastifyReply, FastifyRequest } from "fastify";
+import { isStream, myStreamVoteExists, streamExists } from "../../utils/stream";
+import { PaginationQuery } from "../../utils/globalSchemas";
 
 export async function createVote(request: FastifyRequest<{ Body: CreateVoteInput }>, reply: FastifyReply) {
     const input = request.body;
     try {
+        const myExistingVote = await myStreamVoteExists(input.streamStreamId, request.user.userId);
+        if(myExistingVote){
+            const vote = await prisma.vote.update({
+                where: {
+                    streamStreamId_userUserId: {
+                        streamStreamId: input.streamStreamId,
+                        userUserId: request.user.userId
+                    }
+                },
+                data: {
+                    dislike: !myExistingVote.dislike,
+                    videoTimestamp: new Date(input.videoTimestamp),
+                    createdAt: new Date()
+                }
+            });
+            return reply.status(200).send(vote);
+        }
+        if(! await isStream(input.streamStreamId)) return reply.status(400).send({error: "Stream does not exist"})
         const vote = await prisma.vote.create({
             data: {
-                type: input.type || false,
+                dislike: input.dislike,
                 videoTimestamp: input.videoTimestamp,
-                userUserId: input.userUserId,
+                userUserId: request.user.userId,
                 streamStreamId: input.streamStreamId
             }
         });
@@ -22,50 +42,23 @@ export async function createVote(request: FastifyRequest<{ Body: CreateVoteInput
     }
 }
 
-
-// export async function getMyStream(request: FastifyRequest<{Params:{userUserId:string}}>, reply: FastifyReply) {
-//     try {
-//         const stream = await prisma.stream.findFirst({
-//             where: {
-//                 userUserId: request.params.userUserId
-//             }
-//         })
-//         if (!stream) return reply.status(400).send({ error: "User does not exist" });
-
-//         return reply.status(200).send(stream);
-//     } catch (error) {
-//         console.log(error);
-//         return reply.status(500).send(error);
-//     }
-// }
-
-// export async function getStream(request: FastifyRequest<{ Params: GetStreamParams }>, reply: FastifyReply) {
-//     try {
-//         const stream = await prisma.stream.findFirst({
-//             where: {
-//                 streamId: request.params.streamId
-//             }
-//         })
-//         if (!stream) return reply.status(400).send({ error: "stream does not exist" });
-//         return reply.status(200).send(stream);
-//     } catch (error) {
-//         console.log(error);
-//         return reply.status(500).send(error);
-//     }
-// }
-export async function getVotes(request: FastifyRequest<{ Querystring: GetVotesQuery,Params:GetVoteParams }>, reply: FastifyReply) {
+export async function getVotes(request: FastifyRequest<{ Querystring: PaginationQuery, Params:GetVoteParams }>, reply: FastifyReply) {
     try {
-        const limit = request.query.limit ? request.query.limit : 10;
         const votes = await prisma.vote.findMany({
-            take: limit,
+            take: request.query.limit,
+            skip: request.query.limit * (request.query.page),
             where:{
                 streamStreamId:request.params.streamStreamId
             },
             select: {
-                type:true,
+                dislike:true,
                 videoTimestamp:true,
                 userUserId:true,
-                streamStreamId:true
+                streamStreamId:true,
+                createdAt:true
+            },
+            orderBy: {
+                createdAt: 'desc'
             }
         })
         return reply.status(200).send(votes);
@@ -75,43 +68,49 @@ export async function getVotes(request: FastifyRequest<{ Querystring: GetVotesQu
     }
 }
 
-export async function getMyVotes(request: FastifyRequest<{ Querystring: GetVotesQuery, Params:GetVoteParams }>, reply: FastifyReply) {
+export async function getMyVotes(request: FastifyRequest<{ Querystring: PaginationQuery }>, reply: FastifyReply) {
     try {
-        const limit = request.query.limit ? request.query.limit : 10;
-        const streams = await prisma.vote.findMany({
-            take: limit,
+        const votes = await prisma.vote.findMany({
+            take: request.query.limit,
+            skip: request.query.limit * (request.query.page),
             where:{
-                userUserId:request.params.userUserId
+                userUserId:request.user.userId
             },
             select: {
-                type:true,
+                dislike:true,
                 videoTimestamp:true,
                 userUserId:true,
-                streamStreamId:true
+                streamStreamId:true,
+                createdAt:true
+            },
+            orderBy: {
+                createdAt: 'desc'
             }
         })
-        return reply.status(200).send(streams);
+        return reply.status(200).send(votes);
     } catch (error) {
         console.log(error);
         return reply.status(500).send(error);
     }
 }
 
-export async function updateVote(request: FastifyRequest<{ Params: { streamStreamId: string, userUserId: string }, Body: UpdateVoteInput }>, reply: FastifyReply) {
-    const { streamStreamId, userUserId } = request.params;
+export async function updateVote(request: FastifyRequest<{ Params: GetVoteParams, Body: UpdateVoteInput }>, reply: FastifyReply) {
+    const { streamStreamId } = request.params;
     const input = request.body;
 
     try {
+        if(!await myStreamVoteExists(streamStreamId, request.user.userId)) return reply.status(400).send({error: "Vote does not exist"});
         const updatedVote = await prisma.vote.update({
             where: {
                 streamStreamId_userUserId: {
                     streamStreamId,
-                    userUserId
+                    userUserId: request.user.userId
                 }
             },
             data: {
-                type: input.type,
-                videoTimestamp: new Date(input.videoTimestamp)
+                dislike: input.dislike,
+                videoTimestamp: new Date(input.videoTimestamp),
+                createdAt: new Date()
             }
         });
 
@@ -123,15 +122,16 @@ export async function updateVote(request: FastifyRequest<{ Params: { streamStrea
 }
 
 
-export async function deleteVote(request: FastifyRequest<{ Params: { streamStreamId: string,userUserId:string } }>, reply: FastifyReply) {
-    const {streamStreamId,userUserId} = request.params;
+export async function deleteVote(request: FastifyRequest<{ Params: GetVoteParams}>, reply: FastifyReply) {
+    const {streamStreamId} = request.params;
 
     try {
+        if(!await myStreamVoteExists(streamStreamId, request.user.userId)) return reply.status(400).send({error: "Vote does not exist"});
         const deletedVote = await prisma.vote.delete({
             where: {
                 streamStreamId_userUserId: {
                     streamStreamId,
-                    userUserId
+                    userUserId: request.user.userId
                 }
             }
         });
