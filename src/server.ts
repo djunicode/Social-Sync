@@ -8,6 +8,12 @@ import { voteSchemas } from "./modules/vote/voteSchema";
 import voteRoutes from "./modules/vote/voteRoutes";
 import { globalSchemas } from "./utils/globalSchemas";
 import { isUser, userExists } from "./utils/user";
+import { commentVoteSchemas } from "./modules/commentVote/cVoteSchema";
+import commentVoteRoutes from "./modules/commentVote/cVoteRoutes";
+import { commentSchemas } from "./modules/comment/commentSchema";
+import commentRoutes from "./modules/comment/commentRoutes";
+import { streamViewSchemas } from "./modules/streamView/streamViewSchema";
+import streamViewRoutes from "./modules/streamView/streamViewRoutes";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -95,6 +101,18 @@ function buildServer() {
     server.addSchema(schema);
   }
 
+  for (const schema of commentSchemas) {
+    server.addSchema(schema);
+  }
+
+  for (const schema of commentVoteSchemas) {
+    server.addSchema(schema);
+  }
+
+  for (const schema of streamViewSchemas) {
+    server.addSchema(schema);
+  }
+
   for (const schema of globalSchemas) {
     server.addSchema(schema);
   }
@@ -102,6 +120,9 @@ function buildServer() {
   server.register(userRoutes, { prefix: "api/user" });
   server.register(streamRoutes, { prefix: "api/stream"});
   server.register(voteRoutes,{ prefix: "api/vote"});
+  server.register(commentRoutes,{ prefix: "api/comment"});
+  server.register(commentVoteRoutes,{ prefix: "api/commentVote"});
+  server.register(streamViewRoutes,{ prefix: "/api/streamView"})
   return server;
 }
 
