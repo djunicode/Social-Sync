@@ -33,13 +33,10 @@ const createUserResponseSchema = z.object({
 });
 
 const loginSchema = z.object({
-  email: z
+  emailUsername: z
     .string({
-      required_error: "Email is required",
-      invalid_type_error: "Email must be a string",
-    })
-    .email({
-      message: "Invalid email"
+      required_error: "Email/Username is required",
+      invalid_type_error: "Email/Username must be a string",
     }),
   password: z.string().min(8, "Password must be at least 8 characters long")
 });

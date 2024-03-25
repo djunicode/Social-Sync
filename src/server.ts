@@ -14,6 +14,7 @@ import { commentSchemas } from "./modules/comment/commentSchema";
 import commentRoutes from "./modules/comment/commentRoutes";
 import { streamViewSchemas } from "./modules/streamView/streamViewSchema";
 import streamViewRoutes from "./modules/streamView/streamViewRoutes";
+import cors from '@fastify/cors';
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -48,6 +49,10 @@ function buildServer() {
     }
   });
 
+  server.register(cors, { 
+    // options here
+  })
+  
   server.register(fjwt, {
     secret: "supersecret"
   });
