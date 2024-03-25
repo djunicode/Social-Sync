@@ -37,3 +37,14 @@ export const isExistingUsernameMine = async (userId: string, username: string | 
     
     return user?user.userId === userId:true;
 }
+
+
+export const isUser = async (userId: string) => {
+    const user = await prisma.user.findFirst({
+        where: {
+            userId
+        }
+    })
+
+    return user !== null;
+}

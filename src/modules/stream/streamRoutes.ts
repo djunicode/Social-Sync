@@ -1,12 +1,14 @@
 import { FastifyInstance } from "fastify";
 import { $ref } from "./streamSchema";
-import { createStream, deleteStream , getStream , getStreams , getMyStream , updateStream } from "./streamControllers";
+import { createStream, deleteStream , getStream , getStreams , getMyStream , updateStream, getMyLikedStreams, getMyDislikedStreams } from "./streamControllers";
+import { $globalRef } from "../../utils/globalSchemas";
 
 async function streamRoutes(app: FastifyInstance) {
 
-  // signup route
-  app.post("/stream",
+  // create stream route
+  app.post("/",
     {
+      preHandler: [app.authenticate],
       schema:
       {
         body: $ref("createStreamSchema"),
@@ -16,15 +18,18 @@ async function streamRoutes(app: FastifyInstance) {
     createStream
   );
 
-// get me route
-  app.get("/me/:userUserId",
+// get my streams route
+  app.get("/my/",
     {
-      preHandler: [app.authenticate]
+      preHandler: [app.authenticate],
+      schema: {
+        querystring: $globalRef("paginationQuerySchema"),
+      }
   },
     getMyStream
   );
 
-  // get user by id route
+  // get stream by id route
   app.get("/:streamId", {
     schema: {
       params: $ref("getStreamParamsSchema"),
@@ -33,16 +38,36 @@ async function streamRoutes(app: FastifyInstance) {
     getStream
   );
 
-  // get all users route
+  // get all streams route
   app.get("/all", {
     schema: {
-      querystring: $ref("getStreamQuerySchema"),
+      querystring: $globalRef("paginationQuerySchema"),
     }
   },
     getStreams
   );
 
-  // update user route
+   // get liked streams route
+  app.get("/liked", {
+    preHandler: [app.authenticate],
+    schema: {
+      querystring: $globalRef("paginationQuerySchema"),
+    }
+  },
+    getMyLikedStreams
+  );
+
+    // get disliked streams route
+  app.get("/disliked", {
+    preHandler: [app.authenticate],
+    schema: {
+      querystring: $globalRef("paginationQuerySchema"),
+    }
+  },
+    getMyDislikedStreams
+  );
+
+  // update stream route
   app.put("/update/:streamId", {
     preHandler: [app.authenticate],
     schema: {
@@ -53,7 +78,7 @@ async function streamRoutes(app: FastifyInstance) {
     updateStream
   );
 
-  // patch user route
+  // delete stream route
   app.delete("/delete/:streamId", {
     preHandler: [app.authenticate],
     schema: {
