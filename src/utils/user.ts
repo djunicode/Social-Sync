@@ -3,20 +3,17 @@ import prisma from "./prisma"
 export const userExists = async (email: string, username: string) => {
     const user = await prisma.user.findFirst({
         where: {
-            email
+            OR: [
+                { email },
+                { username }
+            ]
         }
     })
 
-    const userWithUsername = await prisma.user.findFirst({
-        where: {
-            username
-        }
-    })
-
-    return user !== null || userWithUsername !== null;
+    return user !== null;
 }
 
-export const isExistingEmailMine = async (userId: string, email: string | undefined ) => {
+export const isExistingEmailMine = async (userId: string, email: string | undefined) => {
     if (!email) return true;
     const user = await prisma.user.findFirst({
         where: {
@@ -24,18 +21,18 @@ export const isExistingEmailMine = async (userId: string, email: string | undefi
         }
     })
 
-    return user?user.userId === userId:true;
+    return user ? user.userId === userId : true;
 }
 
-export const isExistingUsernameMine = async (userId: string, username: string | undefined ) => {
+export const isExistingUsernameMine = async (userId: string, username: string | undefined) => {
     if (!username) return true;
     const user = await prisma.user.findFirst({
         where: {
             username: username,
         }
     })
-    
-    return user?user.userId === userId:true;
+
+    return user ? user.userId === userId : true;
 }
 
 
