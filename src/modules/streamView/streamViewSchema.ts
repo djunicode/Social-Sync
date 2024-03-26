@@ -3,13 +3,13 @@ import { buildJsonSchemas } from "fastify-zod";
 import { start } from "repl";
 
 const streamViewBase = {
-    streamStreamId: z.string(),
+    streamId: z.string(),
     userUserId: z.string().optional()
 };
 
 const createStreamViewSchema = z.object({
   ...streamViewBase,
-  streamStreamId: z.string(),
+  streamId: z.string(),
   userUserId: z.string().optional()
 });
 
@@ -19,7 +19,7 @@ const createStreamViewResponseSchema = z.object({
 });
 
 const getStreamViewParamsSchema = z.object({
-    streamStreamId: z.string(),
+    streamId: z.string(),
     userUserId: z.string().optional(),
     viewId: z.string()
 });

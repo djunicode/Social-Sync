@@ -14,6 +14,11 @@ import { commentSchemas } from "./modules/comment/commentSchema";
 import commentRoutes from "./modules/comment/commentRoutes";
 import { streamViewSchemas } from "./modules/streamView/streamViewSchema";
 import streamViewRoutes from "./modules/streamView/streamViewRoutes";
+import cors from '@fastify/cors';
+import { streamExitSchemas } from "./modules/streamExit/streamExitSchema";
+import streamExitRoutes from "./modules/streamExit/streamExitRoutes";
+import { streamPaymentSchemas } from "./modules/streamPayment.ts/streamPaymentSchema";
+import streamPaymentRoutes from "./modules/streamPayment.ts/streamPaymentRoutes";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -48,6 +53,10 @@ function buildServer() {
     }
   });
 
+  server.register(cors, { 
+    // options here
+  })
+  
   server.register(fjwt, {
     secret: "supersecret"
   });
@@ -113,6 +122,14 @@ function buildServer() {
     server.addSchema(schema);
   }
 
+  for (const schema of streamExitSchemas) {
+    server.addSchema(schema);
+  }
+
+  for (const schema of streamPaymentSchemas) {
+    server.addSchema(schema);
+  }
+
   for (const schema of globalSchemas) {
     server.addSchema(schema);
   }
@@ -123,6 +140,8 @@ function buildServer() {
   server.register(commentRoutes,{ prefix: "api/comment"});
   server.register(commentVoteRoutes,{ prefix: "api/commentVote"});
   server.register(streamViewRoutes,{ prefix: "/api/streamView"})
+  server.register(streamExitRoutes,{ prefix: "/api/streamExit"})
+  server.register(streamPaymentRoutes,{ prefix: "/api/streamPayment"})
   return server;
 }
 

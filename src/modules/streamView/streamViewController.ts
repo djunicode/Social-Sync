@@ -4,17 +4,14 @@ import { CreateStreamViewInput, GetStreamViewParams , UpdateStreamViewInput, Get
 import prisma from "../../utils/prisma";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { PaginationQuery } from "../../utils/globalSchemas";
-import { streamExists } from "../../utils/stream";
-
-// 
 
 export async function createStreamView(request: FastifyRequest<{ Body: CreateStreamViewInput }>, reply: FastifyReply) {
     const input = request.body;
     try {
         const streamView = await prisma.streamView.create({
             data: {
-                userUserId: request.user.userId,
-                streamStreamId: input.streamStreamId
+                userId: request.user.userId,
+                streamId: input.streamId
             }
         });
         return reply.status(200).send(streamView);
@@ -31,14 +28,14 @@ export async function getMyStreamView(request: FastifyRequest<{Querystring:Pagin
             take: request.query.limit,
             skip: request.query.limit * (request.query.page),
             where: {
-                userUserId: request.user.userId,
-                streamStreamId:request.params.streamStreamId
+                userId: request.user.userId,
+                streamId:request.params.streamId
             },
             select: {
                 viewId:true,
                 createdAt:true,
-                streamStreamId:true,
-                userUserId:true,
+                streamId:true,
+                userId:true,
             },
             orderBy: {
                 createdAt: 'desc'
@@ -52,17 +49,17 @@ export async function getMyStreamView(request: FastifyRequest<{Querystring:Pagin
     }
 }
 
-export async function getStreamViews(request: FastifyRequest<{ Params: GetStreamViewParams }>, reply: FastifyReply) {
+export async function getStreamViews(request: FastifyRequest<{ Params: GetStreamViewParams,streamId:string }>, reply: FastifyReply) {
     try {
         const streamViews = await prisma.streamView.findMany({
             where: {
-                streamStreamId: request.params.streamStreamId
+                streamId: request.params.streamId
             },
             select:{
                 viewId:true,
                 createdAt:true,
-                streamStreamId:true,
-                userUserId:true
+                streamId:true,
+                userId:true
             }
         })
         if (!streamViews) return reply.status(400).send({ error: "stream does not exist" });
@@ -85,7 +82,7 @@ export async function updateStreamView(request: FastifyRequest<{ Params: { viewI
         if (!existingView) {
             return reply.status(404).send({ error: "Stream view not found" });
         }
-        if (existingView.userUserId !== request.user.userId) {
+        if (existingView.userId !== request.user.userId) {
             return reply.status(403).send({ error: "wrong user" });
         }
         const updatedStreamView = await prisma.streamView.update({
@@ -93,7 +90,7 @@ export async function updateStreamView(request: FastifyRequest<{ Params: { viewI
                 viewId: viewId
             },
             data: {
-                userUserId: "" 
+                userId: "" 
             },
         });
         return reply.status(200).send(updatedStreamView);

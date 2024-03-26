@@ -1,5 +1,5 @@
 
-import { CreateUserInput, GetUserParams, GetUsersQuery, LoginInput, UpdateUserInput } from "./userSchema";
+import { CreateUserInput, GetUserParams, LoginInput, UpdateUserInput } from "./userSchema";
 import { hashPassword, verifyPassword } from "../../utils/hash";
 import prisma from "../../utils/prisma";
 import { isExistingEmailMine, isExistingUsernameMine, userExists } from "../../utils/user";
@@ -36,7 +36,10 @@ export async function loginUser(request: FastifyRequest<{ Body: LoginInput }>, r
     try {
         const user = await prisma.user.findFirst({
             where: {
-                email: input.email
+                OR: [
+                    { username: input.emailUsername },
+                    { email: input.emailUsername }
+                ]
             }
         })
         if (!user) return reply.status(400).send({ error: "User does not exist" });

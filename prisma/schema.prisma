@@ -22,10 +22,10 @@ model User {
   Stream                                          Stream[]
   StreamExit                                      StreamExit[]
   StreamPayment                                   StreamPayment[]
+  StreamView                                      StreamView[]
   Subscriptions_Subscriptions_creatorUserIdToUser Subscriptions[] @relation("Subscriptions_creatorUserIdToUser")
   Subscriptions_Subscriptions_userUserIdToUser    Subscriptions[] @relation("Subscriptions_userUserIdToUser")
   Vote                                            Vote[]
-  StreamView                                      StreamView[]
 }
 
 model Stream {
@@ -43,9 +43,9 @@ model Stream {
   creator        User            @relation(fields: [userUserId], references: [userId])
   StreamExit     StreamExit[]
   StreamPayment  StreamPayment[]
+  StreamView     StreamView[]
   Subscriptions  Subscriptions[]
   Vote           Vote[]
-  StreamView     StreamView[]
 }
 
 model Vote {
@@ -85,11 +85,11 @@ model CommentVote {
 
 model StreamView {
   viewId    String   @id @default(uuid())
-  stream    Stream   @relation(fields: [streamId], references: [streamId])
   streamId  String
-  user      User     @relation(fields: [userId], references: [userId])
   userId    String
   createdAt DateTime @default(now())
+  Stream    Stream   @relation(fields: [streamId], references: [streamId])
+  User      User     @relation(fields: [userId], references: [userId])
 }
 
 model StreamExit {
@@ -103,7 +103,7 @@ model StreamExit {
 }
 
 model StreamPayment {
-  paymentId      String   @id
+  paymentId      String   @id @default(uuid())
   amount         Int
   createdAt      DateTime @default(now())
   userUserId     String
