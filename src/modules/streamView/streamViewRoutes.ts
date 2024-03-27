@@ -19,7 +19,7 @@ async function streamViewRoutes(app: FastifyInstance) {
   );
 
 // get my streams route
-  app.get("/my/",
+  app.get("/my/:streamId",
     {
       preHandler: [app.authenticate],
       schema: {
@@ -30,7 +30,7 @@ async function streamViewRoutes(app: FastifyInstance) {
   );
 
   // get all streams route
-  app.get("/all", {
+  app.get("/all/:streamId", {
     schema: {
       querystring: $globalRef("paginationQuerySchema"),
     }
@@ -48,7 +48,6 @@ async function streamViewRoutes(app: FastifyInstance) {
   },
     updateStreamView
   );
-
 }
 
 export default streamViewRoutes;

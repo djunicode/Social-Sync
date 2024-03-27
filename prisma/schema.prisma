@@ -8,42 +8,44 @@ datasource db {
 }
 
 model User {
-  userId    String   @id @default(uuid())
-  email     String   @unique
-  firstName String?
-  lastName  String?
-  username  String   @unique
-  password  String
-  salt      String
-  dob       DateTime
-  createdAt DateTime @default(now())
-  Stream    Stream[]
-  Vote      Vote[]
-  Comment Comment[]
-  CommentVote CommentVote[]
-  StreamPayment StreamPayment[]
-  StreamExit StreamExit[]
-  UserSubscriptions Subscriptions[] @relation("UserSubscriptions")
-  CreatorSubscriptions Subscriptions[] @relation("CreatorSubscriptions")
+  userId                                          String          @id @default(uuid())
+  email                                           String          @unique
+  firstName                                       String?
+  lastName                                        String?
+  username                                        String          @unique
+  password                                        String
+  salt                                            String
+  dob                                             DateTime
+  createdAt                                       DateTime        @default(now())
+  Comment                                         Comment[]
+  CommentVote                                     CommentVote[]
+  Stream                                          Stream[]
+  StreamExit                                      StreamExit[]
+  StreamPayment                                   StreamPayment[]
+  StreamView                                      StreamView[]
+  Subscriptions_Subscriptions_creatorUserIdToUser Subscriptions[] @relation("Subscriptions_creatorUserIdToUser")
+  Subscriptions_Subscriptions_userUserIdToUser    Subscriptions[] @relation("Subscriptions_userUserIdToUser")
+  Vote                                            Vote[]
 }
 
 model Stream {
-  streamId       String   @id @default(uuid())
+  streamId       String          @id @default(uuid())
   thumbnailUrl   String
   startTimestamp DateTime
   endTimestamp   DateTime
   storageUrl     String
   title          String
   description    String?
-  createdAt      DateTime @default(now())
+  createdAt      DateTime        @default(now())
   userUserId     String
   tags           String[]
-  creator        User     @relation(fields: [userUserId], references: [userId])
-  Vote           Vote[]
-  Comment       Comment[]
-  StreamPayment StreamPayment[]
+  Comment        Comment[]
+  creator        User            @relation(fields: [userUserId], references: [userId])
   StreamExit     StreamExit[]
+  StreamPayment  StreamPayment[]
+  StreamView     StreamView[]
   Subscriptions  Subscriptions[]
+  Vote           Vote[]
 }
 
 model Vote {
@@ -60,54 +62,64 @@ model Vote {
 
 model Comment {
   commentId      String        @id @default(uuid())
-  stream         Stream        @relation(fields: [streamStreamId], references: [streamId])
-  user           User          @relation(fields: [userUserId], references: [userId])
   content        String
   createdAt      DateTime      @default(now())
   videoTimestamp DateTime
   streamStreamId String
   userUserId     String
+  stream         Stream        @relation(fields: [streamStreamId], references: [streamId])
+  user           User          @relation(fields: [userUserId], references: [userId])
   CommentVote    CommentVote[]
 }
 
 model CommentVote {
-  comment          Comment  @relation(fields: [commentCommentId], references: [commentId])
-  user             User     @relation(fields: [userUserId], references: [userId])
   dislike          Boolean
   createdAt        DateTime @default(now())
   commentCommentId String
   userUserId       String
+  comment          Comment  @relation(fields: [commentCommentId], references: [commentId])
+  user             User     @relation(fields: [userUserId], references: [userId])
 
   @@id([commentCommentId, userUserId])
+}
+
+model StreamView {
+  viewId    String   @id @default(uuid())
+  streamId  String
+  userId    String
+  createdAt DateTime @default(now())
+  Stream    Stream   @relation(fields: [streamId], references: [streamId])
+  User      User     @relation(fields: [userId], references: [userId])
+}
+
+model StreamExit {
+  streamExitId   String   @id @default(uuid())
+  videoTimestamp DateTime
+  createdAt      DateTime @default(now())
+  streamStreamId String
+  userUserId     String
+  Stream         Stream   @relation(fields: [streamStreamId], references: [streamId])
+  User           User     @relation(fields: [userUserId], references: [userId])
 }
 
 model StreamPayment {
   paymentId      String   @id @default(uuid())
   amount         Int
-  user           User     @relation(fields: [userUserId], references: [userId])
-  stream         Stream   @relation(fields: [streamStreamId], references: [streamId])
   createdAt      DateTime @default(now())
   userUserId     String
   streamStreamId String
-}
-
-model StreamExit {
-  streamExitId   String   @id @default(uuid())
-  stream         Stream   @relation(fields: [streamStreamId], references: [streamId])
-  user           User     @relation(fields: [userUserId], references: [userId])
-  videoTimestamp DateTime
-  createdAt      DateTime
-  streamStreamId String
-  userUserId     String
+  Stream         Stream   @relation(fields: [streamStreamId], references: [streamId])
+  User           User     @relation(fields: [userUserId], references: [userId])
 }
 
 model Subscriptions {
-  user           User     @relation(fields: [userUserId], references: [userId], name: "UserSubscriptions")
-  createdAt      DateTime @default(now())
-  stream         Stream?  @relation(fields: [streamStreamId], references: [streamId]) //only if a user subscribes a creator while watching any of his streams
-  userUserId     String
-  streamStreamId String?
-  creator        User     @relation(fields: [creatorUserId], references: [userId], name: "CreatorSubscriptions")
-  creatorUserId  String
-  @@id([userUserId,creatorUserId])
+  createdAt                              DateTime @default(now())
+  userUserId                             String
+  streamStreamId                         String?
+  creatorUserId                          String
+  User_Subscriptions_creatorUserIdToUser User     @relation("Subscriptions_creatorUserIdToUser", fields: [creatorUserId], references: [userId])
+  Stream                                 Stream?  @relation(fields: [streamStreamId], references: [streamId])
+  User_Subscriptions_userUserIdToUser    User     @relation("Subscriptions_userUserIdToUser", fields: [userUserId], references: [userId])
+
+  @@id([userUserId, creatorUserId])
 }
