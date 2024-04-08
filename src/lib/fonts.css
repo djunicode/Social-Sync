@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Mono&display=swap');
+*{
+    font-family: 'PT Mono', monospace;
+}
+::-webkit-scrollbar{
+    background: #222;
+    width: 7px;
+}
+::-webkit-scrollbar-thumb{
+    background: #F06822;
+    border-radius: 5px;
+}
