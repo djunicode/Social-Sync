@@ -16,6 +16,7 @@ import LoadingScreen from "@/app/loading";
 import Message from "./(components)/Message";
 import Reply from "./(components)/Reply";
 import Donation from "./(components)/Donation";
+import SearchBar from "@/components/SearchBar";
 
 export default function Page({ params }) {
   const url = process.env.NEXT_PUBLIC_API_URL;
@@ -70,16 +71,19 @@ export default function Page({ params }) {
         <div className="bg-[#020317] h-[96vh]">
           <div className="flex items-center mt-9">
             <div
-              className="ml-2.5 hover:cursor-pointer"
+              className="ml-2.5 hover:cursor-pointer z-20"
               onClick={() => router.back()}
             >
               <ArrowLeft />
             </div>
             <div
-              className="ml-3.5 mt-1 hover:cursor-pointer"
+              className="ml-3.5 mt-1 hover:cursor-pointer z-20"
               onClick={() => router.replace("/home")}
             >
               <SocialSync />
+            </div>
+            <div className="absolute flex justify-center w-full z-10">
+              <SearchBar />
             </div>
           </div>
           <div className="mt-9 pl-16 pr-16 pt-1 h-5/6 ">
