@@ -1,4 +1,5 @@
 //components->MakePaymentComponent.js
+"use-client"
 import React from "react";
 import razorpay from '../app/razorpay'
 
@@ -66,7 +67,7 @@ const MakePaymentComponent = () => {
   };
   return (
     <div>
-      <button onClick={() => makePayment()}>Pay 100 now</button>
+      <button onClick={makePayment}>Pay 100 now</button>
     </div>
   );
 };

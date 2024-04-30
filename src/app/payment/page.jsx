@@ -1,5 +1,8 @@
+"use-client"
 import React from "react";
-import MakePaymentComponent from "../components/MakePaymentComponent";
+import razorpay from "../../app/razorpay";
+import dynamic from "next/dynamic";
+import MakePaymentComponent from "../../components/MakePaymentComponent";
 
 const payment = () => {
   return (
