@@ -19,6 +19,10 @@ import { streamExitSchemas } from "./modules/streamExit/streamExitSchema";
 import streamExitRoutes from "./modules/streamExit/streamExitRoutes";
 import { streamPaymentSchemas } from "./modules/streamPayment.ts/streamPaymentSchema";
 import streamPaymentRoutes from "./modules/streamPayment.ts/streamPaymentRoutes";
+import { subscriptionsSchemas } from "./modules/subscriptions/subscriptionsSchema";
+import subscriptionsRoutes from "./modules/subscriptions/subscriptionsRoutes";
+import { Server } from "socket.io"
+import fastifySocketIO from "./socket";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -26,6 +30,8 @@ declare module "fastify" {
   }
   export interface FastifyInstance {
     authenticate: any;
+    optionalAuth: any;
+    io: Server<any>;
   }
 }
 
@@ -38,7 +44,6 @@ declare module "@fastify/jwt" {
 }
 
 function buildServer() {
-  
   const server = Fastify({
     logger: {
       transport: {
@@ -57,6 +62,8 @@ function buildServer() {
     // options here
   })
   
+  server.register(fastifySocketIO)
+
   server.register(fjwt, {
     secret: "supersecret"
   });
@@ -82,6 +89,17 @@ function buildServer() {
         if(!await isUser(user.userId))return reply.status(400).send({error: "User does not exist"});
       } catch (e) {
         return reply.send(e).status(500);
+      }
+    }
+  );
+
+  server.decorate(
+    "optionalAuth",
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const user : {userId:string} = await request.jwtVerify();
+      } catch (e) {
+        
       }
     }
   );
@@ -130,10 +148,14 @@ function buildServer() {
     server.addSchema(schema);
   }
 
-  for (const schema of globalSchemas) {
+  for (const schema of subscriptionsSchemas) {
     server.addSchema(schema);
   }
 
+  for (const schema of globalSchemas) {
+    server.addSchema(schema);
+  }
+  
   server.register(userRoutes, { prefix: "api/user" });
   server.register(streamRoutes, { prefix: "api/stream"});
   server.register(voteRoutes,{ prefix: "api/vote"});
@@ -142,6 +164,34 @@ function buildServer() {
   server.register(streamViewRoutes,{ prefix: "/api/streamView"})
   server.register(streamExitRoutes,{ prefix: "/api/streamExit"})
   server.register(streamPaymentRoutes,{ prefix: "/api/streamPayment"})
+  server.register(subscriptionsRoutes,{ prefix: "/api/subscriptions"})
+  // server.register(socketRoutes)
+
+  
+  server.ready((err) => {
+    try {
+    if (err) throw err;
+    server.io.on('connection', (socket) => {
+      console.log('a user connected '+socket.id);
+      socket.on('join', (room:string) : void => {
+        socket.join(room);
+        console.log('User joined room:', room);
+        socket.to(room).emit('user joined', socket.id);
+      });
+      socket.on('chat message', (msg: string, room: string):void => {
+        console.log({msg,room})
+        server.io.to(room).emit('chat message', msg);
+      });
+      socket.on('disconnect', () => {
+        console.log('user disconnected');
+      });
+    });
+    
+    
+  } catch (error) {
+      console.error("Error starting socket server:", error);
+  }
+  });
   return server;
 }
 

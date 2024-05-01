@@ -18,7 +18,7 @@ async function commentRoutes(app: FastifyInstance) {
   );
 
 // get me route
-  app.get("/my/:userUserId",
+  app.get("/my",
     {
       preHandler: [app.authenticate]
   },
@@ -26,6 +26,7 @@ async function commentRoutes(app: FastifyInstance) {
   );
 
   app.get("/:streamStreamId", {
+    preHandler: [app.authenticate],
     schema: {
       querystring: $ref("getCommentQuerySchema"),
     }
@@ -33,7 +34,8 @@ async function commentRoutes(app: FastifyInstance) {
     getComments
   );
 
-  app.get("/:streamStreamId/:userUserId", {
+  app.get("/my/:streamStreamId/", {
+    preHandler: [app.authenticate],
     schema: {
       querystring: $ref("getCommentQuerySchema"),
     }

@@ -5,26 +5,20 @@ const commentBase = {
     content: z.string(),
     videoTimestamp: z.date(),
     streamStreamId: z.string(),
-    userUserId: z.string()
 };
 
 const createCommentSchema = z.object({
   ...commentBase,
-  streamStreamId: z.string(),
-  userUserId: z.string(),
 });
 
 const createCommentResponseSchema = z.object({
     ...commentBase,
-    streamStreamId: z.string(),
     userUserId: z.string(),
     commentId: z.string()
   });
 
 const getCommentParamsSchema = z.object({
-    streamStreamId: z.string(),
-    userUserId: z.string(),
-    commentId: z.string()
+    streamStreamId: z.string()
   });
 
 const updateCommentSchema = z.object({

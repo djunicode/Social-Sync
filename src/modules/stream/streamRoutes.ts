@@ -31,6 +31,7 @@ async function streamRoutes(app: FastifyInstance) {
 
   // get stream by id route
   app.get("/:streamId", {
+    preHandler: [app.optionalAuth],
     schema: {
       params: $ref("getStreamParamsSchema"),
     }

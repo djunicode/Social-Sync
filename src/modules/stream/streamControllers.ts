@@ -5,6 +5,7 @@ import prisma from "../../utils/prisma";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { PaginationQuery } from "../../utils/globalSchemas";
 import { streamExists } from "../../utils/stream";
+import { createStreamView } from "../streamView/streamViewController";
 
 // 
 
@@ -53,8 +54,47 @@ export async function getStream(request: FastifyRequest<{ Params: GetStreamParam
         const stream = await prisma.stream.findFirst({
             where: {
                 streamId: request.params.streamId
+            },
+            select: {
+                streamId:true,
+                thumbnailUrl:true,
+                startTimestamp:true,
+                endTimestamp:true,
+                storageUrl:true,
+                title:true,
+                description:true,
+                tags:true,
+                userUserId:true,
+                creator:{
+                    select:{
+                        username:true,
+                        _count:{
+                            select:{
+                                CreatorSubscribers:true
+                            }
+                        }
+                    }
+                },
+                _count:{
+                    select:{
+                        Vote:true,
+                        Comment:true,
+                        StreamView:true
+                    }
+                }
             }
         })
+        if(request.user){
+            console.log("USER EXISTS")
+            const streamView = await prisma.streamView.create({
+                data: {
+                    userId: request.user.userId,
+                    streamId: request.params.streamId
+                }
+            });
+        }else{
+            console.log("USER DOES NOT EXIST")
+        }
         if (!stream) return reply.status(400).send({ error: "stream does not exist" });
         return reply.status(200).send(stream);
     } catch (error) {
@@ -77,7 +117,24 @@ export async function getStreams(request: FastifyRequest<{ Querystring: Paginati
                 title:true,
                 description:true,
                 tags:true,
-                userUserId:true
+                userUserId:true,
+                creator:{
+                    select:{
+                        username:true,
+                        _count:{
+                            select:{
+                                CreatorSubscribers:true
+                            }
+                        }
+                    }
+                },
+                _count:{
+                    select:{
+                        Vote:true,
+                        Comment:true,
+                        StreamView:true
+                    }
+                }
             }
         })
         return reply.status(200).send(streams);

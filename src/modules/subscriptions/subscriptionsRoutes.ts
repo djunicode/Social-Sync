@@ -30,7 +30,7 @@ async function subscriptionsRoutes(app: FastifyInstance) {
   );
 
   // get votes by stream id route
-  app.get("/:creatorUserId", {
+  app.get("/creator/:creatorUserId", {
     schema: {
       querystring: $globalRef("paginationQuerySchema"),
       params: $ref("getSubscriptionsParamsSchema"),
@@ -40,10 +40,9 @@ async function subscriptionsRoutes(app: FastifyInstance) {
   );
 
   // update vote route
-  app.get("/:streamStreamId", {
+  app.get("/stream/:streamStreamId", {
     preHandler: [app.authenticate],
     schema: {
-      body: $ref("updateSubscriptionsSchema"),
       params: $ref("getSubscriptionsParamsSchema"),
       response: { 200: $ref("createSubscriptionsResponseSchema") }
     }
