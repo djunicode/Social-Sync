@@ -110,7 +110,7 @@ export default function SidebarWithSearch() {
                   </div>
                   <div className="flex">
                     <p className="text-gray-400 pr-8 text-left ml-3 mb-3 text-sm">
-                      00,000 views
+                      {item._count.StreamView}
                     </p>
                     <p className="text-gray-400 pl-20 ml-3 mr-3 mb-3 text-sm">
                       dd/mm/yyyy
