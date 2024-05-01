@@ -27,6 +27,7 @@ const updateCommentSchema = z.object({
 
 const getCommentQuerySchema = z.object({
     limit: z.number().max(100).optional(),
+    live: z.boolean().optional()
   });
 
 export type CreateCommentInput = z.infer<typeof createCommentSchema>;

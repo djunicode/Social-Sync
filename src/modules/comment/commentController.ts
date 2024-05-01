@@ -25,6 +25,7 @@ export async function createComment(request: FastifyRequest<{ Body: CreateCommen
 export async function getComments(request: FastifyRequest<{ Querystring: GetCommentsQuery,Params:GetCommentParams }>, reply: FastifyReply) {
     try {
         const limit = request.query.limit ? request.query.limit : 10;
+        const live = request.query.live ? request.query.live : false;
         const comments = await prisma.comment.findMany({
             take: limit,
             where:{
@@ -36,10 +37,31 @@ export async function getComments(request: FastifyRequest<{ Querystring: GetComm
                 videoTimestamp:true,
                 userUserId:true,
                 streamStreamId:true,
+                createdAt:true,
+                user:{
+                    select:{
+                        username:true,
+                        _count:{
+                            select:{
+                                CommentVote:true,
+                                Comment:true,
+                                StreamView:true,
+                                UserSubscriptions:true
+                            }
+                        }
+                    }                        
+                },
                 _count:{
                     select:{
                         CommentVote:true
                     }
+                }
+            },
+            orderBy:live?{
+                createdAt:'desc'
+            }:{
+                CommentVote:{
+                    _count: "desc"
                 }
             }
         })

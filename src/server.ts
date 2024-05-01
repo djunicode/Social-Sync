@@ -23,6 +23,7 @@ import { subscriptionsSchemas } from "./modules/subscriptions/subscriptionsSchem
 import subscriptionsRoutes from "./modules/subscriptions/subscriptionsRoutes";
 import { Server } from "socket.io"
 import fastifySocketIO from "./socket";
+import socketRoutes from "./modules/socket/socketEvents";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -161,37 +162,12 @@ function buildServer() {
   server.register(voteRoutes,{ prefix: "api/vote"});
   server.register(commentRoutes,{ prefix: "api/comment"});
   server.register(commentVoteRoutes,{ prefix: "api/commentVote"});
-  server.register(streamViewRoutes,{ prefix: "/api/streamView"})
-  server.register(streamExitRoutes,{ prefix: "/api/streamExit"})
-  server.register(streamPaymentRoutes,{ prefix: "/api/streamPayment"})
-  server.register(subscriptionsRoutes,{ prefix: "/api/subscriptions"})
-  // server.register(socketRoutes)
+  server.register(streamViewRoutes,{ prefix: "api/streamView"})
+  server.register(streamExitRoutes,{ prefix: "api/streamExit"})
+  server.register(streamPaymentRoutes,{ prefix: "api/streamPayment"})
+  server.register(subscriptionsRoutes,{ prefix: "api/subscriptions"})
+  server.register(socketRoutes)
 
-  
-  server.ready((err) => {
-    try {
-    if (err) throw err;
-    server.io.on('connection', (socket) => {
-      console.log('a user connected '+socket.id);
-      socket.on('join', (room:string) : void => {
-        socket.join(room);
-        console.log('User joined room:', room);
-        socket.to(room).emit('user joined', socket.id);
-      });
-      socket.on('chat message', (msg: string, room: string):void => {
-        console.log({msg,room})
-        server.io.to(room).emit('chat message', msg);
-      });
-      socket.on('disconnect', () => {
-        console.log('user disconnected');
-      });
-    });
-    
-    
-  } catch (error) {
-      console.error("Error starting socket server:", error);
-  }
-  });
   return server;
 }
 

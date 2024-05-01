@@ -26,7 +26,6 @@ async function commentRoutes(app: FastifyInstance) {
   );
 
   app.get("/:streamStreamId", {
-    preHandler: [app.authenticate],
     schema: {
       querystring: $ref("getCommentQuerySchema"),
     }
