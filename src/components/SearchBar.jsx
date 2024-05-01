@@ -1,9 +1,12 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { SearchHistory } from "../../public/svgs";
 
-export default function SearchBar() {
+export default function SearchBar({ query }) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const router = useRouter();
 
   const handleSearchSuggestons = () => {
     const searchValue = document.getElementById("searchInput").value;
@@ -13,6 +16,17 @@ export default function SearchBar() {
       setIsOpen(false);
     }
   };
+
+  const handleSearch = async () => {
+    const searchValue = document.getElementById("searchInput").value;
+    if (searchValue && searchValue.trim() !== ""){
+      const searchQuery = searchValue.split(" ").join("+");
+      console.log(searchQuery)
+      if(searchQuery){
+        router.push(`/search/${searchQuery}`)
+      }
+    }
+  }
 
   const searchHistory = [
     "Past search here Lorem, ispum. hi",
@@ -31,7 +45,7 @@ export default function SearchBar() {
           <input
             type="text"
             className="w-full rounded-l-full h-full pl-4 pr-15 text-black font-medium text-xl focus:outline-none"
-            placeholder="What are you looking for?"
+            placeholder={query ? query : "What are you looking for?"}
             onChange={handleSearchSuggestons}
             onClick={() => setIsOpen(!isOpen)}
             id="searchInput"
@@ -39,7 +53,7 @@ export default function SearchBar() {
         </div>
         <div
           className="w-3/12 absolute right-0 h-full bg-gradient-to-r from-[#F16602] to-[#FF8E00] rounded-full flex justify-center items-center hover:cursor-pointer text-[#020317] font-semibold text-xl"
-          //   onClick={handleSearch}
+            onClick={handleSearch}
         >
           Search
         </div>
