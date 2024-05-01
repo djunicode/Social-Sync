@@ -31,7 +31,7 @@ export const DropDownArrow = () => {
   );
 };
 
-export const BackgroundShape1 = ({}) => {
+export const BackgroundShape1 = ({ }) => {
   return (
     <svg
       x="0px"
@@ -61,7 +61,7 @@ export const BackgroundShape1 = ({}) => {
     </svg>
   );
 };
-export const BackgroundShape3 = ({}) => {
+export const BackgroundShape3 = ({ }) => {
   return (
     <svg
       x="0px"
@@ -91,7 +91,7 @@ export const BackgroundShape3 = ({}) => {
     </svg>
   );
 };
-export const BackgroundShape2 = ({}) => {
+export const BackgroundShape2 = ({ }) => {
   return (
     <svg
       x="0px"
@@ -122,7 +122,7 @@ export const BackgroundShape2 = ({}) => {
     </svg>
   );
 };
-export const Play = ({}) => {
+export const Play = ({ }) => {
   return (
     <svg
       style={{ mixBlendMode: "normal" }}
@@ -139,7 +139,7 @@ export const Play = ({}) => {
     </svg>
   );
 };
-export const Dollar = ({}) => {
+export const Dollar = ({ }) => {
   return (
     <svg
       width="90"
@@ -162,7 +162,7 @@ export const Dollar = ({}) => {
     </svg>
   );
 };
-export const Graph = ({}) => {
+export const Graph = ({ }) => {
   return (
     <svg
       width="90"
@@ -189,7 +189,7 @@ export const Graph = ({}) => {
   );
 };
 
-export const ArrowRight = ({}) => {
+export const ArrowRight = ({ }) => {
   return (
     <svg
       width="25"
@@ -210,7 +210,7 @@ export const ArrowRight = ({}) => {
   );
 };
 
-export const SocialSync = ({}) => {
+export const SocialSync = ({ }) => {
   return (
     <svg
       width="202"
@@ -263,7 +263,7 @@ export const SocialSync = ({}) => {
   );
 };
 
-export const Like = ({}) => {
+export const Like = ({ }) => {
   return (
     <svg
       width="24"
@@ -276,7 +276,7 @@ export const Like = ({}) => {
   );
 };
 
-export const LikeFilled = ({}) => {
+export const LikeFilled = ({ }) => {
   return (
     <svg
       width="24"
@@ -289,7 +289,7 @@ export const LikeFilled = ({}) => {
   );
 };
 
-export const Share = ({}) => {
+export const Share = ({ }) => {
   return (
     <svg
       fill="#000000"
@@ -316,7 +316,7 @@ export const Share = ({}) => {
   );
 };
 
-export const ThreeDots = ({}) => {
+export const ThreeDots = ({ }) => {
   return (
     <svg
       width="24"
@@ -330,7 +330,7 @@ export const ThreeDots = ({}) => {
   );
 };
 
-export const ArrowLeft = ({}) => {
+export const ArrowLeft = ({ }) => {
   return (
     <svg
       width="40"
@@ -351,7 +351,7 @@ export const ArrowLeft = ({}) => {
   );
 };
 
-export const SendBtn = ({}) => {
+export const SendBtn = ({ }) => {
   return (
     <svg
       width="16"
@@ -375,7 +375,7 @@ export const SendBtn = ({}) => {
   );
 };
 
-export const Report = ({}) => {
+export const Report = ({ }) => {
   return (
     <svg
       width="16"
@@ -392,7 +392,7 @@ export const Report = ({}) => {
   );
 };
 
-export const ReplyBtn = ({}) => {
+export const ReplyBtn = ({ }) => {
   return (
     <svg
       width="24"
@@ -421,7 +421,7 @@ export const ReplyBtn = ({}) => {
   );
 };
 
-export const GiftBox = ({}) => {
+export const GiftBox = ({ }) => {
   return (
     <svg
       width="24"
