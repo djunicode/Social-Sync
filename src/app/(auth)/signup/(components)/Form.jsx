@@ -1,5 +1,6 @@
 "use client"
 import Input from "@/components/Input"
+import { apiHandler } from "@/lib/api"
 import axios from "axios"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -25,28 +26,13 @@ export default function Form() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    toast("Creating account...")
-    console.log({ username, password, fname, lname, email, date, month, year })
     const dob = `${year}-${month}-${date}`
-    //axios
-    try {
-      const res = await axios.post(`${url}/api/user/signup`,
-        {
-          username, password: password, firstName: fname, lastName: lname, email, dob
-        },
-        {
-          validateStatus: (status) => (status >= 200 && status < 401)
-        }
-      )
-      console.log(res.data)
-      if (res.status === 200) {
-        toast("Account created successfully! Please log in to continue.")
-        router.push('/login')
-      } else {
-        toast(res.data.error)
-      }
-    } catch (error) {
-      toast("Something went wrong! Please try again later.")
+    const res = await apiHandler.signup({ username, password, firstName: fname, lastName: lname, email, dob })
+    if (!res.error) {
+      toast("Account created successfully! Please log in to continue.")
+      router.push('/login')
+    } else {
+      toast(res.error)
     }
   }
 
