@@ -16,6 +16,9 @@ const payment = () => {
         </a>
       </button>
       {/* <MakePaymentComponent /> */}
+    <div>
+      <h4>Payment page</h4>
+      {/* <MakePaymentComponent /> */}
     </div>
   );
 };

@@ -31,7 +31,7 @@ export const DropDownArrow = () => {
   );
 };
 
-export const BackgroundShape1 = ({}) => {
+export const BackgroundShape1 = ({ }) => {
   return (
     <svg
       x="0px"
@@ -61,7 +61,7 @@ export const BackgroundShape1 = ({}) => {
     </svg>
   );
 };
-export const BackgroundShape3 = ({}) => {
+export const BackgroundShape3 = ({ }) => {
   return (
     <svg
       x="0px"
@@ -91,7 +91,7 @@ export const BackgroundShape3 = ({}) => {
     </svg>
   );
 };
-export const BackgroundShape2 = ({}) => {
+export const BackgroundShape2 = ({ }) => {
   return (
     <svg
       x="0px"
@@ -122,7 +122,7 @@ export const BackgroundShape2 = ({}) => {
     </svg>
   );
 };
-export const Play = ({}) => {
+export const Play = ({ }) => {
   return (
     <svg
       style={{ mixBlendMode: "normal" }}
@@ -139,7 +139,7 @@ export const Play = ({}) => {
     </svg>
   );
 };
-export const Dollar = ({}) => {
+export const Dollar = ({ }) => {
   return (
     <svg
       width="90"
@@ -162,7 +162,7 @@ export const Dollar = ({}) => {
     </svg>
   );
 };
-export const Graph = ({}) => {
+export const Graph = ({ }) => {
   return (
     <svg
       width="90"
@@ -189,7 +189,7 @@ export const Graph = ({}) => {
   );
 };
 
-export const ArrowRight = ({}) => {
+export const ArrowRight = ({ }) => {
   return (
     <svg
       width="25"
@@ -210,7 +210,7 @@ export const ArrowRight = ({}) => {
   );
 };
 
-export const SocialSync = ({}) => {
+export const SocialSync = ({ }) => {
   return (
     <svg
       width="202"
@@ -263,7 +263,7 @@ export const SocialSync = ({}) => {
   );
 };
 
-export const Like = ({}) => {
+export const Like = ({ }) => {
   return (
     <svg
       width="24"
@@ -276,7 +276,7 @@ export const Like = ({}) => {
   );
 };
 
-export const LikeFilled = ({}) => {
+export const LikeFilled = ({ }) => {
   return (
     <svg
       width="24"
@@ -289,7 +289,7 @@ export const LikeFilled = ({}) => {
   );
 };
 
-export const Share = ({}) => {
+export const Share = ({ }) => {
   return (
     <svg
       fill="#000000"
@@ -316,7 +316,7 @@ export const Share = ({}) => {
   );
 };
 
-export const ThreeDots = ({}) => {
+export const ThreeDots = ({ }) => {
   return (
     <svg
       width="24"
@@ -330,7 +330,7 @@ export const ThreeDots = ({}) => {
   );
 };
 
-export const ArrowLeft = ({}) => {
+export const ArrowLeft = ({ }) => {
   return (
     <svg
       width="40"
@@ -351,7 +351,7 @@ export const ArrowLeft = ({}) => {
   );
 };
 
-export const SendBtn = ({}) => {
+export const SendBtn = ({ }) => {
   return (
     <svg
       width="16"
@@ -375,7 +375,7 @@ export const SendBtn = ({}) => {
   );
 };
 
-export const Report = ({}) => {
+export const Report = ({ }) => {
   return (
     <svg
       width="16"
@@ -392,7 +392,7 @@ export const Report = ({}) => {
   );
 };
 
-export const ReplyBtn = ({}) => {
+export const ReplyBtn = ({ }) => {
   return (
     <svg
       width="24"
@@ -421,7 +421,7 @@ export const ReplyBtn = ({}) => {
   );
 };
 
-export const GiftBox = ({}) => {
+export const GiftBox = ({ }) => {
   return (
     <svg
       width="24"
@@ -433,6 +433,61 @@ export const GiftBox = ({}) => {
       <path
         d="M22 12V20C22 20.5304 21.7893 21.0391 21.4142 21.4142C21.0391 21.7893 20.5304 22 20 22H4C3.46957 22 2.96086 21.7893 2.58579 21.4142C2.21071 21.0391 2 20.5304 2 20V12C1.73478 12 1.48043 11.8946 1.29289 11.7071C1.10536 11.5196 1 11.2652 1 11V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H6.17C6.05698 5.67873 5.99949 5.34057 6 5C6 4.20435 6.31607 3.44129 6.87868 2.87868C7.44129 2.31607 8.20435 2 9 2C10 2 10.88 2.5 11.43 3.24V3.23L12 4L12.57 3.23V3.24C13.12 2.5 14 2 15 2C15.7956 2 16.5587 2.31607 17.1213 2.87868C17.6839 3.44129 18 4.20435 18 5C18.0005 5.34057 17.943 5.67873 17.83 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V11C23 11.2652 22.8946 11.5196 22.7071 11.7071C22.5196 11.8946 22.2652 12 22 12ZM4 20H11V12H4V20ZM20 20V12H13V20H20ZM9 4C8.73478 4 8.48043 4.10536 8.29289 4.29289C8.10536 4.48043 8 4.73478 8 5C8 5.26522 8.10536 5.51957 8.29289 5.70711C8.48043 5.89464 8.73478 6 9 6C9.26522 6 9.51957 5.89464 9.70711 5.70711C9.89464 5.51957 10 5.26522 10 5C10 4.73478 9.89464 4.48043 9.70711 4.29289C9.51957 4.10536 9.26522 4 9 4ZM15 4C14.7348 4 14.4804 4.10536 14.2929 4.29289C14.1054 4.48043 14 4.73478 14 5C14 5.26522 14.1054 5.51957 14.2929 5.70711C14.4804 5.89464 14.7348 6 15 6C15.2652 6 15.5196 5.89464 15.7071 5.70711C15.8946 5.51957 16 5.26522 16 5C16 4.73478 15.8946 4.48043 15.7071 4.29289C15.5196 4.10536 15.2652 4 15 4ZM3 8V10H11V8H3ZM13 8V10H21V8H13Z"
         fill="#F16602"
+      />
+    </svg>
+  );
+};
+
+export const SearchHistory = ({}) => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M11.962 18C9.9307 18 8.16036 17.3367 6.65103 16.01C5.1417 14.6833 4.26803 13.0133 4.03003 11H5.04103C5.31303 12.72 6.0967 14.15 7.39203 15.29C8.68736 16.43 10.2107 17 11.962 17C13.912 17 15.566 16.321 16.924 14.963C18.282 13.605 18.9614 11.9507 18.962 10C18.9627 8.04933 18.2834 6.395 16.924 5.037C15.5647 3.679 13.9107 3 11.962 3C10.9274 3 9.9547 3.21867 9.04403 3.656C8.13336 4.09333 7.33003 4.69533 6.63403 5.462H9.11503V6.462H4.96203V2.308H5.96203V4.696C6.73536 3.84733 7.64136 3.186 8.68003 2.712C9.7187 2.238 10.8127 2.00067 11.962 2C13.0707 2 14.11 2.20867 15.08 2.626C16.05 3.04333 16.8974 3.61433 17.622 4.339C18.3467 5.06367 18.918 5.91133 19.336 6.882C19.754 7.85267 19.9627 8.892 19.962 10C19.9614 11.108 19.7527 12.1473 19.336 13.118C18.9194 14.0887 18.348 14.9363 17.622 15.661C16.896 16.3857 16.0487 16.9567 15.08 17.374C14.1114 17.7913 13.072 18 11.962 18ZM15.165 13.854L11.519 10.208V5H12.519V9.792L15.873 13.146L15.165 13.854Z"
+        fill="#867D7D"
+        stroke="#867D7D"
+        stroke-width="0.5"
+      />
+    </svg>
+  );
+};
+
+export const SortIcon = ({}) => {
+  return (
+    <svg
+      width="20"
+      height="16"
+      viewBox="0 0 20 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M10 10.2857L14.5715 14.9794L19.1429 10.2857M10 5.71425L5.42861 1.14282M5.42861 1.14282L0.857178 5.71082M5.42861 1.14282V14.8571M14.5715 1.14282V14.8571"
+        stroke="black"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const FilterIcon = ({}) => {
+  return (
+    <svg
+      width="16"
+      height="18"
+      viewBox="0 0 16 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M10 9V16.88C10.04 17.18 9.94001 17.5 9.71001 17.71C9.61749 17.8027 9.50761 17.8762 9.38663 17.9264C9.26566 17.9766 9.13598 18.0024 9.00501 18.0024C8.87404 18.0024 8.74436 17.9766 8.62338 17.9264C8.50241 17.8762 8.39252 17.8027 8.30001 17.71L6.29001 15.7C6.18101 15.5933 6.09812 15.4629 6.04782 15.319C5.99751 15.175 5.98115 15.0213 6.00001 14.87V9H5.97001L0.210009 1.62C0.0476172 1.41153 -0.0256572 1.14726 0.00619692 0.88493C0.038051 0.622602 0.172444 0.383546 0.380009 0.22C0.570009 0.08 0.780009 0 1.00001 0H15C15.22 0 15.43 0.08 15.62 0.22C15.8276 0.383546 15.962 0.622602 15.9938 0.88493C16.0257 1.14726 15.9524 1.41153 15.79 1.62L10.03 9H10Z"
+        fill="black"
       />
     </svg>
   );
