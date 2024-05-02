@@ -23,8 +23,8 @@ model User {
   StreamExit                                      StreamExit[]
   StreamPayment                                   StreamPayment[]
   StreamView                                      StreamView[]
-  Subscriptions_Subscriptions_creatorUserIdToUser Subscriptions[] @relation("Subscriptions_creatorUserIdToUser")
-  Subscriptions_Subscriptions_userUserIdToUser    Subscriptions[] @relation("Subscriptions_userUserIdToUser")
+  CreatorSubscribers Subscriptions[] @relation("Subscriptions_creatorUserIdToUser")
+  UserSubscriptions    Subscriptions[] @relation("Subscriptions_userUserIdToUser")
   Vote                                            Vote[]
 }
 

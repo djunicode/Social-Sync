@@ -3,7 +3,7 @@ import { buildJsonSchemas } from "fastify-zod";
 
 const commentVoteBase = {
     dislike:z.boolean().default(false),
-    videoTimestamp:z.date(),
+    videoTimestamp:z.date().or(z.string()).or(z.number()).optional(),
 };
 
 const createCommentVoteSchema = z.object({

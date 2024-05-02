@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import prisma from "./prisma"
 
 export const userExists = async (email: string, username: string) => {
@@ -44,4 +45,13 @@ export const isUser = async (userId: string) => {
     })
 
     return user !== null;
+}
+
+export const getUser = async (userId: string): Promise<User|null> => {
+    const user = await prisma.user.findFirst({
+        where: {
+            userId
+        }
+    })
+    return user;
 }
