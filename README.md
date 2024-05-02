@@ -1,4 +1,4 @@
-# socialSync
+# Social Sync
 # Contribution Guidelines
 
 1. Fork this repo
