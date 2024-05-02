@@ -1,7 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import axios from "axios";
 import {
   SocialSync,
   Like,
@@ -16,18 +15,77 @@ import LoadingScreen from "@/app/loading";
 import Message from "./(components)/Message";
 import Reply from "./(components)/Reply";
 import Donation from "./(components)/Donation";
-import SearchBar from "@/components/SearchBar";
+// import dynamic from 'next/dynamic'
+import useStore from "@/lib/zustand";
+import { apiHandler } from "@/lib/api";
+import { socket } from "@/lib/socket";
+import Call from '@/components/Call'
 
 export default function Page({ params }) {
   const url = process.env.NEXT_PUBLIC_API_URL;
   const [render, setRender] = useState(false);
   const [streamInfo, setStreamInfo] = useState();
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
   const [creatorInfo, setCreatorInfo] = useState();
   const [loading, setLoading] = useState(true);
   const [liked, setLiked] = useState(false); // temporary
-
+  const { user } = useStore()
   const router = useRouter();
+  
+  const divRef = useRef(null);
+  const scrollToBottom = () => {
+    if (divRef.current) {
+      divRef.current.scrollTo({
+        top: divRef.current.scrollHeight,
+        behavior: 'smooth', 
+      });
+    }
+  };
 
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages])
+  
+  useEffect(() => {
+    socket.connect();
+    if (socket.connected) {
+      onConnect();
+      console.log("socket connected")
+    }
+
+    function onConnect() {
+
+      socket.io.engine.on('upgrade', (transport) => {
+        // setTransport(transport.name);
+        console.log(transport.name)
+      });
+    }
+
+    function onDisconnect() {
+      console.log("socket disconnceted")
+    }
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+
+    socket.on('chat', (msg) => {
+      console.log('Message:', msg);
+      setMessages((prevMessages) => [...prevMessages, msg]);
+    });
+
+    socket.on('joined', (userId) => {
+      console.log('User joined:', userId);
+    });
+
+    socket.emit("join", params.streamId)
+
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      socket.off('chat');
+      socket.off('joined');
+    };
+  }, []);
   const streamBox = {
     border: "2px solid #040629",
     // border: "2px solid white",
@@ -39,31 +97,54 @@ export default function Page({ params }) {
     boxShadow: "0 2px 8px 2px rgba(255, 255, 255, 0.2)",
   };
 
-  useEffect(() => {
-    const getStream = async () => {
-      toast("Loading Stream...");
-      try {
-        const res = await axios.get(`${url}/api/stream/${params.streamId}`);
-        console.log("Stream", res.data);
-        if (res?.status === 200 && res?.data) {
-          setStreamInfo(res.data);
-          const response = await axios.get(
-            `${url}/api/user/${res.data?.userUserId}`
-          );
-          console.log("Creator", response.data);
-          if (response?.status === 200 && response?.data) {
-            setCreatorInfo(response.data);
-            setRender(true);
-          }
-        }
-      } catch (error) {
-        console.log("Failed to fetch stream info", error);
-        toast("Error fetching stream info");
-        setLoading(false);
+  async function handleSend(e) {
+    e.preventDefault()
+    const token = localStorage.getItem("token");
+    if (!token) return toast("Please login to send messages!")
+    socket.emit('chat', params.streamId, token, message);
+    setMessage("");
+  }
+
+  const getPreviousMessages = async (streamId) => {
+    console.log({ streamId })
+
+    toast("Loading Chat...");
+    try {
+      const res = await apiHandler.getLiveComments({ streamId });
+      if (res.error) {
+        toast(res.error)
+      } else {
+        setMessages(res);
       }
-    };
-    getStream();
-  }, []);
+    } catch (error) {
+      console.log("Failed to fetch chat messages", error);
+      toast("Error fetching chat messages");
+    }
+  }
+
+  const getStream = async (streamId) => {
+    console.log({ streamId })
+    toast("Loading Stream...");
+    try {
+      const res = await apiHandler.getStream({ streamId })
+      if (res.error) {
+        toast(res.error)
+      } else {
+        setStreamInfo(res);
+        setCreatorInfo(res.creator);
+        setRender(true);
+      }
+    } catch (error) {
+      console.log("Failed to fetch stream info", error);
+      toast("Error fetching stream info");
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    console.log(params)
+    getStream(params.streamId);
+    getPreviousMessages(params.streamId);
+  }, [params]);
 
   return (
     <>
@@ -71,25 +152,24 @@ export default function Page({ params }) {
         <div className="bg-[#020317] h-[96vh]">
           <div className="flex items-center mt-9">
             <div
-              className="ml-2.5 hover:cursor-pointer z-20"
+              className="ml-2.5 hover:cursor-pointer"
               onClick={() => router.back()}
             >
               <ArrowLeft />
             </div>
             <div
-              className="ml-3.5 mt-1 hover:cursor-pointer z-20"
+              className="ml-3.5 mt-1 hover:cursor-pointer"
               onClick={() => router.replace("/home")}
             >
               <SocialSync />
-            </div>
-            <div className="absolute flex justify-center w-full z-10">
-              <SearchBar />
             </div>
           </div>
           <div className="mt-9 pl-16 pr-16 pt-1 h-5/6 ">
             <div className="flex justify-between h-full">
               <div className="w-[64.5%]">
-                <div style={streamBox} className="h-4/6"></div>
+                <div style={streamBox} className="h-5/6">
+                  <Call channelName={params.streamId} AppID={"8a19575fdd7e4b2a93fcf5a01b9539aa"} type={(user && streamInfo && (streamInfo.userUserId === user.userId)?"host":"audience")} />
+                </div>
                 <div className="h-2/6 p-2 mt-2">
                   <div>
                     <h1 className="text-4xl font-bold">{streamInfo.title}</h1>
@@ -104,7 +184,7 @@ export default function Page({ params }) {
                           {creatorInfo.username}
                         </div>
                         <div className="font-medium text-[16px] text-[#867D7D]">
-                          100k subscribers
+                          {creatorInfo._count.CreatorSubscribers} subscribers
                         </div>
                       </div>
                     </div>
@@ -115,7 +195,7 @@ export default function Page({ params }) {
                       >
                         {liked ? <LikeFilled /> : <Like />}
                         <span className="font-semibold text-xl text-black ml-1">
-                          000
+                          {streamInfo._count.Vote}
                         </span>
                       </div>
                       <div className="rounded-full w-9 h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center ml-4 hover:cursor-pointer">
@@ -131,7 +211,7 @@ export default function Page({ params }) {
                   </div>
                   <div className="text-[#867D7D] mt-1">
                     <p className="font-semibold text-base leading-4">
-                      00,000 views
+                      {streamInfo._count.StreamView} views
                     </p>
                     <p className="font-medium text-lg">
                       {streamInfo.description}
@@ -144,13 +224,19 @@ export default function Page({ params }) {
                   <div className="text-2xl font-bold leading-7 text-[#FF8E00] text-center m-2">
                     Live chat
                   </div>
-                  <div className="mt-4 overflow-y-auto pr-2 h-[74%]">
-                    <Message />
+                  <div ref={divRef} className="mt-4 overflow-y-auto pr-2 h-[74%]">
+                    {messages.map((item, ind) => {
+                      return (
+                        <Message key={ind} message={item} />
+                      )
+                    })}
+                    {/* <Message />
                     <Message />
                     <Donation />
                     <Message />
                     <Message />
-                    <Reply />
+                    <Reply /> */}
+
                   </div>
                   <div className="absolute bottom-5 w-[95%]">
                     <div className="flex justify-end mt-2 mb-2">
@@ -166,11 +252,17 @@ export default function Page({ params }) {
                         <div className="w-full">
                           <input
                             type="text"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            onSubmit={handleSend}
+                            onKeyDown={(e) => {if(e.key==="Enter"){
+                              handleSend(e)
+                            }}}
                             placeholder="Send message on chat"
                             className="font-medium text-xl bg-[#F4F3F3] w-full text-black focus:outline-none"
                           />
                         </div>
-                        <div className="bg-[#020317] h-7 w-7 rounded-full flex ml-2 justify-center items-center hover:cursor-pointer">
+                        <div onClick={handleSend} className="bg-[#020317] h-7 w-7 rounded-full flex ml-2 justify-center items-center hover:cursor-pointer">
                           <SendBtn />
                         </div>
                       </div>
