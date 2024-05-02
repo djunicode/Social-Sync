@@ -2,7 +2,6 @@
 import React from "react";
 import dynamic from "next/dynamic";
 
-
 const payment = () => {
   return (
     <div className="m-10">
@@ -16,9 +15,10 @@ const payment = () => {
         </a>
       </button>
       {/* <MakePaymentComponent /> */}
-    <div>
-      <h4>Payment page</h4>
-      {/* <MakePaymentComponent /> */}
+      <div>
+        <h4>Payment page</h4>
+        {/* <MakePaymentComponent /> */}
+      </div>
     </div>
   );
 };
