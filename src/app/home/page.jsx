@@ -2,23 +2,22 @@
 import useStore from "@/lib/zustand"
 import {ArrowRight, BackgroundShape1 , BackgroundShape2, BackgroundShape3, Dollar, Graph, Play} from "../../../public/svgs"
 import "../../lib/fonts.css"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 export default function Page() {
     const { user, setAuth, setToken, setUser } = useStore()
-
+    const router = useRouter()
     const negText = {
-      fontFamily:"PT Mono",
       color:"#F26602",
       mixBlendMode:"difference",
     }
     
     const negDiv = {
-      fontFamily:"PT Mono",
       zIndex:10,
       backgroundColor:"#F26602 ",
       mixBlendMode: "difference ",
     }
     const negDivInner = {
-      fontFamily:"PT Mono",
       zIndex:10,
       backgroundColor:"#FF8E00 ",
       mixBlendMode: "difference ",
@@ -38,9 +37,11 @@ export default function Page() {
 
       {/* NavBar */}
       <nav className="w-[calc(100%-7px)] h-20 pl-10 flex items-center justify-end gap-10 pr-10">
+        <Link href={'/signup'}>
         <div className="flex items-center justify-center text-lg font-bold cursor-pointer hover:bg-[#F06822ee] active:text-primary border-2 border-primary active:bg-black w-[200px] rounded-full h-10 bg-primary text-black">
           Sign Up
         </div>
+        </Link>
         <div 
         onClick={() => {
           if(user){
@@ -50,7 +51,7 @@ export default function Page() {
             setUser(null);
           }
           else{
-            setAuth(true)
+            router.push("/login")
           }
         }}
         className="flex items-center justify-center text-lg font-bold cursor-pointer hover:bg-[#222] active:text-black active:bg-primary border-primary border-2 w-[200px] rounded-full h-10 text-primary"
@@ -70,7 +71,7 @@ export default function Page() {
             {/* Hello {user?user.username:"user"} */}
             <h1
               style={negText}
-              className="text-8xl font-bold text-transparent bg-blend-"
+              className="text-8xl font-bold text-transparent bg-blend- font-PTMono"
             >
               Social Sync
             </h1>
