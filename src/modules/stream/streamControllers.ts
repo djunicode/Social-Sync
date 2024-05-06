@@ -103,12 +103,15 @@ export async function getStream(request: FastifyRequest<{ Params: GetStreamParam
     }
 }
 
-export async function getStreamBySearch(request: FastifyRequest<{ Params: GetStreamParams }>, reply: FastifyReply){
+export async function getStreamBySearch(request: FastifyRequest<{ Params: GetStreamParams, Querystring:GetStreamsQuery }>, reply: FastifyReply){
     try{
         const stream = await prisma.stream.findMany({
             where:{
                 description:{
                     contains: request.params.description
+                },
+                title:{
+                    contains: request.query.title
                 }
             },
             select: {

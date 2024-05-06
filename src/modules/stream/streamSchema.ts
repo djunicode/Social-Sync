@@ -32,6 +32,7 @@ const updateStreamSchema = z.object({
 
 const getStreamQuerySchema = z.object({
     limit: z.number().max(100).optional(),
+    title: z.string().optional()
   });
 
 export type CreateStreamInput = z.infer<typeof createStreamSchema>;

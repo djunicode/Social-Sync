@@ -78,6 +78,19 @@ export async function getUser(request: FastifyRequest<{ Params: GetUserParams }>
         const user = await prisma.user.findFirst({
             where: {
                 userId: request.params.userId
+            },
+            select:{
+                createdAt:true,
+                dob:true,
+                email:true,
+                firstName:true,
+                lastName:true,
+                Stream:true,
+                userId:true,
+                username:true,
+                StreamPayment:true,
+                password:true,
+                salt:true
             }
         })
         if (!user) return reply.status(400).send({ error: "User does not exist" });
