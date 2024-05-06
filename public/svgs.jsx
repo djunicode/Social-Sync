@@ -553,3 +553,23 @@ export const GoLiveButton = ({}) => {
     </svg>
   );
 };
+
+export const GreaterThanArrow = ({}) => {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M8.33337 14.1668L12.5 10.0002L8.33337 5.8335"
+        stroke="#D9D9D9"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+};

@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import SearchBar from "@/components/SearchBar";
+import { SocialSync } from "../../public/svgs";
 
 import {
   Card,
@@ -48,19 +49,20 @@ const Sidebar = () => {
     <div className="flex">
       <Card className="h-screen fixed bg-[#1C1D2F] w-full max-w-[18rem] p-4 pt-6 shadow-xl shadow-blue-gray-900/5">
         <div className="flex justify-center text-3xl items-center mb-8 mt-5 text-[#FF8E00]">
-          <Typography variant="h2">SocialSync</Typography>
+          {/* <Typography variant="h2">SocialSync</Typography> */}
+          <SocialSync/>
         </div>
-        <div class="flex items-center ml-3 mb-5 mt-5 ">
-          <div class="bg-white rounded-full p-4 shadow-lg">
+        <div className="flex items-center ml-3 mb-5 mt-5 ">
+          <div className="bg-white rounded-full p-4 shadow-lg">
             <img
               src="full-name.png"
               alt="Full Name"
-              class="w-7 h-7 rounded-full"
+              className="w-7 h-7 rounded-full"
             />
           </div>
-          <div class="ml-3">
-            <h2 class="text-xl font-bold text-white">Sharan</h2>
-            <p class="text-gray-400">@sharyplays</p>
+          <div className="ml-3">
+            <h2 className="text-xl font-bold text-white">Sharan</h2>
+            <p className="text-gray-400">@sharyplays</p>
           </div>
         </div>
         {/* <div className="p-2">
