@@ -103,6 +103,70 @@ export async function getStream(request: FastifyRequest<{ Params: GetStreamParam
     }
 }
 
+export async function getStreamBySearch(request: FastifyRequest<{ Params: GetStreamParams }>, reply: FastifyReply){
+    try{
+        const stream = await prisma.stream.findMany({
+            where:{
+                description:{
+                    contains: request.params.description
+                }
+            },
+            select: {
+                streamId:true,
+                thumbnailUrl:true,
+                startTimestamp:true,
+                endTimestamp:true,
+                storageUrl:true,
+                title:true,
+                description:true,
+                tags:true,
+                userUserId:true,
+                Comment:true,
+                creator:true,
+                StreamView:true,
+                StreamExit:true,
+                Subscriptions:true
+            }
+        })
+        return reply.status(200).send(stream);
+    } catch(error){
+        console.log(error);
+        return reply.status(500).send(error);
+    }
+}
+
+export async function getStreamByTags(request: FastifyRequest<{ Params: GetStreamParams }>, reply: FastifyReply){
+    try{
+        const stream = await prisma.stream.findMany({
+            where:{
+                tags:{
+                    hasSome: request.params.tags
+                }
+            },
+            select: {
+                streamId:true,
+                thumbnailUrl:true,
+                startTimestamp:true,
+                endTimestamp:true,
+                storageUrl:true,
+                title:true,
+                description:true,
+                tags:true,
+                userUserId:true,
+                Comment:true,
+                creator:true,
+                StreamView:true,
+                StreamExit:true,
+                Subscriptions:true
+            }
+        })
+        return reply.status(200).send(stream);
+    } catch(error){
+        console.log(error);
+        return reply.status(500).send(error);
+    }
+}
+
 export async function getStreams(request: FastifyRequest<{ Querystring: PaginationQuery }>, reply: FastifyReply) {
     try {
         const streams = await prisma.stream.findMany({
