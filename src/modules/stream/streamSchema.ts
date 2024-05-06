@@ -21,7 +21,9 @@ const createStreamResponseSchema = z.object({
   });
 
 const getStreamParamsSchema = z.object({
-    streamId: z.string(),
+    streamId: z.string().optional(),
+    description:z.string().optional(),
+    tags:z.array(z.string()).optional()
   });
 
 const updateStreamSchema = z.object({

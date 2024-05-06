@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { $ref } from "./streamSchema";
-import { createStream, deleteStream , getStream , getStreams , getMyStream , updateStream, getMyLikedStreams, getMyDislikedStreams } from "./streamControllers";
+import { createStream, deleteStream , getStream , getStreams , getMyStream , updateStream, getMyLikedStreams, getMyDislikedStreams,getStreamBySearch, getStreamByTags } from "./streamControllers";
 import { $globalRef } from "../../utils/globalSchemas";
 
 async function streamRoutes(app: FastifyInstance) {
@@ -48,6 +48,25 @@ async function streamRoutes(app: FastifyInstance) {
     getStreams
   );
 
+  //get stream from partial text search of description
+  app.get("/search/:description", {
+    preHandler: [app.optionalAuth],
+    schema: {
+      params: $ref("getStreamParamsSchema"),
+    }
+  },
+    getStreamBySearch
+  );
+
+  //get stream from tags search
+  app.get("/tag/:tags", {
+    preHandler: [app.optionalAuth],
+    schema: {
+      params: $ref("getStreamParamsSchema"),
+    }
+  },
+    getStreamByTags
+  );
    // get liked streams route
   app.get("/liked", {
     preHandler: [app.authenticate],
