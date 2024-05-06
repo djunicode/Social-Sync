@@ -48,7 +48,7 @@ async function streamRoutes(app: FastifyInstance) {
     getStreams
   );
 
-  //get stream from partial text search of description
+  //get stream from partial text search of description and title(query)
   app.get("/search/:description", {
     preHandler: [app.optionalAuth],
     schema: {
