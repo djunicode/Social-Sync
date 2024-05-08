@@ -39,7 +39,7 @@ import {
 
 const Cards = () => {
   return (
-    <div>
+    <div className="m-2">
       <div className="bg-gray-800 rounded-lg ">
         <div className="rounded-lg overflow-hidden mb-3">
           <img
@@ -68,4 +68,4 @@ const Cards = () => {
   );
 };
 
-export default Card;
+export default Cards;

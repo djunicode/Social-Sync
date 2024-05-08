@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Input from "@/components/Input"
-import { EditPenIcon, EditPenIconSmall , ArrowLeft , SocialSync } from "../../../public/svgs";
+import { EditPenIcon, EditPenIconSmall , ArrowLeft , SocialSync } from "../../../../../public/svgs";
 import useStore from "@/lib/zustand"
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
@@ -114,7 +114,7 @@ const payment = () => {
         <h2 className="flex justify-center underline items-center gap-2 text-lg text-[#867D7D]">Edit profile picture <EditPenIconSmall/></h2>
         </div>
         <div className="flex justify-evenly w-full">
-            <Input value={fname} placeholder={user?.firstName} setValue={setFname} name={"First Name"} className={"w-[40%]"} >
+            <Input value={fname} placeholder={user?.firstName} setValue={setFname} name={"First Name"} className={"w-[40%] mr-4"} >
                 <div className="absolute right-2  bottom-7 text-2xl">
                     <EditPenIcon/>
                 </div>
