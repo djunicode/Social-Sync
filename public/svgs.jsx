@@ -493,6 +493,40 @@ export const FilterIcon = ({}) => {
   );
 };
 
+export const EditPenIcon = ({}) => {
+  return (
+    <svg
+      width="25"
+      height="25"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15.5325 5.27992C15.825 4.98742 15.825 4.49992 15.5325 4.22242L13.7775 2.46742C13.5 2.17492 13.0125 2.17492 12.72 2.46742L11.34 3.83992L14.1525 6.65242M2.25 12.9374V15.7499H5.0625L13.3575 7.44742L10.545 4.63492L2.25 12.9374Z"
+        fill="#867D7D"
+      />
+    </svg>
+  );
+}
+export const EditPenIconSmall = ({}) => {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15.5325 5.27992C15.825 4.98742 15.825 4.49992 15.5325 4.22242L13.7775 2.46742C13.5 2.17492 13.0125 2.17492 12.72 2.46742L11.34 3.83992L14.1525 6.65242M2.25 12.9374V15.7499H5.0625L13.3575 7.44742L10.545 4.63492L2.25 12.9374Z"
+        fill="#867D7D"
+      />
+    </svg>
+  );
+}
+
+
 export const UploadButtonSmall = ({}) => {
   return (
     <svg

@@ -63,11 +63,13 @@ export default function Page({ params }) {
           </div>
           {isUserTheSame && (
             <div className="mt-2 w-full">
-              <div className="flex items-center justify-center hover:cursor-pointer">
-                <span className="font-semibold text-base text-[#D9D9D9] underline underline-offset-4 decoration-2 decoration-[#D9D9D9]">
-                  Edit personal details
-                </span>
-                <GreaterThanArrow />
+              <div className="flex justify-center hover:cursor-pointer">
+                <Link href={`/profile/${user.userId}/edit`} className="flex items-center">
+                  <span className="font-semibold text-base text-[#D9D9D9] underline underline-offset-4 decoration-2 decoration-[#D9D9D9]">
+                    Edit personal details
+                  </span>
+                  <GreaterThanArrow />
+                </Link>
               </div>
               <div className="mt-4 flex justify-center">
                 <Link
@@ -112,11 +114,31 @@ export default function Page({ params }) {
                 subscribed to
               </div>
               <div className="mt-4 grid grid-cols-5">
-                <Creator firstName="Creator" lastName="Name" username="username"/>
-                <Creator firstName="Creator" lastName="Name" username="username"/>
-                <Creator firstName="Creator" lastName="Name" username="username"/>
-                <Creator firstName="Creator" lastName="Name" username="username"/>
-                <Creator firstName="Creator" lastName="Name" username="username"/>
+                <Creator
+                  firstName="Creator"
+                  lastName="Name"
+                  username="username"
+                />
+                <Creator
+                  firstName="Creator"
+                  lastName="Name"
+                  username="username"
+                />
+                <Creator
+                  firstName="Creator"
+                  lastName="Name"
+                  username="username"
+                />
+                <Creator
+                  firstName="Creator"
+                  lastName="Name"
+                  username="username"
+                />
+                <Creator
+                  firstName="Creator"
+                  lastName="Name"
+                  username="username"
+                />
               </div>
             </div>
             {isUserTheSame && (
