@@ -2,7 +2,7 @@
 
 export default function Page ({ firstName, lastName, username, pfp }){
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center mt-4">
             <div className="w-36 h-36 rounded-full bg-[#D9D9D9]">
                 <img src={pfp} alt="pfp" className="w-36 h-36 rounded-full"/>
             </div>
