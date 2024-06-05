@@ -2,15 +2,54 @@
 
 import { useState } from "react";
 import { SocialSync, GoLiveButton } from "../../../public/svgs";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Page() {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
 
+  const url = process.env.NEXT_PUBLIC_API_URL;
+
   const uploadBox = {
     border: "2px solid #040629",
     borderRadius: "20px",
     boxShadow: "0 2px 16px 0 #FFFFFF",
+  };
+  
+  const router = useRouter();
+
+  const goLive = async () => {
+    try {
+      if (!title || !desc) {
+        toast("Title and Description needed!");
+      } else {
+        const d = new Date();
+        let date = d.toISOString();
+        let token = localStorage.getItem("token");
+        let res = await axios.post(`${url}/api/stream`, {
+          thumbnailUrl: "",
+          title: title,
+          description: desc,
+          startTimestamp: date,
+        },
+      {
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      });
+        console.log(res);
+        if (res) {
+          toast("Stream created successfully!");
+          setTimeout(() => {
+            router.push(`/stream/${res.data?.streamId}`)
+          },3000)
+        }
+      }
+    } catch (error) {
+      console.error("Error occurred!!", error);
+    }
   };
 
   return (
@@ -50,7 +89,10 @@ export default function Page() {
             ></textarea>
           </div>
           <div className="flex justify-center mt-4">
-            <div className="rounded-full w-fit pl-3 pr-3 h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center hover:cursor-pointer">
+            <div
+              className="rounded-full w-fit pl-3 pr-3 h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center hover:cursor-pointer"
+              onClick={() => goLive()}
+            >
               <span className="font-semibold lg:text-xl text-lg text-black ml-1">
                 Go Live
               </span>
