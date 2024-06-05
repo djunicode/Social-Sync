@@ -47,10 +47,10 @@ const Sidebar = () => {
 
   return (
     <div className="flex">
-      <Card className="h-screen fixed bg-[#1C1D2F] w-full max-w-[18rem] p-4 pt-6 shadow-xl shadow-blue-gray-900/5">
+      <Card className="h-screen fixed bg-[#1C1D2F] md:w-full max-w-[18rem] p-4 pt-6 shadow-xl shadow-blue-gray-900/5">
         <div className="flex justify-center text-3xl items-center mb-8 mt-5 text-[#FF8E00]">
           {/* <Typography variant="h2">SocialSync</Typography> */}
-          <SocialSync/>
+          <SocialSync />
         </div>
         <div className="flex items-center ml-3 mb-5 mt-5 ">
           <div className="bg-white rounded-full p-4 shadow-lg">

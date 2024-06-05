@@ -24,20 +24,20 @@ const SearchCard = ({
         />
       </Link>
       <div className="pl-1.5">
-        <div className="font-medium text-xl text-white">{title}</div>
-        <div className="font-semibold text-base text-[#867D7D]">
+        <div className="font-medium xs:text-xl text-lg text-white">{title}</div>
+        <div className="font-semibold xs:text-base text-sm text-[#867D7D]">
           {views} views
         </div>
         <div className="flex items-center">
           <div className="rounded-full bg-[#D9D9D9] w-8 h-8"></div>
           <Link
             href={`/profile/${userId}`}
-            className="font-semibold text-xl text-[#867D7D] pl-2 underline underline-offset-4 decoration-[#867D7D] decoration-solid decoration-2 hover:cursor-pointer"
+            className="font-semibold xs:text-xl text-lg text-[#867D7D] pl-2 underline underline-offset-4 decoration-[#867D7D] decoration-solid decoration-2 hover:cursor-pointer"
           >
             @{user}
           </Link>
         </div>
-        <div className="font-semibold text-base text-[#867D7D]">
+        <div className="font-semibold xs:text-base text-sm text-[#867D7D]">
           {live === "true" ? (
             <div className="flex items-center">
               <div className="border-4 rounded-full border-[#D20713]"></div>

@@ -19,14 +19,14 @@ export default function SearchBar({ query }) {
 
   const handleSearch = async () => {
     const searchValue = document.getElementById("searchInput").value;
-    if (searchValue && searchValue.trim() !== ""){
+    if (searchValue && searchValue.trim() !== "") {
       const searchQuery = searchValue.split(" ").join("+");
-      console.log(searchQuery)
-      if(searchQuery){
-        router.push(`/search/${searchQuery}`)
+      console.log(searchQuery);
+      if (searchQuery) {
+        router.push(`/search/${searchQuery}`);
       }
     }
-  }
+  };
 
   const searchHistory = [
     "Past search here Lorem, ispum. hi",
@@ -39,12 +39,12 @@ export default function SearchBar({ query }) {
   ];
 
   return (
-    <div className="w-[45%] relative">
+    <div className="lg:w-[50%] md:w-[80%] w-[70%] relative">
       <div className="relative h-10 flex rounded-full z-20">
         <div className="w-10/12 h-full rounded-l-full">
           <input
             type="text"
-            className="w-full rounded-l-full h-full pl-4 pr-15 text-black font-medium text-xl focus:outline-none"
+            className="w-full rounded-l-full h-full pl-4 pr-15 text-black font-medium md:text-xl text-lg focus:outline-none"
             placeholder={query ? query : "What are you looking for?"}
             onChange={handleSearchSuggestons}
             onClick={() => setIsOpen(!isOpen)}
@@ -52,8 +52,8 @@ export default function SearchBar({ query }) {
           />
         </div>
         <div
-          className="w-3/12 absolute right-0 h-full bg-gradient-to-r from-[#F16602] to-[#FF8E00] rounded-full flex justify-center items-center hover:cursor-pointer text-[#020317] font-semibold text-xl"
-            onClick={handleSearch}
+          className="w-3/12 absolute right-0 h-full bg-gradient-to-r from-[#F16602] to-[#FF8E00] rounded-full flex justify-center items-center hover:cursor-pointer text-[#020317] font-semibold md:text-xl sm:text-lg text-base"
+          onClick={handleSearch}
         >
           Search
         </div>
