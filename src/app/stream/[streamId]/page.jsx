@@ -164,63 +164,63 @@ export default function Page({ params }) {
               <SocialSync />
             </div>
           </div>
-          <div className="mt-9 pl-16 pr-16 pt-1 h-5/6 ">
-            <div className="flex justify-between h-full">
-              <div className="w-[64.5%]">
-                <div style={streamBox} className="h-5/6">
+          <div className="mt-9 md:pl-16 md:pr-16 sm:pl-12 sm:pr-12 xs:pl-8 xs:pr-8 pl-4 pr-4 pt-1 h-5/6 ">
+            <div className="lg:flex justify-between lg:h-full">
+              <div className="lg:w-[64.5%]">
+                <div style={streamBox} className="lg:h-5/6 sm:h-[50vh] xs:h-[45vh] h-[35vh]">
                   <Call channelName={params.streamId} AppID={"8a19575fdd7e4b2a93fcf5a01b9539aa"} type={(user && streamInfo && (streamInfo.userUserId === user.userId)?"host":"audience")} />
                 </div>
                 <div className="h-2/6 p-2 mt-2">
                   <div>
                     <h1 className="text-4xl font-bold">{streamInfo.title}</h1>
                   </div>
-                  <div className="mt-3 flex justify-between items-center">
+                  <div className="mt-3 xs:flex justify-between items-center">
                     <div className="flex items-center">
                       <div className="border rounded-full w-16 h-16 flex justify-center items-center">
                         photo
                       </div>
                       <div className="ml-2">
-                        <div className="font-semibold text-xl">
+                        <div className="font-semibold sm:text-xl text-lg">
                           {creatorInfo.username}
                         </div>
-                        <div className="font-medium text-[16px] text-[#867D7D]">
+                        <div className="font-medium sm:text-base text-sm text-[#867D7D]">
                           {creatorInfo._count.CreatorSubscribers} subscribers
                         </div>
                       </div>
                     </div>
-                    <div className="flex">
+                    <div className="flex xs:mt-0 mt-4 xs:mb-0 mb-4 max-xs:justify-end">
                       <div
-                        className="rounded-full w-fit pl-3 pr-3 h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center ml-4 hover:cursor-pointer"
+                        className="rounded-full w-fit pl-3 pr-3 sm:h-9 h-8 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center ml-4 hover:cursor-pointer"
                         onClick={() => setLiked(!liked)}
                       >
                         {liked ? <LikeFilled /> : <Like />}
-                        <span className="font-semibold text-xl text-black ml-1">
+                        <span className="font-semibold sm:text-xl text-lg text-black ml-1">
                           {streamInfo._count.Vote}
                         </span>
                       </div>
-                      <div className="rounded-full w-9 h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center ml-4 hover:cursor-pointer">
+                      <div className="rounded-full sm:w-9 sm:h-9 w-8 h-8 max-xs:w-9 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer">
                         <Share />
                       </div>
-                      <div className="rounded-full w-9 h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center ml-4 hover:cursor-pointer">
+                      <div className="rounded-full sm:w-9 sm:h-9 w-8 h-8 max-xs:w-9 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer">
                         <ThreeDots />
                       </div>
-                      <div className="rounded-full w-36 h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-[#020317] text-xl font-semibold flex justify-center items-center ml-4 hover:cursor-pointer">
+                      <div className="rounded-full sm:w-36 sm:h-9 w-28 h-8 max-xs:w-36 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-[#020317] text-xl font-semibold flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer">
                         Subscribe
                       </div>
-                    </div>
+                    </div> 
                   </div>
                   <div className="text-[#867D7D] mt-1">
-                    <p className="font-semibold text-base leading-4">
+                    <p className="font-semibold sm:text-base text-sm leading-4">
                       {streamInfo._count.StreamView} views
                     </p>
-                    <p className="font-medium text-lg">
+                    <p className="font-medium sm:text-lg text-base">
                       {streamInfo.description}
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="w-[31.5%]">
-                <div className="h-full border-[3px] rounded-3xl border-[#ffffff] bg-[#2E2F3F] bg-opacity-60 border-opacity-30 p-2 pr-3 pl-3 relative">
+              <div className="lg:w-[31.5%]">
+                <div className="lg:h-full h-[75vh] border-[3px] rounded-3xl border-[#ffffff] bg-[#2E2F3F] bg-opacity-60 border-opacity-30 p-2 pr-3 pl-3 relative">
                   <div className="text-2xl font-bold leading-7 text-[#FF8E00] text-center m-2">
                     Live chat
                   </div>
@@ -270,6 +270,7 @@ export default function Page({ params }) {
                   </div>
                 </div>
               </div>
+              <div className="max-lg:h-16"></div>
             </div>
           </div>
         </div>
