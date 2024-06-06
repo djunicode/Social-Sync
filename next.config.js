@@ -6,4 +6,14 @@ module.exports = {
     RAZORPAY_KEY: "rzp_test_evIW73RcZydiH9",
     RAZORPAY_SECRET: "YHNbH2e6WOvkPgozVRrXj94B",
   },
+  webpack: (config) => {
+    config.resolve = {
+      ...config.resolve,
+      fallback: {
+        fs: false,
+      },
+    };
+    return config;
+  },
+
 };
