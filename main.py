@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from fastapi import FastAPI , HTTPException
 from scipy.sparse import csr_matrix
-# from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler
 from pydantic import BaseModel
 
 app = FastAPI()
