@@ -2,6 +2,7 @@
 import React from "react";
 import SearchBar from "@/components/SearchBar";
 import { SocialSync } from "../../public/svgs";
+import useStore from "@/lib/zustand";
 
 import {
   Card,
@@ -37,12 +38,14 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 
-const Sidebar = () => {
+const Sidebar = async () => {
   const [open, setOpen] = React.useState(0);
   const [openAlert, setOpenAlert] = React.useState(true);
+  const { user, setAuth, setToken, setUser } = await useStore();
 
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
+    console.log(user)
   };
 
   return (
@@ -61,8 +64,8 @@ const Sidebar = () => {
             />
           </div>
           <div className="ml-3">
-            <h2 className="text-xl font-bold text-white">Sharan</h2>
-            <p className="text-gray-400">@sharyplays</p>
+            <h2 className="text-xl font-bold text-white">{user?.firstName || ""} {user?.lastName || ""}</h2>
+            <p className="text-gray-400">@{user?.username || ""}</p>
           </div>
         </div>
         {/* <div className="p-2">
@@ -90,7 +93,9 @@ const Sidebar = () => {
                 color="blue-gray"
                 className="mr-auto focus:bg-[#F16602] font-normal"
               >
+                <a href="/videos">
                 Home
+                </a>
               </Typography>
             </ListItem>
             {/* <AccordionBody className="py-1">
@@ -136,7 +141,9 @@ const Sidebar = () => {
                 <IoCompassOutline className="h-7 w-7 mr-2" />
               </ListItemPrefix>
               <Typography color="blue-gray" className="mr-auto font-normal">
+                <a href="/explore">
                 Explore
+                </a>
               </Typography>
               {/* </AccordionHeader> */}
             </ListItem>
