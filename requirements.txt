@@ -4,3 +4,4 @@ fastapi[all]
 scipy.sparse
 sklearn.preprocessing
 pydantic
+
