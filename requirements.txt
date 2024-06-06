@@ -1,6 +1,6 @@
 pandas
 numpy
 fastapi[all]
-scipy.sparse
-implicit.als
+scipy
+implicit
 pydantic
