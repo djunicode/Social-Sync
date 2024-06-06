@@ -2,6 +2,6 @@ pandas
 numpy
 fastapi[all]
 scipy
-sklearn.preprocessing.MinMaxScaler
+sklearn.preprocessing
 pydantic
 
