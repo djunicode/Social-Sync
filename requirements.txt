@@ -1,7 +1,7 @@
 pandas
 numpy
 fastapi[all]
-scipy.sparse
-sklearn.preprocessing
+scipy
+sklearn
 pydantic
 
