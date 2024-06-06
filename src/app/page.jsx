@@ -1,161 +1,152 @@
-import Image from "next/image";
-import Link from "next/link";
-
-export default function Home() {
+"use client"
+import useStore from "@/lib/zustand"
+import {ArrowRight, BackgroundShape1 , BackgroundShape2, BackgroundShape3, Dollar, Graph, Play} from "../../public/svgs"
+import "@/lib/fonts.css"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+export default function Page() {
+    const { user, setAuth, setToken, setUser } = useStore()
+    const router = useRouter()
+    const negText = {
+      color:"#F26602",
+      mixBlendMode:"difference",
+    }
+    
+    const negDiv = {
+      zIndex:10,
+      backgroundColor:"#F26602 ",
+      mixBlendMode: "difference ",
+    }
+    const negDivInner = {
+      zIndex:10,
+      backgroundColor:"#FF8E00 ",
+      mixBlendMode: "difference ",
+    }
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between md:p-24 p-12">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-700 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-zinc-700 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://www.djunicode.in/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <h1 className=" text-4xl font-extrabold">DJUNICODE</h1>
-          </a>
+    <div className="relative h-[450vh] lg:h-[350vh] overflow-hidden">
+      <div className="z-20 flex flex-col h-[auto] bg-dark justify-center items-center ">
+        <BackgroundShape1 />
+      </div>
+      <div className="z-10 flex flex-col h-[auto] bg-dark justify-center items-center ">
+        <BackgroundShape2 />
+      </div>
+      <div className="z-0 flex flex-col h-[auto] bg-dark justify-center items-center ">
+        <BackgroundShape3 />
+      </div>
+      <div className="absolute top-0 left-0 w-[100vw]">
+
+      {/* NavBar */}
+      <nav className="w-[calc(100%-7px)] h-20 pl-10 flex items-center justify-end gap-10 pr-10">
+        <Link href={'/signup'}>
+        <div className="flex items-center justify-center text-lg font-bold cursor-pointer hover:bg-[#F06822ee] active:text-primary border-2 border-primary active:bg-black w-[200px] rounded-full h-10 bg-primary text-black">
+          Sign Up
+        </div>
+        </Link>
+        <div 
+        onClick={() => {
+          if(user){
+            localStorage.removeItem("token");
+            setToken(null);
+            setAuth(false);
+            setUser(null);
+          }
+          else{
+            router.push("/login")
+          }
+        }}
+        className="flex items-center justify-center text-lg font-bold cursor-pointer hover:bg-[#222] active:text-black active:bg-primary border-primary border-2 w-[200px] rounded-full h-10 text-primary"
+        >
+          {
+            user 
+            ? "Log Out"
+            : "Log In"
+          }
+        </div>
+      </nav>
+
+      {/* Landing Page Content */}
+      <div className="flex  lg:h-[calc(100vh-80px)] h-[calc(200vh-80px)] flex-col w-screen justify-center">
+
+          <div className="pl-20 pt-20">
+            {/* Hello {user?user.username:"user"} */}
+            <h1
+              style={negText}
+              className="text-8xl font-bold text-transparent bg-blend- font-PTMono"
+            >
+              Social Sync
+            </h1>
+            <Link href={"/videos"}>
+            <button
+              style={negDiv}
+              className="w-[auto] py-2 px-5 font-semibold hover:bg-primary/90 transition-all text-md rounded-full "
+            >
+              <span
+                style={{ color: "white !important", mixBlendMode: "normal" }}
+                className="flex gap-2 items-center justify-center"
+              >
+                Get Started
+                <ArrowRight />
+              </span>
+            </button>
+            </Link>
+
+
+          </div>
+
+          {/* Cards */}
+
+          <div className="p-16 flex flex-col lg:flex-row items-center lg:justify-end gap-16">
+            <div
+              style={negDivInner}
+              className="rounded-xl z-10 lg:w-[30%] max-w-[250px] h-[250px] bg-gray-400 flex flex-col justify-evenly items-center"
+            >
+              <Play />
+              <h3 className="w-[70%] text-center text-lg">Steam or watch from anywhere, anytime</h3>
+            </div>
+            <div
+              style={negDivInner}
+              className="rounded-xl z-10 lg:w-[30%] max-w-[250px] h-[250px] flex flex-col justify-evenly items-center"
+            >
+              <Dollar />
+              <h3 className="w-[70%] text-center text-lg">Invest on your favorite creators</h3>
+            </div>
+            <div
+              style={negDivInner}
+              className="rounded-xl z-10 lg:w-[30%] max-w-[250px] h-[250px] flex flex-col justify-evenly items-center"
+            >
+              <Graph />
+              <h3 className="w-[70%] text-center text-lg">UserBase analysis for creators</h3>
+            </div>
+          </div>
+
+      </div>
+
+      {/* Info 1 */}
+
+      <div className="flex justify-evenly pt-[17vh] h-[80vh]  min-w-[calc(100vw - 7px)] lg:flex-row flex-col items-center">
+        <div className="lg:w-[500px] w-[80%] h-[400px] bg-gray-400 rounded-xl"></div>
+        <div className="lg:w-[500px] w-[80%] h-[400px] text-center lg:text-end  lg:text-5xl text-3xl font-bold flex items-center rounded-xl">Stream anytime or watch your favorite creators live</div>
+      </div>
+
+      {/* Info 2 */}
+
+      <div className="flex justify-evenly pt-[17vh] h-[80vh]  min-w-[calc(100vw - 7px)] lg:flex-row flex-col-reverse items-center">
+        <div className="lg:w-[500px] w-[80%] h-[400px] text-center lg:text-start  lg:text-5xl text-3xl font-bold flex items-center rounded-xl">
+        Invest in creators to earn when they do well
+        </div>
+        <div className="lg:w-[500px] w-[80%] h-[400px] bg-gray-400 rounded-xl"></div>
+      </div>
+
+      {/* Info 3 */}
+
+      <div className="flex justify-evenly pt-[17vh] h-[80vh]  min-w-[calc(100vw - 7px)] lg:flex-row flex-col items-center">
+        <div className="lg:w-[500px] w-[80%] h-[400px] bg-gray-400 rounded-xl"></div>
+        <div className="lg:w-[500px] w-[80%] h-[400px] text-center lg:text-end  lg:text-5xl text-3xl font-bold flex items-center rounded-xl">
+        Creators have access to specialized UserBase analysis
         </div>
       </div>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:to-blue-700 before:dark:opacity-10 after:from-sky-900 after:via-[#0141ff] after:opacity-40 before:lg:h-[360px] z-[-1]">
-        <h1 className=" md:text-9xl text-4xl text-center font-extrabold">Social-Sync</h1>
       </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <Link
-          href="/signup"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Signup{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Sign up page with integrated backend
-          </p>
-        </Link>
-
-        <Link
-          href="/login"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Login{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Log in page with integrated backend
-          </p>
-        </Link>
-
-        <Link
-          href="/payment"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Payment{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Payment Gateway
-          </p>
-        </Link>
-
-        <Link
-          href="/home"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Landing Page{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Home Page
-          </p>
-        </Link>
-
-        <Link
-          href="/videos"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Home Page{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Home Page
-          </p>
-        </Link>
-        <Link
-          href="/explore"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Explore Page{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore Page
-          </p>
-        </Link>
-
-        <a
-          href="https://www.figma.com/file/pqbbIOic5wum1MApqUb0bt/Unicode-Project?type=design&node-id=0%3A1&mode=design&t=F7ZD4MBQ9PSTLl4e-1"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Figma{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Figma designs of this project
-          </p>
-        </a>
-
-        <a
-          href="https://vaxads-utopia.postman.co/workspace/djunicode~3611cf3b-127a-45f5-9df5-acb83d495265/collection/33785124-2a34b2f6-c5cc-4084-8960-b02b1d6046e8?action=share&creator=33775262"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Backend{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Backend Postman collection for this project
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   );
 }
