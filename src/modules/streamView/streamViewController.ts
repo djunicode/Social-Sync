@@ -50,6 +50,48 @@ export async function getMyStreamView(request: FastifyRequest<{Querystring:Pagin
     }
 }
 
+
+export async function getMyStreamViewHistory(request: FastifyRequest<{Querystring:PaginationQuery}>, reply: FastifyReply) {
+    try {
+        const streamViews = await prisma.streamView.findMany({
+            take: request.query.limit,
+            skip: request.query.limit * (request.query.page),
+            where: {
+                userId: request.user.userId,
+            },
+            select: {
+                viewId:true,
+                createdAt:true,
+                streamId:true,
+                userId:true,
+                Stream:{
+                    select:{
+                        startTimestamp:true,
+                        creator:{
+                            select:{
+                                username:true,
+                                userId:true
+                            }
+                        },
+                        description:true,
+                        thumbnailUrl:true,
+                        title:true
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        })
+
+        return reply.status(200).send(streamViews);
+    } catch (error) {
+        console.log(error);
+        return reply.status(500).send(error);
+    }
+}
+
+
 export async function getStreamViews(request: FastifyRequest<{ Params: GetStreamViewParams,streamId:string }>, reply: FastifyReply) {
     try {
         const streamViews = await prisma.streamView.findMany({
