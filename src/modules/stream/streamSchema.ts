@@ -11,6 +11,10 @@ const streamBase = {
   tags: z.array(z.string()).default([]),
 };
 
+const endStreamSchema = z.object({
+  endTimestamp: z.date(),
+});
+
 const createStreamSchema = z.object({
   ...streamBase,
 });
@@ -43,10 +47,13 @@ export type UpdateStreamInput = z.infer<typeof updateStreamSchema>;
 
 export type GetStreamsQuery = z.infer<typeof getStreamQuerySchema>
 
+export type EndStreamsInput = z.infer<typeof endStreamSchema>
+
 export const { schemas: streamSchemas, $ref } = buildJsonSchemas({
   createStreamSchema,
   createStreamResponseSchema,
   getStreamParamsSchema,
   updateStreamSchema,
-  getStreamQuerySchema
+  getStreamQuerySchema,
+  endStreamSchema
 }, { $id: "streamSchemas" });

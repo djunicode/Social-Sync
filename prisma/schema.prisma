@@ -33,7 +33,7 @@ model Stream {
   streamId       String          @id @default(uuid())
   thumbnailUrl   String
   startTimestamp DateTime
-  endTimestamp   DateTime
+  endTimestamp   DateTime?
   storageUrl     String
   title          String
   description    String?

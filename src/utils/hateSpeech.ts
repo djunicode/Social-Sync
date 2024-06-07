@@ -26,7 +26,11 @@ export async function detectHateSpeech({ text }: { text: string }): Promise<numb
                     resource: analyzeRequest,
                 },
                 (err: any, response: any) => {
-                    if (err) resolve(-1);
+                    if (err) {
+                        console.log(err)
+                        resolve(-1)
+                        return;
+                    };
                     console.log(text + ": " + JSON.stringify(response.data.attributeScores.TOXICITY.summaryScore.value, null, 2));
                     const toxicity:number = response.data.attributeScores.TOXICITY.summaryScore.value;
                     if (!toxicity) console.warn("response.data.attributeScores.TOXICITY.summaryScore.value is UNDEFINED!")
