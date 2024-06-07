@@ -22,6 +22,7 @@ import { apiHandler } from "@/lib/api";
 import { socket } from "@/lib/socket";
 import Call from "@/components/Call";
 import { generateRandomColor } from "@/lib/utils";
+import axios from "axios";
 
 const color = generateRandomColor();
 export default function Page({ params }) {
@@ -31,8 +32,10 @@ export default function Page({ params }) {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [creatorInfo, setCreatorInfo] = useState();
+  const [subscribed, setSubscribed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [liked, setLiked] = useState(false); // temporary
+  const [viewers, setViewers] = useState(0);
   const { user } = useStore();
   const router = useRouter();
 
@@ -134,6 +137,29 @@ export default function Page({ params }) {
       } else {
         setStreamInfo(res);
         setCreatorInfo(res.creator);
+        const resp = await axios.get(`${url}/api/subscriptions/myStreams`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        console.log(resp.data);
+        console.log(res.userUserId);
+        const isSubscribed = await resp.data.some(
+          (subscription) => subscription.creatorUserId === res.userUserId
+        );
+        if (isSubscribed) {
+          setSubscribed(true);
+        }
+        const view = await axios.post(
+          `${url}/api/streamView/create`,
+          { streamId: streamId },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        console.log(view);
+        const resviewers = await axios.get(`${url}/api/streamView/viewers/${streamId}`)
+        setViewers(resviewers.data.liveViewers)
         setRender(true);
       }
     } catch (error) {
@@ -161,6 +187,53 @@ export default function Page({ params }) {
     window.location.href = "/videos";
   }
 
+  const toggleSubscribe = async () => {
+    try {
+      let token = localStorage.getItem("token");
+      const me = await axios.get(`${url}/api/user/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (subscribed) {
+        const res = axios.delete(
+          `${url}/api/subscriptions/delete/${streamInfo.userUserId}`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      } else {
+        const res = await axios.post(
+          `${url}/api/subscriptions/`,
+          {
+            userUserId: me?.data?.userId,
+            creatorUserId: streamInfo.userUserId,
+            streamStreamId: streamInfo.streamId,
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        if (res && res.data) {
+          setSubscribed(true);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleExitStream = async () => {
+    try {
+      const d = new Date();
+      let date = d.toISOString();
+      const res = await axios.post(
+        `${url}/api/streamExit/create`,
+        { streamStreamId: streamInfo?.streamId, videoTimestamp: date },
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+      );
+      console.log(res);
+      router.back();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       {render && streamInfo && creatorInfo ? (
@@ -168,7 +241,7 @@ export default function Page({ params }) {
           <div className="flex items-center mt-9">
             <div
               className="ml-2.5 hover:cursor-pointer"
-              onClick={() => router.back()}
+              onClick={() => handleExitStream()}
             >
               <ArrowLeft />
             </div>
@@ -218,7 +291,9 @@ export default function Page({ params }) {
                         style={{ backgroundColor: color }}
                       >
                         <h2 className="text-2xl font-semibold aspect-square text-center">
-                          {creatorInfo.username ? creatorInfo.username[0].toUpperCase() : "U"}
+                          {creatorInfo.username
+                            ? creatorInfo.username[0].toUpperCase()
+                            : "U"}
                         </h2>
                       </div>
                       <div className="ml-2">
@@ -250,13 +325,14 @@ export default function Page({ params }) {
                         <Share />
                       </div>
                       <div className="rounded-full sm:w-36 sm:h-9 w-28 h-8 max-xs:w-36 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-[#020317] text-xl font-semibold flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer">
-                        Subscribe
+                        {subscribed ? "Unsubscribe" : "Subscribe"}
                       </div>
                     </div>
                   </div>
                   <div className="text-[#867D7D] mt-1">
                     <p className="font-semibold sm:text-base text-sm leading-4">
-                      {streamInfo._count.StreamView} views
+                      {/* {streamInfo._count.StreamView} views */}
+                      {viewers} users viewing
                     </p>
                     <p className="font-medium sm:text-lg text-base">
                       {streamInfo.description}

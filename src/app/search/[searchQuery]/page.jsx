@@ -24,7 +24,7 @@ export default function Page({ params }) {
   const getResult = async () => {
     try {
       let searchV = await params.searchQuery.split("%2B").join(" ");
-      const res = await axios.get(`${url}/api/stream/search/?title=${searchV}`);
+      const res = await axios.get(`${url}/api/stream/search/${searchV}?title=${searchV}`);
       // const res = await axios.get(`${url}/api/stream/all`);
       console.log(res.data);
       setStreamData(res.data);
