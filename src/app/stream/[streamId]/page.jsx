@@ -209,7 +209,12 @@ export default function Page({ params }) {
                           {streamInfo._count.Vote}
                         </span>
                       </div>
-                      <div className="rounded-full sm:w-9 sm:h-9 w-8 h-8 max-xs:w-9 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer">
+                      <div className="rounded-full sm:w-9 sm:h-9 w-8 h-8 max-xs:w-9 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer"
+                      onClick={()=>{
+                        navigator.clipboard.writeText(window.location.href)
+                        toast("Share link copied to clipboard")
+                      }}
+                      >
                         <Share />
                       </div>
                       <div className="rounded-full sm:w-9 sm:h-9 w-8 h-8 max-xs:w-9 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer">
