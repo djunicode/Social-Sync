@@ -3,7 +3,7 @@ import { buildJsonSchemas } from "fastify-zod";
 
 const subscriptionsBase = {
     creatorUserId: z.string(),
-    userUserId: z.string(),
+    //userUserId: z.string(),
     streamStreamId: z.string().optional()
 };
 
@@ -19,7 +19,7 @@ const createSubscriptionsResponseSchema = z.object({
 
 const getSubscriptionsParamsSchema = z.object({
     creatorUserId: z.string(),
-    userUserId: z.string(),
+    userUserId: z.string().optional(),
     streamStreamId: z.string().optional()
 });
 
