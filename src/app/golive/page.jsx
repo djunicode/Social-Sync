@@ -1,23 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SocialSync, GoLiveButton } from "../../../public/svgs";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import useStore from "@/lib/zustand";
+import { generateRandomColor } from "@/lib/utils";
+
+const color = generateRandomColor()
 
 export default function Page() {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
-
+  const videoRef = useRef(null)
   const url = process.env.NEXT_PUBLIC_API_URL;
-
+  const { user } = useStore()
   const uploadBox = {
     border: "2px solid #040629",
     borderRadius: "20px",
     boxShadow: "0 2px 16px 0 #FFFFFF",
   };
-  
+
   const router = useRouter();
 
   const goLive = async () => {
@@ -34,23 +38,52 @@ export default function Page() {
           description: desc,
           startTimestamp: date,
         },
-      {
-        headers:{
-          Authorization: `Bearer ${token}`
-        }
-      });
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
         console.log(res);
         if (res) {
           toast("Stream created successfully!");
           setTimeout(() => {
             router.push(`/stream/${res.data?.streamId}`)
-          },3000)
+          }, 3000)
         }
       }
     } catch (error) {
       console.error("Error occurred!!", error);
     }
   };
+  //649d73
+  const getCameraStream = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (error) {
+      console.error("Error accessing the camera", error);
+    }
+  };
+
+
+
+  useEffect(() => {
+    getCameraStream();
+
+    // Cleanup function to stop the camera when the component unmounts
+    return () => {
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject;
+        const tracks = stream.getTracks();
+
+        tracks.forEach(track => track.stop());
+      }
+    };
+
+  }, [])
+
 
   return (
     <div className="bg-[#020317] w-screen h-screen flex flex-col md:flex-row">
@@ -60,9 +93,10 @@ export default function Page() {
       <div className="md:w-8/12 md:pl-14 md:pt-20 md:pr-12 w-full px-5 pt-10">
         <div
           style={uploadBox}
-          className="w-full h-[55%] bg-[#040629] flex items-center justify-center "
+          className="w-full h-[55%] bg-[#040629] flex items-center justify-center overflow-clip "
         >
-          <span>Preview of camera</span>
+          {/* <span>Preview of camera</span> */}
+          <video ref={videoRef} autoPlay className=" w-full h-full" />
         </div>
         <div className="pt-8">
           <div className="font-bold min-[1170px]:text-[28px] lg:text-[26px] md:text-[24px] text-[20px] text-white flex flex-col min-[1130px]:flex-row">
@@ -104,13 +138,14 @@ export default function Page() {
         </div>
       </div>
       <div className="hidden md:flex w-3/12 absolute right-0 h-32 pr-3 justify-end items-center">
-        <div className="w-16 h-16 rounded-full bg-[#D9D9D9] border border-[#D9D9D9]">
-          <img src="" alt="pfp" className="rounded-full w-full h-full" />
+        <div className=" rounded-full aspect-square px-4 shadow-lg flex justify-center items-center" style={{ backgroundColor: color }}>
+          <h2 className=" text-xl font-semibold aspect-square text-center">{user ? user.firstName[0].toUpperCase() : "U"}</h2>
         </div>
+        {/* <img src="" alt="pfp" className="rounded-full w-full h-full" /> */}
         <div className="ml-2">
-          <div className="font-semibold text-xl text-white">Full Name</div>
+          <div className="font-semibold text-xl text-white">{user ? user.firstName : "User"}</div>
           <div className="font-semibold text-base text-[#867D7D]">
-            @username
+            @{user ? user.username : "username"}
           </div>
         </div>
       </div>
