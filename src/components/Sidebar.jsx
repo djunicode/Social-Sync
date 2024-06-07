@@ -22,6 +22,7 @@ import {
   CubeTransparentIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
+import { generateRandomColor } from "@/lib/utils";
 
 const color = generateRandomColor()
 const Sidebar = memo(() => {
@@ -29,7 +30,7 @@ const Sidebar = memo(() => {
   const {user} = useStore();
   console.log(user)
   const [openAlert, setOpenAlert] = React.useState(true);
-
+  const [subscriptions,setSubscriptions] = React.useState([])
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
   };
