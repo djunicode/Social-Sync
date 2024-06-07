@@ -1,5 +1,5 @@
 "use client";
-
+import "../../lib/fonts.css"
 import { useContext, useState } from "react";
 import {
   SocialSync,
