@@ -4,6 +4,7 @@ import {ArrowRight, BackgroundShape1 , BackgroundShape2, BackgroundShape3, Dolla
 import "@/lib/fonts.css"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import Image from 'next/image';
 export default function Page() {
     const { user, setAuth, setToken, setUser } = useStore()
     const router = useRouter()
@@ -11,7 +12,10 @@ export default function Page() {
       color:"#F26602",
       mixBlendMode:"difference",
     }
-    
+    const imageCss = {
+      borderRadius:"10px", 
+      boxShadow: "1px 11px 37px 0px rgba(255,255,255,0.75)",
+      }
     const negDiv = {
       zIndex:10,
       backgroundColor:"#F26602 ",
@@ -75,7 +79,7 @@ export default function Page() {
             >
               Social Sync
             </h1>
-            <Link href={"/videos"}>
+
             <button
               style={negDiv}
               className="w-[auto] py-2 px-5 font-semibold hover:bg-primary/90 transition-all text-md rounded-full "
@@ -88,7 +92,6 @@ export default function Page() {
                 <ArrowRight />
               </span>
             </button>
-            </Link>
 
 
           </div>
@@ -108,14 +111,16 @@ export default function Page() {
               className="rounded-xl z-10 lg:w-[30%] max-w-[250px] h-[250px] flex flex-col justify-evenly items-center"
             >
               <Dollar />
-              <h3 className="w-[70%] text-center text-lg">Invest on your favorite creators</h3>
+              <h3 className="w-[70%] text-center text-lg">Super-chat functionality for monetization of content for creators
+              </h3>
             </div>
             <div
               style={negDivInner}
               className="rounded-xl z-10 lg:w-[30%] max-w-[250px] h-[250px] flex flex-col justify-evenly items-center"
             >
               <Graph />
-              <h3 className="w-[70%] text-center text-lg">UserBase analysis for creators</h3>
+              <h3 className="w-[70%] text-center text-lg">Personalised recommendations for users based on viewing activity 
+              </h3>
             </div>
           </div>
 
@@ -124,7 +129,15 @@ export default function Page() {
       {/* Info 1 */}
 
       <div className="flex justify-evenly pt-[17vh] h-[80vh]  min-w-[calc(100vw - 7px)] lg:flex-row flex-col items-center">
-        <div className="lg:w-[500px] w-[80%] h-[400px] bg-gray-400 rounded-xl"></div>
+        <div className="lg:w-[510px] w-[80%] lg:h-[320px] rounded-xl flex justify-center items-center">
+        <Image
+        style={imageCss}
+        src="/stream.png" // Path to your image in the public directory
+        alt="Example Image"
+        width={550} // Desired width of the image
+        height={450} // Desired height of the image
+      />
+        </div>
         <div className="lg:w-[500px] w-[80%] h-[400px] text-center lg:text-end  lg:text-5xl text-3xl font-bold flex items-center rounded-xl">Stream anytime or watch your favorite creators live</div>
       </div>
 
@@ -132,17 +145,33 @@ export default function Page() {
 
       <div className="flex justify-evenly pt-[17vh] h-[80vh]  min-w-[calc(100vw - 7px)] lg:flex-row flex-col-reverse items-center">
         <div className="lg:w-[500px] w-[80%] h-[400px] text-center lg:text-start  lg:text-5xl text-3xl font-bold flex items-center rounded-xl">
-        Invest in creators to earn when they do well
+        Super-chat functionality for monetization of content for creators
         </div>
-        <div className="lg:w-[500px] w-[80%] h-[400px] bg-gray-400 rounded-xl"></div>
+        <div className="lg:w-[500px] w-[80%] h-[400px] rounded-xl">
+        <Image
+        style={imageCss}
+        src="/superchat.png" // Path to your image in the public directory
+        alt="Example Image"
+        width={550} // Desired width of the image
+        height={450} // Desired height of the image
+      />
+        </div>
       </div>
 
       {/* Info 3 */}
 
       <div className="flex justify-evenly pt-[17vh] h-[80vh]  min-w-[calc(100vw - 7px)] lg:flex-row flex-col items-center">
-        <div className="lg:w-[500px] w-[80%] h-[400px] bg-gray-400 rounded-xl"></div>
+        <div className="lg:w-[500px] w-[80%] h-[400px]  rounded-xl">
+        <Image
+        style={imageCss}
+        src="/recommendation.png" // Path to your image in the public directory
+        alt="Example Image"
+        width={550} // Desired width of the image
+        height={450} // Desired height of the image
+      />
+        </div>
         <div className="lg:w-[500px] w-[80%] h-[400px] text-center lg:text-end  lg:text-5xl text-3xl font-bold flex items-center rounded-xl">
-        Creators have access to specialized UserBase analysis
+        Personalised recommendations for users based on viewing activity
         </div>
       </div>
 
@@ -150,3 +179,4 @@ export default function Page() {
     </div>
   );
 }
+
