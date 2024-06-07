@@ -5,17 +5,35 @@ import { SocialSync, GoLiveButton } from "../../../public/svgs";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import useStore from "@/lib/zustand";
 import { generateRandomColor } from "@/lib/utils";
 
 const color = generateRandomColor()
+import AWSHelper from "@/lib/awsHelper";
+import useStore from "@/lib/zustand";
 
 export default function Page() {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
-  const videoRef = useRef(null)
+  const videoRef = useRef(null)  
+  const fileInputRef = useRef(null);
+  const [file, setFile] = useState(null);
+  const [fileUrl, setFileUrl] = useState(null);
+
+  const {user} = useStore()
+
+  const handleDivClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setFileUrl(URL.createObjectURL(selectedFile))
+    }
+  };
+
   const url = process.env.NEXT_PUBLIC_API_URL;
-  const { user } = useStore()
   const uploadBox = {
     border: "2px solid #040629",
     borderRadius: "20px",
@@ -26,9 +44,12 @@ export default function Page() {
 
   const goLive = async () => {
     try {
-      if (!title || !desc) {
-        toast("Title and Description needed!");
+      if (!title || !desc || !file) {
+        toast("All fields needed!");
       } else {
+        console.log("Going live...");
+        console.log(user);
+        const turl = await AWSHelper.uploadVideoDirect(file , user.userId);
         const d = new Date();
         let date = d.toISOString();
         let token = localStorage.getItem("token");
@@ -37,6 +58,7 @@ export default function Page() {
           title: title,
           description: desc,
           startTimestamp: date,
+          thumbnailUrl: turl,
         },
           {
             headers: {
@@ -55,35 +77,32 @@ export default function Page() {
       console.error("Error occurred!!", error);
     }
   };
-  //649d73
-  const getCameraStream = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-      }
-    } catch (error) {
-      console.error("Error accessing the camera", error);
-    }
-  };
-
+  
 
 
   useEffect(() => {
-    getCameraStream();
-
-    // Cleanup function to stop the camera when the component unmounts
-    return () => {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject;
-        const tracks = stream.getTracks();
-
-        tracks.forEach(track => track.stop());
+    const startVideo = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      } catch (err) {
+        console.error("Error accessing the camera: ", err);
       }
     };
 
-  }, [])
+    startVideo();
 
+    // Clean up the stream on component unmount
+    return () => {
+      if (videoRef.current && videoRef.current.srcObject) {
+        let stream = videoRef.current.srcObject;
+        let tracks = stream.getTracks();
+        tracks.forEach((track) => track.stop());
+      }
+    };
+  }, []);
 
   return (
     <div className="bg-[#020317] w-screen h-screen flex flex-col md:flex-row">
@@ -95,9 +114,37 @@ export default function Page() {
           style={uploadBox}
           className="w-full h-[55%] bg-[#040629] flex items-center justify-center overflow-clip "
         >
-          {/* <span>Preview of camera</span> */}
-          <video ref={videoRef} autoPlay className=" w-full h-full" />
+          <video
+            ref={videoRef}
+            autoPlay
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          >
+            <track kind="captions" />
+          </video>
         </div>
+
+        <div
+          style={uploadBox}
+          className=" cursor-pointer m-auto w-[50%] h-[40%] mt-5 bg-[#040629] flex items-center justify-center "
+          onClick={handleDivClick}
+        >
+          {file ? (
+            <img
+              src={fileUrl}
+              alt="Uploaded Thumbnail"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          ) : (
+            <span style={{ color: "white" }}>Upload Thumbnail</span>
+          )}
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileChange}
+          />
+        </div>
+
         <div className="pt-8">
           <div className="font-bold min-[1170px]:text-[28px] lg:text-[26px] md:text-[24px] text-[20px] text-white flex flex-col min-[1130px]:flex-row">
             <label htmlFor="title">Give the stream a title:</label>
