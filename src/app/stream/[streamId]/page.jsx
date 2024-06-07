@@ -10,6 +10,7 @@ import {
   ArrowLeft,
   SendBtn,
 } from "../../../../public/svgs";
+import "../../../lib/fonts.css"
 import { useRouter } from "next/navigation";
 import LoadingScreen from "@/app/loading";
 import Message from "./(components)/Message";
@@ -219,9 +220,6 @@ export default function Page({ params }) {
                       }}
                       >
                         <Share />
-                      </div>
-                      <div className="rounded-full sm:w-9 sm:h-9 w-8 h-8 max-xs:w-9 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer">
-                        <ThreeDots />
                       </div>
                       <div className="rounded-full sm:w-36 sm:h-9 w-28 h-8 max-xs:w-36 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-[#020317] text-xl font-semibold flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer">
                         Subscribe

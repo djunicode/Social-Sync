@@ -6,6 +6,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { generateRandomColor } from "@/lib/utils";
+import "../../lib/fonts.css"
 
 const color = generateRandomColor()
 import AWSHelper from "@/lib/awsHelper";
