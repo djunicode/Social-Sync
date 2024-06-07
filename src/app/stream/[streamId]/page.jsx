@@ -179,8 +179,11 @@ export default function Page({ params }) {
           <div className="mt-9 md:pl-16 md:pr-16 sm:pl-12 sm:pr-12 xs:pl-8 xs:pr-8 pl-4 pr-4 pt-1 h-5/6 ">
             <div className="lg:flex justify-between lg:h-full">
               <div className="lg:w-[64.5%]">
-                <div style={streamBox} className="lg:h-5/6 sm:h-[50vh] xs:h-[45vh] h-[35vh] relative">
-                  <Call channelName={params.streamId} AppID={"8a19575fdd7e4b2a93fcf5a01b9539aa"} type={(user && streamInfo && (streamInfo.userUserId === user.userId)?"host":"audience")} />
+                <div style={streamBox} className="lg:h-5/6 sm:h-[50vh] xs:h-[45vh] h-[35vh] overflow-clip relative">
+                  {streamInfo&&streamInfo.storageUrl?
+                  <video controls autoPlay src={streamInfo.storageUrl} className=" w-full h-full  rounded-lg overflow-clip" />
+                  :<Call channelName={params.streamId} AppID={"8a19575fdd7e4b2a93fcf5a01b9539aa"} type={(user && streamInfo && (streamInfo.userUserId === user.userId)?"host":"audience")} />
+                  }
                 </div>
                 <div className="h-2/6 p-2 mt-2">
                   <div>
@@ -210,7 +213,12 @@ export default function Page({ params }) {
                           {streamInfo._count.Vote}
                         </span>
                       </div>
-                      <div className="rounded-full sm:w-9 sm:h-9 w-8 h-8 max-xs:w-9 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer">
+                      <div className="rounded-full sm:w-9 sm:h-9 w-8 h-8 max-xs:w-9 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer"
+                      onClick={()=>{
+                        navigator.clipboard.writeText(window.location.href)
+                        toast("Share link copied to clipboard")
+                      }}
+                      >
                         <Share />
                       </div>
                       <div className="rounded-full sm:w-36 sm:h-9 w-28 h-8 max-xs:w-36 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-[#020317] text-xl font-semibold flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer">
@@ -229,7 +237,7 @@ export default function Page({ params }) {
                 </div>
               </div>
               <div className="lg:w-[31.5%] flex flex-col gap-5"> 
-              {(user && streamInfo && (streamInfo.userUserId === user.userId))?<button onClick={handleEnd} className=" py-3 px-6 rounded-xl w-full bg-red-500 hover:bg-red-600 text-white text-lg font-semibold">End Stream</button>:<></>}
+              {(user && streamInfo && (streamInfo.userUserId === user.userId) && !streamInfo.storageUrl)?<button onClick={handleEnd} className=" py-3 px-6 rounded-xl w-full bg-red-500 hover:bg-red-600 text-white text-lg font-semibold">End Stream</button>:<></>}
                 <div className="lg:h-full h-[75vh] border-[3px] rounded-3xl border-[#ffffff] bg-[#2E2F3F] bg-opacity-60 border-opacity-30 p-2 pr-3 pl-3 relative">
                   <div className="text-2xl font-bold leading-7 text-[#FF8E00] text-center m-2">
                     Live chat

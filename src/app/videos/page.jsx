@@ -88,8 +88,8 @@ export default function SidebarWithSearch() {
             </h2>
           </div>
           <div className="grid grid-cols-3 gap-10">
-            {data.map((item, index) => (
-              <>
+            {data.map((item, idx) => (
+              <div key={`video-${idx}`}>
                 <div className="bg-gray-800 rounded-lg ">
                   <div className="rounded-lg overflow-hidden mb-3">
                     <img
@@ -118,7 +118,7 @@ export default function SidebarWithSearch() {
                     </p>
                   </div>
                 </div>
-              </>
+              </div>
             ))}
           </div>
           <hr className="w-1/2 mx-auto my-5 border-0 h-px bg-slate-500" />

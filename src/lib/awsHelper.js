@@ -4,16 +4,17 @@ import { v4 as uuidv4 } from 'uuid';
 const accessKeyId = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID
 const secretAccessKey = process.env.NEXT_PUBLIC_AWS_SECRET_KEY
 let credentials = {
-    accessKeyId,
-    secretAccessKey,
-  }
-  const folder = "unicode/social-sync"
-  const region = "ap-south-1"
-  const bucket = "vaxadtest"
-  const client = new S3Client({
-    region: region,
-    credentials: credentials
-  })
+  accessKeyId,
+  secretAccessKey,
+};
+const folder = "unicode/social-sync";
+const region = "ap-south-1";
+const bucket = "vaxadtest";
+const client = new S3Client({
+  region: region,
+  credentials: credentials,
+});
+
 
 const AWSHelper = {
     uploadVideoDirect: async function(file, userName) {

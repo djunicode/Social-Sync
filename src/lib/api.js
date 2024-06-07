@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const url = process.env.NEXT_PUBLIC_API_URL
+export const url = process.env.NEXT_PUBLIC_API_URL
 
 export const apiHandler = {
     login: async ({ nameEmail, password }) => {
