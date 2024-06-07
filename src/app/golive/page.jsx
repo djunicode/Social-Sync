@@ -10,7 +10,7 @@ import "../../lib/fonts.css"
 
 const color = generateRandomColor()
 import AWSHelper from "@/lib/awsHelper";
-import useStore from "@/lib/zustand";
+import useStore from "@/lib/zustand"; 
 
 export default function Page() {
   const [title, setTitle] = useState("");
@@ -103,7 +103,7 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="bg-[#020317] w-screen h-screen flex flex-col md:flex-row">
+    <div className="bg-[#020317] w-[100%] h-screen flex flex-col md:flex-row">
       <div className="md:w-2/12 pl-5 pt-10 w-full">
         <SocialSync />
       </div>

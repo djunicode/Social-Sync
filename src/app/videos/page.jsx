@@ -103,7 +103,7 @@ export default function SidebarWithSearch() {
                   </h3>
                   <div className="flex items-center ml-3 mb-2">
                     <img
-                      src=""
+                      src="https://i0.wp.com/vssmn.org/wp-content/uploads/2018/12/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png?fit=860%2C681&ssl=1"
                       alt="Profile"
                       className="w-8 h-8 rounded-full mr-2"
                     />

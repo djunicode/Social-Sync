@@ -147,7 +147,7 @@ export default function Page() {
         <div className="lg:w-[500px] w-[80%] h-[400px] text-center lg:text-start  lg:text-5xl text-3xl font-bold flex items-center rounded-xl">
         Super-chat functionality for monetization of content for creators
         </div>
-        <div className="lg:w-[500px] w-[80%] h-[400px] rounded-xl">
+        <div className="lg:w-[500px] w-[80%] h-[400px] rounded-xl flex justify-center items-center">
         <Image
         style={imageCss}
         src="/superchat.png" // Path to your image in the public directory
@@ -161,7 +161,7 @@ export default function Page() {
       {/* Info 3 */}
 
       <div className="flex justify-evenly pt-[17vh] h-[80vh]  min-w-[calc(100vw - 7px)] lg:flex-row flex-col items-center">
-        <div className="lg:w-[500px] w-[80%] h-[400px]  rounded-xl">
+        <div className="lg:w-[500px] w-[80%] h-[400px]  rounded-xl flex justify-center items-center">
         <Image
         style={imageCss}
         src="/recommendation.png" // Path to your image in the public directory
