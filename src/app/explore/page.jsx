@@ -29,7 +29,7 @@ export default function ExplorePage() {
       const streams = streamDetails.map((response) => response.data);
       console.log(streams);
       setStreams1(streams);
-      const resp1 = await axios.get(`${url}/api/subscriptions/my`, {
+      const resp1 = await axios.get(`${url}/api/subscriptions/myStreams`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       const resp2 = await axios.get(`${url}/api/user/all`, {

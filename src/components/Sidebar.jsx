@@ -37,7 +37,7 @@ const Sidebar = memo(() => {
   const getData = async () => {
     try {
       let token = localStorage.getItem("token");
-      const res = await axios.get(`${url}/api/subscriptions/my`, {
+      const res = await axios.get(`${url}/api/subscriptions/myStreams`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res && res.data) {

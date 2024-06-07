@@ -3,7 +3,7 @@ import { generateRandomColor } from "@/lib/utils";
 
 const color = generateRandomColor();
 
-export default function Page({ firstName, lastName, username, pfp, userId }) {
+export default function Page({ firstName, lastName, username, userId }) {
   return (
     <div className="flex flex-col items-center mt-4">
       <div
