@@ -3,8 +3,8 @@ import React from "react";
 import { generateRandomColor } from "@/lib/utils";
 import Link from "next/link";
 
-const color = generateRandomColor()
 const Cards = ({ thumbnail, title, username, views, date, streamId, userId }) => {
+  const color = generateRandomColor()
   return (
     <div className="m-2">
       <div className="bg-gray-800 rounded-lg ">

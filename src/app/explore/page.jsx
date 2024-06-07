@@ -30,6 +30,14 @@ export default function ExplorePage() {
       const streams = streamDetails.map((response) => response.data);
       console.log(streams);
       setStreams1(streams);
+      if (streams.length === 0) {
+        const s1 = await axios.get(`${url}/api/stream/all`);
+        let s1data = [];
+        s1data.push(s1.data?.[0]);
+        s1data.push(s1.data?.[1]);
+        s1data.push(s1.data?.[2]);
+        setStreams1(s1data);
+      }
       const resp1 = await axios.get(`${url}/api/subscriptions/myStreams`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
@@ -53,7 +61,7 @@ export default function ExplorePage() {
           }
         );
       });
-      const streamsPromises = streamIds.map(async sId => {
+      const streamsPromises = streamIds.map(async (sId) => {
         try {
           const response = await axios.get(`${url}/api/stream/${sId}`);
           return response.data;
@@ -63,9 +71,20 @@ export default function ExplorePage() {
         }
       });
       const liveStreamDetails = await Promise.all(streamsPromises);
-      const validLiveStreams = liveStreamDetails.filter(details => details !== null);
+      const validLiveStreams = liveStreamDetails.filter(
+        (details) => details !== null
+      );
       console.log(validLiveStreams);
       setStreams2(validLiveStreams);
+      if (!validLiveStreams || validLiveStreams.length === 0) {
+        const s2 = await axios.get(`${url}/api/stream/all`);
+        let s2data = [];
+        s2data.push(s2.data?.[3]);
+        s2data.push(s2.data?.[4]);
+        s2data.push(s2.data?.[5]);
+        setStreams2(s2data);
+        console.log(s2);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -130,7 +149,7 @@ export default function ExplorePage() {
           )}
           <hr className="w-1/2 mx-auto my-5 border-0 h-px bg-slate-500" />
           <h2 className="text-white text-xl mb-4 text-center">
-            Creators currently live from your subscriptions
+            Explore creators that are currently live
           </h2>
           {streams2 && streams2.length !== 0 ? (
             <div className="grid screen:grid-cols-3 size1:grid-cols-2 max-md:grid-cols-2 max-sm:grid-cols-1 grid-cols-1 w-full">
