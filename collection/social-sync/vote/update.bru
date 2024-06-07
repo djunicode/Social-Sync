@@ -1,0 +1,22 @@
+meta {
+  name: update
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{URL}}/api/vote/update/96101f75-e7cb-417a-82bf-86e58234b8e4
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
+
+body:json {
+  {
+      "dislike":true,
+      "videoTimestamp":"2023-08-15T08:24:10.123Z"
+  }
+}

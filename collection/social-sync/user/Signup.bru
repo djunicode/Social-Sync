@@ -1,0 +1,22 @@
+meta {
+  name: Signup
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{URL}}/api/user/signup
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "email":"unicode@gmail.com",
+      "password":"unicode123",
+      "username":"unicode",
+      "dob": "Wed Mar 20 2024 21:50:23 GMT+0530",
+      "firstName": "Unicode",                     //optional
+      "lastName": ""                              //optional
+  }
+}

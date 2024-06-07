@@ -83,13 +83,14 @@ export async function getStream(request: FastifyRequest<{ Params: GetStreamParam
                     }
                 }
             }
-        })
+        }) 
+        if(!stream)return reply.status(404).send({error:"Stream not found!"})
         if(request.user){
             console.log("USER EXISTS")
             const streamView = await prisma.streamView.create({
                 data: {
                     userId: request.user.userId,
-                    streamId: request.params.streamId
+                    streamId: stream.streamId,
                 }
             });
         }else{

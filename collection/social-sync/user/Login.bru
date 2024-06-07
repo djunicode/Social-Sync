@@ -1,0 +1,23 @@
+meta {
+  name: Login
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{URL}}/api/user/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "emailUsername":"unicode",
+      "password":"unicode123"
+  }
+}
+
+tests {
+  const jsonData = pm.response.json();
+  bru.setEnvVar("TOKEN",jsonData.accessToken)
+}

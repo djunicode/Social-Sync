@@ -1,0 +1,23 @@
+meta {
+  name: createVote
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{URL}}/api/commentVote/
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
+
+body:json {
+  {
+      "videoTimestamp": "2023-07-15T08:24:10.123Z",
+      "commentCommentId": "3173a5e6-a8f5-4eec-ac47-1a864010d0de"
+  
+  }
+}

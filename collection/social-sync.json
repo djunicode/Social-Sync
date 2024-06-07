@@ -1,0 +1,994 @@
+{
+	"info": {
+		"_postman_id": "2a34b2f6-c5cc-4084-8960-b02b1d6046e8",
+		"name": "social-sync",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "33775262",
+		"_collection_link": "https://vaxads-utopia.postman.co/workspace/djunicode~3611cf3b-127a-45f5-9df5-acb83d495265/collection/33785124-2a34b2f6-c5cc-4084-8960-b02b1d6046e8?action=share&source=collection_link&creator=33775262"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"unicode@gmail.com\",\r\n    \"password\":\"unicode123\",\r\n    \"username\":\"unicode\",\r\n    \"dob\": \"Wed Mar 20 2024 21:50:23 GMT+0530\",\r\n    \"firstName\": \"Unicode\",                     //optional\r\n    \"lastName\": \"\"                              //optional\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/user/signup"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const jsonData = pm.response.json();\r",
+									"pm.environment.set(\"TOKEN\",jsonData.accessToken)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"emailUsername\":\"unicode\",\r\n    \"password\":\"unicode123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/user/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/user/b0d3839b-287b-4c47-8e0c-bf8caced8e28"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Whole User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"unicode@gmail.com\",\r\n    \"password\":\"unicode123\",\r\n    \"firstName\":\"DJ\",\r\n    \"username\":\"unicode\",\r\n    \"dob\": \"Wed Mar 20 2024 21:50:23 GMT+0530\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/user/"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{URL}}/api/user/"
+					},
+					"response": []
+				},
+				{
+					"name": "Me",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/user/me"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiMGQzODM5Yi0yODdiLTRjNDctOGUwYy1iZjhjYWNlZDhlMjgiLCJpYXQiOjE3MTA5NTg1NDl9.36Ql-cdxv5fWri9XYv-VHN4ZFcNXt2XZbd8-p_vODhQ"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/user/all?limit=10&page=0",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"all"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "optional"
+								},
+								{
+									"key": "page",
+									"value": "0",
+									"description": "optional"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "stream",
+			"item": [
+				{
+					"name": "create stream",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"thumbnailUrl\": \"testing url 2\",\r\n  \"startTimestamp\": \"2024-04-25T12:00:00Z\", \r\n  \"endTimestamp\": \"2024-04-25T14:00:00Z\",       //optional\r\n  \"storageUrl\": \"testing url 2\",                //optional\r\n  \"title\": \"test title 4\",\r\n  \"description\":\"test desc\"                     //optional\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/stream/"
+					},
+					"response": [
+						{
+							"name": "create stream",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"thumbnailUrl\": \"testing url 1\",\r\n  \"startTimestamp\": \"2024-03-25T12:00:00Z\",\r\n  \"title\": \"test title\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{URL}}/api/stream"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "content-length",
+									"value": "245"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 22 Mar 2024 16:52:35 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=72"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"streamId\": \"c2920e83-374c-41e7-a414-e0e2bbf1e6bc\",\n    \"thumbnailUrl\": \"testing url 1\",\n    \"startTimestamp\": \"2024-03-25T12:00:00.000Z\",\n    \"endTimestamp\": \"2024-03-25T14:00:00.000Z\",\n    \"title\": \"test title\",\n    \"storageUrl\": \"testing url 1\",\n    \"description\": \"\",\n    \"tags\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "get stream",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/stream/2c390524-acab-4479-8a28-f82ec80a36ec"
+					},
+					"response": []
+				},
+				{
+					"name": "get my streams",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/stream/my/"
+					},
+					"response": []
+				},
+				{
+					"name": "get all streams",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/stream/all"
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"thumbnailUrl\": \"testing url 1 updated\",\r\n  \"startTimestamp\": \"2024-03-25T12:00:00Z\", \r\n  \"endTimestamp\": \"2024-03-25T14:00:00Z\",       //optional\r\n  \"storageUrl\": \"testing url 1\",                //optional\r\n  \"title\": \"test title 2\",\r\n  \"description\":\"test desc\"                     //optional\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/stream/update/bacc7c15-9119-405d-9c1d-a9e3a816d845"
+					},
+					"response": [
+						{
+							"name": "update",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": " {\r\n    \"thumbnailUrl\": \"trialUrl to update\",\r\n    \"startTimestamp\": \"2024-03-25T12:00:00.000Z\",\r\n    \"endTimestamp\": \"2024-03-25T14:00:00.000Z\",\r\n    \"storageUrl\": \"trialUrl to update\",\r\n    \"title\": \"newStream\",\r\n    \"description\": null,\r\n    \"tags\": [\"testTag\"],\r\n    \"userUserId\": \"a5d35ac6-a62c-488d-b277-5e80dc5ffee2\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{URL}}/api/stream/update/2f5a8791-eec1-401c-9565-3a1db657c2e8"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "content-length",
+									"value": "254"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 22 Mar 2024 17:02:58 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=72"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"streamId\": \"c2920e83-374c-41e7-a414-e0e2bbf1e6bc\",\n    \"thumbnailUrl\": \"trialUrl to update\",\n    \"startTimestamp\": \"2024-03-25T12:00:00.000Z\",\n    \"endTimestamp\": \"2024-03-25T14:00:00.000Z\",\n    \"title\": \"newStream\",\n    \"storageUrl\": \"trialUrl to update\",\n    \"description\": \"\",\n    \"tags\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{URL}}/api/stream/delete/2f5a8791-eec1-401c-9565-3a1db657c2e8"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "vote",
+			"item": [
+				{
+					"name": "createVote",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dislike\":true,                                          //optional (liked by default on creation !liked on updation)\r\n    \"videoTimestamp\":\"2023-07-15T08:24:10.123Z\",\r\n    \"streamStreamId\":\"2c390524-acab-4479-8a28-f82ec80a36ec\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/vote/"
+					},
+					"response": [
+						{
+							"name": "createVote",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\":true,\r\n    \"videoTimestamp\":\"2023-07-15T08:24:10.123Z\",\r\n    \"userUserId\":\"31d91ded-f9f3-473c-b022-26881a9b927a\",\r\n    \"streamStreamId\":\"c2920e83-374c-41e7-a414-e0e2bbf1e6bc\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{URL}}/api/vote/newVote"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "content-length",
+									"value": "165"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 22 Mar 2024 20:11:19 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=72"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"streamStreamId\": \"c2920e83-374c-41e7-a414-e0e2bbf1e6bc\",\n    \"userUserId\": \"31d91ded-f9f3-473c-b022-26881a9b927a\",\n    \"type\": true,\n    \"videoTimestamp\": \"2023-07-15T08:24:10.123Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "get all votes by a user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/vote/my"
+					},
+					"response": []
+				},
+				{
+					"name": "get all votes of a stream",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMWQ5MWRlZC1mOWYzLTQ3M2MtYjAyMi0yNjg4MWE5YjkyN2EiLCJpYXQiOjE3MTExMzgxNzV9.OagMnzNl4Jsk4nCBAcSb-sf81Dfx7ZpRHOOvDdz1J18"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/vote/2c390524-acab-4479-8a28-f82ec80a36ec"
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dislike\":true,\r\n    \"videoTimestamp\":\"2023-08-15T08:24:10.123Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/vote/update/96101f75-e7cb-417a-82bf-86e58234b8e4"
+					},
+					"response": []
+				},
+				{
+					"name": "del vote",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{URL}}/api/vote/delete/96101f75-e7cb-417a-82bf-86e58234b8e4"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "comment vote",
+			"item": [
+				{
+					"name": "createVote",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"videoTimestamp\": \"2023-07-15T08:24:10.123Z\",\r\n    \"commentCommentId\": \"3173a5e6-a8f5-4eec-ac47-1a864010d0de\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/commentVote/"
+					},
+					"response": [
+						{
+							"name": "createVote",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\":true,\r\n    \"videoTimestamp\":\"2023-07-15T08:24:10.123Z\",\r\n    \"userUserId\":\"31d91ded-f9f3-473c-b022-26881a9b927a\",\r\n    \"streamStreamId\":\"c2920e83-374c-41e7-a414-e0e2bbf1e6bc\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{URL}}/api/vote/newVote"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "content-length",
+									"value": "165"
+								},
+								{
+									"key": "Date",
+									"value": "Fri, 22 Mar 2024 20:11:19 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=72"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"streamStreamId\": \"c2920e83-374c-41e7-a414-e0e2bbf1e6bc\",\n    \"userUserId\": \"31d91ded-f9f3-473c-b022-26881a9b927a\",\n    \"type\": true,\n    \"videoTimestamp\": \"2023-07-15T08:24:10.123Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "get all votes by a user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/commentVote/my"
+					},
+					"response": []
+				},
+				{
+					"name": "get all votes of a stream",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMWQ5MWRlZC1mOWYzLTQ3M2MtYjAyMi0yNjg4MWE5YjkyN2EiLCJpYXQiOjE3MTExMzgxNzV9.OagMnzNl4Jsk4nCBAcSb-sf81Dfx7ZpRHOOvDdz1J18"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/vote/96101f75-e7cb-417a-82bf-86e58234b8e4"
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dislike\":false,\r\n    \"videoTimestamp\":\"2023-08-15T08:24:10.123Z\",\r\n    \"userUserId\":\"31d91ded-f9f3-473c-b022-26881a9b927a\",\r\n    \"streamStreamId\":\"c2920e83-374c-41e7-a414-e0e2bbf1e6bc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/vote/update/96101f75-e7cb-417a-82bf-86e58234b8e4"
+					},
+					"response": []
+				},
+				{
+					"name": "del vote",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{URL}}/api/vote/delete/96101f75-e7cb-417a-82bf-86e58234b8e4"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "comment",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\":\"testing comment 5\",\r\n    \"videoTimestamp\":\"2023-07-15T08:24:10.123Z\",\r\n    \"streamStreamId\":\"2c390524-acab-4479-8a28-f82ec80a36ec\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/comment/newComment"
+					},
+					"response": [
+						{
+							"name": "comment 3",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\":\"testing comment 3\",\r\n    \"videoTimestamp\":\"2023-07-15T08:24:10.123Z\",\r\n    \"userUserId\":\"31d91ded-f9f3-473c-b022-26881a9b927a\",\r\n    \"streamStreamId\":\"c2920e83-374c-41e7-a414-e0e2bbf1e6bc\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{URL}}/api/comment/newComment"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "content-length",
+									"value": "234"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 23 Mar 2024 19:10:32 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=72"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"content\": \"testing comment 3\",\n    \"videoTimestamp\": \"2023-07-15T08:24:10.123Z\",\n    \"streamStreamId\": \"c2920e83-374c-41e7-a414-e0e2bbf1e6bc\",\n    \"userUserId\": \"31d91ded-f9f3-473c-b022-26881a9b927a\",\n    \"commentId\": \"b262e524-000e-4ab6-add0-376d0498bd85\"\n}"
+						},
+						{
+							"name": "comment 4",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\":\"testing comment 4\",\r\n    \"videoTimestamp\":\"2023-07-15T08:24:10.123Z\",\r\n    \"userUserId\":\"31d91ded-f9f3-473c-b022-26881a9b927a\",\r\n    \"streamStreamId\":\"c2920e83-374c-41e7-a414-e0e2bbf1e6bc\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{URL}}/api/comment/newComment"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "content-length",
+									"value": "234"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 23 Mar 2024 19:11:23 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=72"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"content\": \"testing comment 4\",\n    \"videoTimestamp\": \"2023-07-15T08:24:10.123Z\",\n    \"streamStreamId\": \"c2920e83-374c-41e7-a414-e0e2bbf1e6bc\",\n    \"userUserId\": \"31d91ded-f9f3-473c-b022-26881a9b927a\",\n    \"commentId\": \"9adfe125-ba1a-43e8-964a-6a51845a1176\"\n}"
+						},
+						{
+							"name": "comment 5",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\":\"testing comment 5\",\r\n    \"videoTimestamp\":\"2023-07-15T08:24:10.123Z\",\r\n    \"userUserId\":\"1bbbc7fc-1a9b-457d-b37e-1eeda46f7a3f\",\r\n    \"streamStreamId\":\"c2920e83-374c-41e7-a414-e0e2bbf1e6bc\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{URL}}/api/comment/newComment"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "content-length",
+									"value": "234"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 23 Mar 2024 19:14:32 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=72"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"content\": \"testing comment 5\",\n    \"videoTimestamp\": \"2023-07-15T08:24:10.123Z\",\n    \"streamStreamId\": \"c2920e83-374c-41e7-a414-e0e2bbf1e6bc\",\n    \"userUserId\": \"1bbbc7fc-1a9b-457d-b37e-1eeda46f7a3f\",\n    \"commentId\": \"d32483a7-9332-4ac1-a70d-4ca31777b361\"\n}"
+						}
+					]
+				},
+				{
+					"name": "user get all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/comment/my"
+					},
+					"response": []
+				},
+				{
+					"name": "stream get all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/comment/2c390524-acab-4479-8a28-f82ec80a36ec"
+					},
+					"response": []
+				},
+				{
+					"name": "user's comments on a specific stream",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "{{TOKEN}}"
+							}
+						},
+						"method": "GET",
+						"header": [],
+						"url": "{{URL}}/api/comment/my/2c390524-acab-4479-8a28-f82ec80a36ec/"
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMWQ5MWRlZC1mOWYzLTQ3M2MtYjAyMi0yNjg4MWE5YjkyN2EiLCJpYXQiOjE3MTEyMjE4OTV9.D_WdG0FLMQIrcFIOQgKzjtios0bNnB00uTtYPaXxQic"
+							}
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"content\":\"testing update comment\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{URL}}/api/comment/update/d32483a7-9332-4ac1-a70d-4ca31777b361"
+					},
+					"response": [
+						{
+							"name": "New Request",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\":\"testing update comment\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{URL}}/api/comment/update/d32483a7-9332-4ac1-a70d-4ca31777b361"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "content-type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "content-length",
+									"value": "239"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 23 Mar 2024 19:29:36 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=72"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"content\": \"testing update comment\",\n    \"videoTimestamp\": \"2023-07-15T08:24:10.123Z\",\n    \"streamStreamId\": \"c2920e83-374c-41e7-a414-e0e2bbf1e6bc\",\n    \"userUserId\": \"1bbbc7fc-1a9b-457d-b37e-1eeda46f7a3f\",\n    \"commentId\": \"d32483a7-9332-4ac1-a70d-4ca31777b361\"\n}"
+						}
+					]
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMWQ5MWRlZC1mOWYzLTQ3M2MtYjAyMi0yNjg4MWE5YjkyN2EiLCJpYXQiOjE3MTEyMjE4OTV9.D_WdG0FLMQIrcFIOQgKzjtios0bNnB00uTtYPaXxQic"
+							}
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{URL}}/api/comment/delete/9adfe125-ba1a-43e8-964a-6a51845a1176"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "socket",
+			"item": []
+		},
+		{
+			"name": "Healthcheck",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "{{URL}}"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "http://localhost:5000",
+			"type": "string",
+			"disabled": true
+		},
+		{
+			"key": "TOKEN",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1M2Y4ZjY1MC05MTBjLTQ5NWYtYWNiYS1kMDY1ODRmNWZlYjMiLCJpYXQiOjE3MTQ1Mzc0MzZ9.rrBMFrhrBCwmPdCdhYMHoegfDJrSmCNQJvH0XYM3Cw0"
+		},
+		{
+			"key": "URL",
+			"value": "https://social-sync-u7ir.onrender.com",
+			"type": "string"
+		}
+	]
+}
