@@ -11,12 +11,12 @@ import { createStreamView } from "../streamView/streamViewController";
 
 export async function createStream(request: FastifyRequest<{ Body: CreateStreamInput }>, reply: FastifyReply) {
     const input = request.body;
+    console.log(input)
     try {
         const stream = await prisma.stream.create({
             data: {
                 thumbnailUrl: input.thumbnailUrl,
                 startTimestamp: new Date(input.startTimestamp),
-                endTimestamp: new Date(input.endTimestamp?input.endTimestamp:input.startTimestamp), // If endTimestamp is not provided, set it to the current date (now)
                 storageUrl: input.storageUrl, 
                 title: input.title,
                 description: input.description,
@@ -38,10 +38,9 @@ export async function getMyStream(request: FastifyRequest<{Querystring:Paginatio
             take: request.query.limit,
             skip: request.query.limit * (request.query.page),
             where: {
-                userUserId: request.user.userId
+                userUserId: request.user.userId,
             }
         })
-
         return reply.status(200).send(streams);
     } catch (error) {
         console.log(error);
@@ -53,7 +52,8 @@ export async function getStream(request: FastifyRequest<{ Params: GetStreamParam
     try {
         const stream = await prisma.stream.findFirst({
             where: {
-                streamId: request.params.streamId
+                streamId: request.params.streamId,
+                endTimestamp:null
             },
             select: {
                 streamId:true,
@@ -113,7 +113,8 @@ export async function getStreamBySearch(request: FastifyRequest<{ Params: GetStr
                 },
                 title:{
                     contains: request.query.title
-                }
+                },
+                endTimestamp:null
             },
             select: {
                 streamId:true,
@@ -145,7 +146,8 @@ export async function getStreamByTags(request: FastifyRequest<{ Params: GetStrea
             where:{
                 tags:{
                     hasSome: request.params.tags
-                }
+                },
+                endTimestamp:null
             },
             select: {
                 streamId:true,
@@ -174,6 +176,9 @@ export async function getStreamByTags(request: FastifyRequest<{ Params: GetStrea
 export async function getStreams(request: FastifyRequest<{ Querystring: PaginationQuery }>, reply: FastifyReply) {
     try {
         const streams = await prisma.stream.findMany({
+            where:{
+                endTimestamp:null
+            },
             take: request.query.limit,
             skip: request.query.limit * (request.query.page),
             select: {
@@ -225,7 +230,7 @@ export async function updateStream(request: FastifyRequest<{ Params: {streamId: 
             data: {
                 thumbnailUrl: input.thumbnailUrl,
                 startTimestamp: new Date(input.startTimestamp),
-                endTimestamp: new Date(input.endTimestamp?input.endTimestamp:input.startTimestamp),
+                endTimestamp: input.endTimestamp?new Date(input.endTimestamp):null,
                 storageUrl: input.storageUrl,
                 title: input.title,
                 description: input.description,
