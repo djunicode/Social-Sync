@@ -245,10 +245,15 @@ export default function Page({ params }) {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const resviewers = await axios.get(
-        `${url}/api/streamView/viewers/${params?.streamId}`
-      );
+      try{
+
+        const resviewers = await axios.get(
+          `${url}/api/streamView/viewers/${params?.streamId}`
+        );
       setViewers(resviewers.data.liveViewers);
+      } catch(error){
+        console.log(error)
+      }
     }, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -351,8 +356,7 @@ export default function Page({ params }) {
                   </div>
                   <div className="text-[#867D7D] mt-1">
                     <p className="font-semibold sm:text-base text-sm leading-4">
-                      {/* {streamInfo._count.StreamView} views */}
-                      {viewers} users viewing
+                      {streamInfo?._count?.StreamView || viewers} views
                     </p>
                     <p className="font-medium sm:text-lg text-base">
                       {streamInfo.description}
