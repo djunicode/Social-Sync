@@ -47,7 +47,7 @@ export async function getCreatorSubscribers(request: FastifyRequest<{ Querystrin
     }
 }
 
-export async function getUserSubscriptions(request: FastifyRequest<{ Querystring: PaginationQuery }>, reply: FastifyReply) {
+export async function getUserSubscriptionsLive(request: FastifyRequest<{ Querystring: PaginationQuery }>, reply: FastifyReply) {
     try {
         const subscriptons = await prisma.subscriptions.findMany({
             take: request.query.limit,
@@ -60,6 +60,76 @@ export async function getUserSubscriptions(request: FastifyRequest<{ Querystring
                 createdAt:true,
                 creatorUserId:true,
                 streamStreamId:true,
+                User_Subscriptions_creatorUserIdToUser: {
+                    select: {
+                        Stream: {
+                            where:{
+                                storageUrl:""
+                            },
+                            select: {
+                                streamId: true,
+                                title: true,
+                                startTimestamp:true,
+                                StreamView:true
+                            }
+                        },
+                        userId: true,
+                        username: true,                       
+                    }
+                },
+                Stream: {
+                    select: {
+                        streamId: true,
+                        title: true,
+                        endTimestamp: true
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        })
+        return reply.status(200).send(subscriptons);
+    } catch (error) {
+        console.log(error);
+        return reply.status(500).send(error);
+    }
+}
+
+export async function getUserSubscriptionsStreams(request: FastifyRequest<{ Querystring: PaginationQuery }>, reply: FastifyReply) {
+    try {
+        const subscriptons = await prisma.subscriptions.findMany({
+            take: request.query.limit,
+            skip: request.query.limit * (request.query.page),
+            where:{
+                userUserId:request.user.userId
+            },
+            select: {
+                userUserId:true,
+                createdAt:true,
+                creatorUserId:true,
+                streamStreamId:true,
+                User_Subscriptions_creatorUserIdToUser: {
+                    select: {
+                        Stream: {
+                            select: {
+                                streamId: true,
+                                title: true,
+                                startTimestamp:true,
+                                StreamView:true
+                            }
+                        },
+                        userId: true,
+                        username: true,                       
+                    }
+                },
+                Stream: {
+                    select: {
+                        streamId: true,
+                        title: true,
+                        endTimestamp: true
+                    }
+                }
             },
             orderBy: {
                 createdAt: 'desc'

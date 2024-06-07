@@ -108,13 +108,18 @@ export async function getStreamBySearch(request: FastifyRequest<{ Params: GetStr
     try{
         const stream = await prisma.stream.findMany({
             where:{
-                description:{
-                    contains: request.params.description
-                },
-                title:{
-                    contains: request.query.title
-                },
-                endTimestamp:null
+                OR: [
+                    {
+                        title: {
+                            contains: request.params.searchWord
+                        }
+                    },
+                    {
+                        description: {
+                            contains: request.params.searchWord
+                        }
+                    }
+                ]
             },
             select: {
                 streamId:true,
@@ -181,6 +186,50 @@ export async function getStreams(request: FastifyRequest<{ Querystring: Paginati
             },
             take: request.query.limit,
             skip: request.query.limit * (request.query.page),
+            select: {
+                streamId:true,
+                thumbnailUrl:true,
+                startTimestamp:true,
+                endTimestamp:true,
+                storageUrl:true,
+                title:true,
+                description:true,
+                tags:true,
+                userUserId:true,
+                creator:{
+                    select:{
+                        username:true,
+                        _count:{
+                            select:{
+                                CreatorSubscribers:true
+                            }
+                        }
+                    }
+                },
+                _count:{
+                    select:{
+                        Vote:true,
+                        Comment:true,
+                        StreamView:true
+                    }
+                }
+            }
+        })
+        return reply.status(200).send(streams);
+    } catch (error) {
+        console.log(error);
+        return reply.status(500).send(error);
+    }
+}
+
+export async function getLiveStreams(request: FastifyRequest<{ Querystring: PaginationQuery }>, reply: FastifyReply) {
+    try {
+        const streams = await prisma.stream.findMany({
+            take: request.query.limit,
+            skip: request.query.limit * (request.query.page),
+            where:{
+                storageUrl:""
+            },
             select: {
                 streamId:true,
                 thumbnailUrl:true,

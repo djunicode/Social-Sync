@@ -40,7 +40,7 @@ export async function getMyStreamExit(request: FastifyRequest<{Querystring:Pagin
                 createdAt:true,
                 streamStreamId:true,
                 userUserId:true,
-                videoTimestamp:true
+                //videoTimestamp:true
             },
             orderBy: {
                 createdAt: 'desc'

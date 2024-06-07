@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { $ref } from "./subscriptionsSchema";
-import { createSubscription, deleteSubscription , getUserSubscriptions , getCreatorSubscribers , getStreamSubscribers } from "./subscriptionsControllers";
+import { createSubscription, deleteSubscription , getUserSubscriptionsLive, getUserSubscriptionsStreams , getCreatorSubscribers , getStreamSubscribers } from "./subscriptionsControllers";
 import { $globalRef } from "../../utils/globalSchemas";
 
 async function subscriptionsRoutes(app: FastifyInstance) {
@@ -19,14 +19,24 @@ async function subscriptionsRoutes(app: FastifyInstance) {
   );
 
 // get my votes route
-  app.get("/my",
+  app.get("/myLive",
     {
       preHandler: [app.authenticate],
       schema: {
         querystring: $globalRef("paginationQuerySchema"),
       }
   },
-    getUserSubscriptions
+    getUserSubscriptionsLive
+  );
+
+  app.get("/myStreams",
+    {
+      preHandler: [app.authenticate],
+      schema: {
+        querystring: $globalRef("paginationQuerySchema"),
+      }
+  },
+    getUserSubscriptionsStreams
   );
 
   // get votes by stream id route

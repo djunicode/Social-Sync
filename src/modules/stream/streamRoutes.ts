@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { $ref } from "./streamSchema";
-import { createStream, deleteStream , getStream , getStreams , getMyStream , updateStream, getMyLikedStreams, getMyDislikedStreams,getStreamBySearch, getStreamByTags } from "./streamControllers";
+import { createStream, deleteStream , getStream , getStreams,getLiveStreams , getMyStream , updateStream, getMyLikedStreams, getMyDislikedStreams,getStreamBySearch, getStreamByTags } from "./streamControllers";
 import { $globalRef } from "../../utils/globalSchemas";
 
 async function streamRoutes(app: FastifyInstance) {
@@ -39,7 +39,6 @@ async function streamRoutes(app: FastifyInstance) {
     getStream
   );
 
-  // get all streams route
   app.get("/all", {
     schema: {
       querystring: $globalRef("paginationQuerySchema"),
@@ -48,8 +47,17 @@ async function streamRoutes(app: FastifyInstance) {
     getStreams
   );
 
+  // get all streams route
+  app.get("/allLive", {
+    schema: {
+      querystring: $globalRef("paginationQuerySchema"),
+    }
+  },
+    getLiveStreams
+  );
+
   //get stream from partial text search of description and title(query)
-  app.get("/search/:description", {
+  app.get("/search/:searchWord", {
     preHandler: [app.optionalAuth],
     schema: {
       params: $ref("getStreamParamsSchema"),

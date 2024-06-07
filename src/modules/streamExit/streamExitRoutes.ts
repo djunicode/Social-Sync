@@ -5,7 +5,7 @@ import { $globalRef } from "../../utils/globalSchemas";
 
 async function streamExitRoutes(app: FastifyInstance) {
     //create streamExit route
-  app.post("/",
+  app.post("/create",
     {
       preHandler: [app.authenticate],
       schema:
