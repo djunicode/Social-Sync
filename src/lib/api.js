@@ -79,5 +79,30 @@ export const apiHandler = {
             console.log("ERROR IN GETTTING LIVE COMMENTS" + error)
             return { error }
         }
-    }
+    },
+    endStream: async ({ endTimestamp, streamId, streamInfo }) => {
+        try {
+            const token = localStorage.getItem("token")
+            if(!token)return {error:"Unauthenticated!"}
+            if (!endTimestamp) return { error: "Please fill in all fields" }
+            const {endTimestamp:x, ...rest} = streamInfo;
+            const res = await axios.put(`${url}/api/stream/update/${streamId}`,
+                {
+                    endTimestamp,
+                    ...rest
+                },
+                {
+                    headers:{
+                        Authorization: `Bearer ${token}`
+                    },
+                    validateStatus: (status) => (status >= 200 && status < 401)
+                }
+            )
+            if (!res) return { error: "Something went wrong" }
+            return res.data
+        } catch (error) {
+            console.log("ERROR IN ENDING STREAM" + error)
+            return { error }
+        }
+    },
 }
