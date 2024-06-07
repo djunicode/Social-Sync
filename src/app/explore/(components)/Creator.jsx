@@ -1,8 +1,8 @@
 "use client";
 import { generateRandomColor } from "@/lib/utils";
 
-const color = generateRandomColor();
 export default function Page({ firstName, lastName, username, userId }) {
+  const color = generateRandomColor();
   return (
     <div className="flex flex-col items-center mt-4 ">
       <div

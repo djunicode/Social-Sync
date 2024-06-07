@@ -192,11 +192,19 @@ export default function Page({ params }) {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (subscribed) {
-        const res = axios.delete(
+        const res = await axios.delete(
           `${url}/api/subscriptions/delete/${streamInfo.userUserId}`,
-          {},
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        console.log(res);
+        if(res && res.data){
+          setSubscribed(false);
+        }
+        else{
+          if(res.response.data.message === "Internal Server Error"){
+            setSubscribed(false);
+          }
+        }
       } else {
         const res = await axios.post(
           `${url}/api/subscriptions/`,
@@ -207,6 +215,7 @@ export default function Page({ params }) {
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        console.log(res)
         if (res && res.data) {
           setSubscribed(true);
         }
@@ -236,10 +245,15 @@ export default function Page({ params }) {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const resviewers = await axios.get(
-        `${url}/api/streamView/viewers/${params?.streamId}`
-      );
+      try{
+
+        const resviewers = await axios.get(
+          `${url}/api/streamView/viewers/${params?.streamId}`
+        );
       setViewers(resviewers.data.liveViewers);
+      } catch(error){
+        console.log(error)
+      }
     }, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -342,8 +356,7 @@ export default function Page({ params }) {
                   </div>
                   <div className="text-[#867D7D] mt-1">
                     <p className="font-semibold sm:text-base text-sm leading-4">
-                      {/* {streamInfo._count.StreamView} views */}
-                      {viewers} users viewing
+                      {streamInfo?._count?.StreamView || viewers} views
                     </p>
                     <p className="font-medium sm:text-lg text-base">
                       {streamInfo.description}

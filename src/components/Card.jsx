@@ -1,9 +1,10 @@
 "use client";
 import React from "react";
 import { generateRandomColor } from "@/lib/utils";
+import Link from "next/link";
 
-const color = generateRandomColor()
 const Cards = ({ thumbnail, title, username, views, date, streamId, userId }) => {
+  const color = generateRandomColor()
   return (
     <div className="m-2">
       <div className="bg-gray-800 rounded-lg ">
@@ -32,7 +33,7 @@ const Cards = ({ thumbnail, title, username, views, date, streamId, userId }) =>
               {username ? username[0].toUpperCase() : "U"}
             </h2>
           </div>
-          <a href={`/profile/${userId}`} className="text-white text-sm">{username || "@user123"}</a>
+          <Link href={`/profile/${userId}`} className="text-white text-sm">{username || "@user123"}</Link>
         </div>
 
         <p className="text-gray-400 ml-3 mb-3 text-sm">
