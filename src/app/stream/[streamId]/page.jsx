@@ -146,6 +146,17 @@ export default function Page({ params }) {
     getPreviousMessages(params.streamId);
   }, [params]);
 
+  
+
+  async function handleEnd(){
+    if(!(user && streamInfo && (streamInfo.userUserId === user.userId)))return
+    const res = await apiHandler.endStream({endTimestamp:(new Date(Date.now()).toISOString()), streamId:streamInfo.streamId, streamInfo:streamInfo})
+    console.log(res)
+    if(res.error) return toast(res.error)
+    toast("Stream ended!")
+    window.location.href="/videos";
+  }
+
   return (
     <>
       {render && streamInfo && creatorInfo ? (
@@ -167,7 +178,7 @@ export default function Page({ params }) {
           <div className="mt-9 md:pl-16 md:pr-16 sm:pl-12 sm:pr-12 xs:pl-8 xs:pr-8 pl-4 pr-4 pt-1 h-5/6 ">
             <div className="lg:flex justify-between lg:h-full">
               <div className="lg:w-[64.5%]">
-                <div style={streamBox} className="lg:h-5/6 sm:h-[50vh] xs:h-[45vh] h-[35vh]">
+                <div style={streamBox} className="lg:h-5/6 sm:h-[50vh] xs:h-[45vh] h-[35vh] relative">
                   <Call channelName={params.streamId} AppID={"8a19575fdd7e4b2a93fcf5a01b9539aa"} type={(user && streamInfo && (streamInfo.userUserId === user.userId)?"host":"audience")} />
                 </div>
                 <div className="h-2/6 p-2 mt-2">
@@ -219,7 +230,8 @@ export default function Page({ params }) {
                   </div>
                 </div>
               </div>
-              <div className="lg:w-[31.5%]">
+              <div className="lg:w-[31.5%] flex flex-col gap-5"> 
+              {(user && streamInfo && (streamInfo.userUserId === user.userId))?<button onClick={handleEnd} className=" py-3 px-6 rounded-xl w-full bg-red-500 hover:bg-red-600 text-white text-lg font-semibold">End Stream</button>:<></>}
                 <div className="lg:h-full h-[75vh] border-[3px] rounded-3xl border-[#ffffff] bg-[#2E2F3F] bg-opacity-60 border-opacity-30 p-2 pr-3 pl-3 relative">
                   <div className="text-2xl font-bold leading-7 text-[#FF8E00] text-center m-2">
                     Live chat

@@ -21,28 +21,109 @@ export default function Page({ params }) {
   const [me, setMe] = useState();
   const [isUserTheSame, setIsUserTheSame] = useState(false);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+  const [livestreamsData, setLivestreamsData] = useState([]);
+  const [subscriptions, setSubscriptions] = useState([]);
+  const [likedStreams, setLikedStreams] = useState([]);
 
   const url = process.env.NEXT_PUBLIC_API_URL;
 
   const getData = async () => {
-    const res = await axios.get(`${url}/api/user/${params.userId}`);
-    console.log("User", res.data);
-    setUser(res.data);
-    const token = localStorage.getItem("token");
-    if (!token) return { error: "Unauthorize access" };
-    const response = await axios.get(`${url}/api/user/me`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log("Me", response.data);
-    setMe(response.data);
-    if (res.data.userId === response.data.userId) {
-      setIsUserTheSame(true);
+    try {
+      const res = await axios.get(`${url}/api/user/${params.userId}`);
+      console.log("User", res.data);
+      setUser(res.data);
+      const token = localStorage.getItem("token");
+      if (!token) return { error: "Unauthorized access" };
+      const response = await axios.get(`${url}/api/user/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log("Me", response.data);
+      setMe(response.data);
+      if (res.data.userId === response.data.userId) {
+        setIsUserTheSame(true);
+      }
+      const livestreamData = await Promise.all(
+        res.data.Stream.map(async (stream) => {
+          const res1 = await axios.get(`${url}/api/stream/${stream.streamId}`);
+          console.log(res1.data);
+          return res1.data;
+        })
+      );
+      setLivestreamsData(livestreamData);
+    } catch (error) {
+      console.error(error);
     }
-    setRender(true);
+  };
+
+  const getSubscriptionData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(`${url}/api/subscriptions/my`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res && res.data) {
+        const subscriptionsData = await Promise.all(
+          res.data.map(async (s) => {
+            const res1 = await axios.get(`${url}/api/user/${s.creatorUserId}`);
+            if (res1 && res1.data) {
+              return {
+                firstName: res1.data.firstName,
+                lastName: res1.data.lastName,
+                userId: res1.data.userId,
+                username: res1.data.username,
+              };
+            }
+            return null;
+          })
+        );
+        setSubscriptions(subscriptionsData.filter(Boolean));
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getLikedStreams = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(`${url}/api/vote/my`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log(res)
+      if (res && res.data) {
+        const likedStreamsData = await Promise.all(
+          res.data.map(async (v) => {
+            if (v.dislike === false) {
+              const res1 = await axios.get(
+                `${url}/api/stream/${v.streamStreamId}`
+              );
+              if (res1 && res1.data) {
+                console.log(res1)
+                return {
+                  title: res1.data.title,
+                  thumbnailUrl: res1.data.thumbnailUrl,
+                  startTimestamp: res1.data.startTimestamp,
+                  username: res1.data.creator.username,
+                  views: res1.data._count.streamView,
+                  streamId: res1.data.streamId
+                };
+              }
+              return null;
+            }
+          })
+        );
+        setLikedStreams(likedStreamsData.filter(Boolean));
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
     getData();
+    getSubscriptionData();
+    getLikedStreams();
+    setRender(true);
   }, []);
 
   return (
@@ -122,59 +203,58 @@ export default function Page({ params }) {
               <div className="font-medium text-2xl text-white">
                 {isUserTheSame ? "Your" : `${user?.username}'s`} livestreams
               </div>
-              <div className="grid screen:grid-cols-3 size1:grid-cols-2 max-md:grid-cols-2 max-sm:grid-cols-1 grid-cols-1">
-                {user.Stream &&
-                  user.Stream.length !== 0 &&
-                  user.Stream.map((str) => {
-                    return (
-                      <div
-                        key={str.streamId}
-                        className="max-w-[400px] min-w-[256px] mx-auto w-full"
-                      >
-                        <Card
-                          title={str.title}
-                          thumbnail={str.thumbnailUrl}
-                          date={str.startTimestamp}
-                          username={user.username}
-                          views={0}
-                        />
-                      </div>
-                    );
-                  })}
-              </div>
+              {user.Stream && livestreamsData && livestreamsData.length !== 0 ? (
+                <div className="grid screen:grid-cols-3 size1:grid-cols-2 max-md:grid-cols-2 max-sm:grid-cols-1 grid-cols-1">
+                  <>
+                    {livestreamsData.map((str) => {
+                      return (
+                        <div
+                          key={str.streamId}
+                          className="max-w-[400px] min-w-[256px] mx-auto w-full"
+                        >
+                          <Card
+                            title={str.title}
+                            thumbnail={str.thumbnailUrl}
+                            date={str.startTimestamp}
+                            username={user.username}
+                            views={0}
+                            streamId={str.streamId}
+                          />
+                        </div>
+                      );
+                    })}
+                  </>
+                </div>
+              ) : (
+                <div className="mt-8 mb-8 text-center text-red-400">
+                  No livestreams
+                </div>
+              )}
             </div>
             <div className="mt-6">
               <div className="font-medium text-2xl text-white">
                 Creators {isUserTheSame ? "you're" : `${user?.username} is`}{" "}
                 subscribed to
               </div>
-              <div className="mt-4 grid screen:grid-cols-5 lg:grid-cols-4 size1:grid-cols-3 md:grid-cols-2 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1">
-                <Creator
-                  firstName="Creator"
-                  lastName="Name"
-                  username="username"
-                />
-                <Creator
-                  firstName="Creator"
-                  lastName="Name"
-                  username="username"
-                />
-                <Creator
-                  firstName="Creator"
-                  lastName="Name"
-                  username="username"
-                />
-                <Creator
-                  firstName="Creator"
-                  lastName="Name"
-                  username="username"
-                />
-                <Creator
-                  firstName="Creator"
-                  lastName="Name"
-                  username="username"
-                />
-              </div>
+              {subscriptions && subscriptions.length > 0 ? (
+                <div className="mt-4 grid screen:grid-cols-5 lg:grid-cols-4 size1:grid-cols-3 md:grid-cols-2 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1">
+                  {subscriptions.map((s, idx) => {
+                    return (
+                      <Creator
+                        key={`creator-${idx}`}
+                        firstName={s.firstName}
+                        lastName={s.lastName}
+                        username={s.username}
+                        userId={s.userId}
+                      />
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="mt-8 mb-8 text-center text-red-400">
+                  Not subscribed to anyone!
+                </div>
+              )}
             </div>
             {isUserTheSame && (
               <>
@@ -182,17 +262,28 @@ export default function Page({ params }) {
                   <div className="font-medium text-2xl text-white">
                     Liked streams
                   </div>
-                  <div className="grid screen:grid-cols-3 size1:grid-cols-2 max-md:grid-cols-2 max-sm:grid-cols-1 grid-cols-1">
-                    <div className="max-w-[400px] min-w-[256px] mx-auto w-full">
-                      <Card />
+                  {likedStreams && likedStreams.length > 0 ? (
+                    <div className="grid screen:grid-cols-3 size1:grid-cols-2 max-md:grid-cols-2 max-sm:grid-cols-1 grid-cols-1">
+                      {likedStreams.map((v, idx) => (
+                        <div key={`like-${idx}`}
+                          className="max-w-[400px] min-w-[256px] mx-auto w-full"
+                        >
+                          <Card
+                            title={v.title}
+                            thumbnail={v.thumbnailUrl}
+                            date={v.startTimestamp}
+                            username={v.username}
+                            views={v.views}
+                            streamId={v.streamId}
+                          />
+                        </div>
+                      ))}
                     </div>
-                    <div className="max-w-[400px] min-w-[256px] mx-auto w-full">
-                      <Card />
+                  ) : (
+                    <div className="mt-8 mb-8 text-center text-red-400">
+                      No liked streams
                     </div>
-                    <div className="max-w-[400px] min-w-[256px] mx-auto w-full">
-                      <Card />
-                    </div>
-                  </div>
+                  )}
                   <div className="grid grid-cols-3 mt-2"></div>
                 </div>
                 <div className="mt-6">

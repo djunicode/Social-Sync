@@ -1,34 +1,20 @@
 "use client";
-import React from "react";
-import SearchBar from "@/components/SearchBar";
+import React, { useEffect, useState, memo } from "react";
 import { SocialSync } from "../../public/svgs";
-
+import useStore from "@/lib/zustand";
 import {
   Card,
   Typography,
   List,
   ListItem,
   ListItemPrefix,
-  ListItemSuffix,
-  Chip,
   Accordion,
   AccordionHeader,
   AccordionBody,
-  Alert,
-  Input,
 } from "@material-tailwind/react";
-import {
-  PresentationChartBarIcon,
-  ShoppingBagIcon,
-  UserCircleIcon,
-  Cog6ToothIcon,
-  InboxIcon,
-  PowerIcon,
-} from "@heroicons/react/24/solid";
 import { IoMdHome } from "react-icons/io";
 import { IoCompassOutline } from "react-icons/io5";
 import { RiMenuAddLine } from "react-icons/ri";
-import { CgProfile } from "react-icons/cg";
 import { FaCircleUser } from "react-icons/fa6";
 import {
   ChevronRightIcon,
@@ -36,40 +22,70 @@ import {
   CubeTransparentIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
+import { generateRandomColor } from "@/lib/utils";
 
-const Sidebar = () => {
+const color = generateRandomColor()
+const Sidebar = memo(() => {
   const [open, setOpen] = React.useState(0);
+  const {user} = useStore();
+  console.log(user)
   const [openAlert, setOpenAlert] = React.useState(true);
-
+  const [subscriptions,setSubscriptions] = React.useState([])
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
   };
+
+  const url = process.env.NEXT_PUBLIC_API_URL;
+
+  const getData = async () => {
+    try {
+      let token = localStorage.getItem("token");
+      const res = await axios.get(`${url}/api/subscriptions/my`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      let subscriptionsData = [];
+      if (res) {
+        res?.data?.map(async (s) => {
+          let res1 = await axios.get(`${url}/api/user/${s.creatorUserId}`);
+          if(res1){
+            let obj = {
+              firstName: res1.data.firstName,
+              lastName: res1.data.lastName,
+              userId: res1.data.userId,
+              username: res1.data.username
+            }
+            subscriptionsData.push(obj);
+            console.log(res1);
+          }
+        })
+        setSubscriptions(subscriptionsData);
+        console.log(res.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <div className="flex">
       <Card className="h-screen fixed bg-[#1C1D2F] md:w-full max-w-[18rem] p-4 pt-6 shadow-xl shadow-blue-gray-900/5">
         <div className="flex justify-center text-3xl items-center mb-8 mt-5 text-[#FF8E00]">
-          {/* <Typography variant="h2">SocialSync</Typography> */}
-          <SocialSync />
+          <a href="/home">
+            <SocialSync />
+          </a>
         </div>
         <div className="flex items-center ml-3 mb-5 mt-5 ">
-          <div className="bg-white rounded-full p-4 shadow-lg">
-            <img
-              src="full-name.png"
-              alt="Full Name"
-              className="w-7 h-7 rounded-full"
-            />
+          <div className=" rounded-full aspect-square px-4 shadow-lg flex justify-center items-center" style={{backgroundColor:color}}>
+            <h2 className=" text-xl font-semibold aspect-square text-center">{user?user.firstName[0].toUpperCase():"U"}</h2>
           </div>
           <div className="ml-3">
-            <h2 className="text-xl font-bold text-white">Sharan</h2>
-            <p className="text-gray-400">@sharyplays</p>
+            <h2 className="text-xl font-bold text-white">{user?user.firstName:"User"}</h2>
+            <p className="text-gray-400">@{user?user.username:"username"}</p>
           </div>
         </div>
-        {/* <div className="p-2">
-        <Input
-          icon={<MagnifyingGlassIcon className="h-5 w-5 mt-3 mx-4" />}
-        />
-      </div> */}
         <List>
           <Accordion
             open={open === 1}
@@ -90,31 +106,9 @@ const Sidebar = () => {
                 color="blue-gray"
                 className="mr-auto focus:bg-[#F16602] font-normal"
               >
-                Home
+                <a href="/videos">Home</a>
               </Typography>
             </ListItem>
-            {/* <AccordionBody className="py-1">
-            <List className="p-0">
-              <ListItem>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                Analytics
-              </ListItem>
-              <ListItem>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                Reporting
-              </ListItem>
-              <ListItem>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                Projects
-              </ListItem>
-            </List>
-          </AccordionBody> */}
           </Accordion>
           <Accordion
             open={open === 2}
@@ -128,17 +122,12 @@ const Sidebar = () => {
             }
           >
             <ListItem className="border-b-0 p-3" selected={open === 2}>
-              {/* <AccordionHeader
-              onClick={() => handleOpen(2)}
-              className="border-b-0 p-3"
-            > */}
               <ListItemPrefix>
                 <IoCompassOutline className="h-7 w-7 mr-2" />
               </ListItemPrefix>
               <Typography color="blue-gray" className="mr-auto font-normal">
-                Explore
+                <a href="/explore">Explore</a>
               </Typography>
-              {/* </AccordionHeader> */}
             </ListItem>
           </Accordion>
           <Accordion
@@ -167,59 +156,32 @@ const Sidebar = () => {
             </ListItem>
             <AccordionBody className="py-1">
               <List className="p-0 ml-5">
-                <ListItem>
-                  <ListItemPrefix>
-                    <FaCircleUser strokeWidth={4} className="h-5 w-5 mr-2" />
-                  </ListItemPrefix>
-                  User 1
-                </ListItem>
-                <ListItem>
-                  <ListItemPrefix>
-                    <FaCircleUser strokeWidth={4} className="h-5 w-5 mr-2" />
-                  </ListItemPrefix>
-                  User 2
-                </ListItem>
+                {subscriptions && subscriptions.length > 0 && (
+                  <>
+                    {subscriptions.map((s, idx) => {
+                      return (
+                        <a key={`sub-${idx}`} href={`/profile/${s.userId}`}>
+                          <ListItem className="hover:cursor-pointer hover:text-gray-200">
+                            <ListItemPrefix>
+                              <FaCircleUser
+                                strokeWidth={4}
+                                className="h-5 w-5 mr-2"
+                              />
+                            </ListItemPrefix>
+                            {s.username}
+                          </ListItem>
+                        </a>
+                      );
+                    })}
+                  </>
+                )}
               </List>
             </AccordionBody>
           </Accordion>
-          {/* <hr className="my-2 border-blue-gray-50" /> */}
-          {/* <ListItem>
-          <ListItemPrefix>
-            <InboxIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Inbox
-          <ListItemSuffix>
-            <Chip
-              value=""
-              size="sm"
-              variant="ghost"
-              color="blue-gray"
-              className="rounded-full"
-            />
-          </ListItemSuffix>
-        </ListItem>
-        <ListItem>
-          <ListItemPrefix>
-            <UserCircleIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Profile
-        </ListItem>
-        <ListItem>
-          <ListItemPrefix>
-            <Cog6ToothIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Settings
-        </ListItem> */}
-          {/* <ListItem>
-          <ListItemPrefix>
-            <PowerIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Log Out
-        </ListItem> */}
         </List>
       </Card>
     </div>
   );
-};
-
+});
+Sidebar.displayName="Sidebar"
 export default Sidebar;

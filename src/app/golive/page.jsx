@@ -1,20 +1,23 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SocialSync, GoLiveButton } from "../../../public/svgs";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { generateRandomColor } from "@/lib/utils";
+
+const color = generateRandomColor()
 import AWSHelper from "@/lib/awsHelper";
 import useStore from "@/lib/zustand";
 
 export default function Page() {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
+  const videoRef = useRef(null)  
   const fileInputRef = useRef(null);
   const [file, setFile] = useState(null);
   const [fileUrl, setFileUrl] = useState(null);
-  const videoRef = useRef(null);
 
   const {user} = useStore()
 
@@ -31,13 +34,12 @@ export default function Page() {
   };
 
   const url = process.env.NEXT_PUBLIC_API_URL;
-
   const uploadBox = {
     border: "2px solid #040629",
     borderRadius: "20px",
     boxShadow: "0 2px 16px 0 #FFFFFF",
   };
-  
+
   const router = useRouter();
 
   const goLive = async () => {
@@ -58,23 +60,25 @@ export default function Page() {
           startTimestamp: date,
           thumbnailUrl: turl,
         },
-      {
-        headers:{
-          Authorization: `Bearer ${token}`
-        }
-      });
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
         console.log(res);
         if (res) {
           toast("Stream created successfully!");
           setTimeout(() => {
             router.push(`/stream/${res.data?.streamId}`)
-          },3000)
+          }, 3000)
         }
       }
     } catch (error) {
       console.error("Error occurred!!", error);
     }
   };
+  
+
 
   useEffect(() => {
     const startVideo = async () => {
@@ -108,7 +112,7 @@ export default function Page() {
       <div className="md:w-8/12 md:pl-14 md:pt-20 md:pr-12 w-full px-5 pt-10">
         <div
           style={uploadBox}
-          className="w-full h-[55%] bg-[#040629] flex items-center justify-center "
+          className="w-full h-[55%] bg-[#040629] flex items-center justify-center overflow-clip "
         >
           <video
             ref={videoRef}
@@ -181,13 +185,14 @@ export default function Page() {
         </div>
       </div>
       <div className="hidden md:flex w-3/12 absolute right-0 h-32 pr-3 justify-end items-center">
-        <div className="w-16 h-16 rounded-full bg-[#D9D9D9] border border-[#D9D9D9]">
-          <img src="" alt="pfp" className="rounded-full w-full h-full" />
+        <div className=" rounded-full aspect-square px-4 shadow-lg flex justify-center items-center" style={{ backgroundColor: color }}>
+          <h2 className=" text-xl font-semibold aspect-square text-center">{user ? user.firstName[0].toUpperCase() : "U"}</h2>
         </div>
+        {/* <img src="" alt="pfp" className="rounded-full w-full h-full" /> */}
         <div className="ml-2">
-          <div className="font-semibold text-xl text-white">Full Name</div>
+          <div className="font-semibold text-xl text-white">{user ? user.firstName : "User"}</div>
           <div className="font-semibold text-base text-[#867D7D]">
-            @username
+            @{user ? user.username : "username"}
           </div>
         </div>
       </div>

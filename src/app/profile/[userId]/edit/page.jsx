@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import axios from "axios";
 
-const payment = () => {
+const Payment = () => {
 
     const url = process.env.NEXT_PUBLIC_API_URL
     const { auth, user, token, setToken, setAuth, setUser } = useStore()
@@ -168,4 +168,4 @@ const payment = () => {
   );
 };
 
-export default payment;
+export default Payment;
