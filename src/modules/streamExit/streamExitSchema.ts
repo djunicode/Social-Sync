@@ -4,7 +4,7 @@ import { buildJsonSchemas } from "fastify-zod";
 const streamExitBase = {
     videoTimestamp: z.date(),
     streamStreamId: z.string(),
-    userUserId: z.string(),
+    // userUserId: z.string(),
 };
 
 const createStreamExitSchema = z.object({

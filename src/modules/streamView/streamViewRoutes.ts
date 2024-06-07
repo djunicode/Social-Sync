@@ -1,12 +1,12 @@
 import { FastifyInstance } from "fastify";
 import { $ref } from "./streamViewSchema";
-import { createStreamView, getStreamViews , getMyStreamView , updateStreamView} from "./streamViewController";
+import { createStreamView, getStreamViews , getMyStreamView , updateStreamView, fixLiveViewers} from "./streamViewController";
 import { $globalRef } from "../../utils/globalSchemas";
 
 async function streamViewRoutes(app: FastifyInstance) {
 
   // create stream route
-  app.post("/",
+  app.post("/create",
     {
       preHandler: [app.authenticate],
       schema:
@@ -48,6 +48,15 @@ async function streamViewRoutes(app: FastifyInstance) {
   },
     updateStreamView
   );
+
+  app.get("/viewers/:streamId", {
+    schema: {
+      querystring: $globalRef("paginationQuerySchema"),
+    }
+  },
+    fixLiveViewers
+  );
+
 }
 
 export default streamViewRoutes;

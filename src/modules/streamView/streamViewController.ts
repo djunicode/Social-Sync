@@ -1,5 +1,6 @@
 //createStreamView, getStreamViews , getMyStreamView , updateStreamView
-
+import { GetStreamExitParams } from "../streamExit/streamExitSchema";
+import { CreateStreamInput } from "../stream/streamSchema";
 import { CreateStreamViewInput, GetStreamViewParams , UpdateStreamViewInput, GetStreamViewsQuery } from "./streamViewSchema";
 import prisma from "../../utils/prisma";
 import { FastifyReply, FastifyRequest } from "fastify";
@@ -98,4 +99,61 @@ export async function updateStreamView(request: FastifyRequest<{ Params: { viewI
         console.error(error);
         return reply.status(500).send({ error: "Internal Server Error" });
     }
+}
+
+export async function fixLiveViewers(request: FastifyRequest<{ Params: GetStreamExitParams & GetStreamViewParams,streamId:string}>, reply: FastifyReply) {
+    const liveStream = await prisma.stream.findUnique({
+        where: {
+            streamId: request.params.streamId,
+            storageUrl:""
+        },
+        select: {
+            streamId:true,
+            // thumbnailUrl:true,
+            // startTimestamp:true,
+            // endTimestamp:true,
+            // storageUrl:true,
+            // title:true,
+            // description:true,
+            // tags:true,
+            // userUserId:true,
+            // creator:{
+            //     select:{
+            //         username:true,
+            //         _count:{
+            //             select:{
+            //                 CreatorSubscribers:true
+            //             }
+            //         }
+            //     }
+            // },
+            _count:{
+                select:{
+                    Vote:true,
+                    Comment:true,
+                    StreamView:true
+                }
+            }
+        }
+    })
+    if (!liveStream) {
+        return reply.status(404).send({ message: "Stream not found or is not live." });
+    }
+    const streamViewsCount = await prisma.streamView.count({
+        where: {
+            streamId: liveStream.streamId
+        }
+    });
+
+    const streamExitsCount = await prisma.streamExit.count({
+        where: {
+            streamStreamId: liveStream.streamId
+        }
+    });
+
+    // Calculate live viewers
+    const liveViewers = streamViewsCount - streamExitsCount;
+    return reply.status(200).send({
+        liveViewers
+    });
 }
