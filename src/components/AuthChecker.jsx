@@ -25,9 +25,13 @@ export default function AuthChecker() {
                 setUser(res.data)
             } else {
                 toast(res.data.error)
+                localStorage.removeItem("token")
+                setAuth(false)
             }
         } catch (error) {
             console.log(error)
+            localStorage.removeItem("token")
+            setAuth(false)
             toast("Something went wrong! Please try again later.")
         }
     }
@@ -43,7 +47,7 @@ export default function AuthChecker() {
         } else if (!user) {
             getUser()
         } else if (path === "/login" || path === "/signup") {
-            redirect("/home")
+            redirect("/videos")
         }
     }, [path, auth, user, token])
 

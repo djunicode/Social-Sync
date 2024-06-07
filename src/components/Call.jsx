@@ -12,10 +12,13 @@ import AgoraRTC, {
     useRemoteAudioTracks,
     useRemoteUsers,
 } from "agora-rtc-react";
-import { memo, useMemo } from "react";
+import { memo, useEffect, useMemo } from "react";
 
 const Call = memo(function CallComponent (props){
+   
+    
     const client = useRTCClient(AgoraRTC.createClient({ codec: "vp8", mode: "rtc" }));
+    
     console.log(client)
     function Videos(props) {
         const PublishLocal = () => {
@@ -59,7 +62,11 @@ const Call = memo(function CallComponent (props){
                     className={`flex w-full h-full rounded-3xl`}
                 >
                     {type === "host" ? <PublishLocal />: <></>}
-                    {type !== "host" ? [remoteUsers[0]].map((user, ind) => (
+                    {type !== "host" ? remoteUsers.length===0?
+                    <div className=" flex w-full h-full justify-center items-center text-xl font-semibold">
+                        Stream has Ended!
+                    </div>: 
+                    [remoteUsers[0]].map((user, ind) => (
                         <RemoteUser key={`user-${ind}`} user={user} />
                     )):<></>}
                 </div>
@@ -69,9 +76,6 @@ const Call = memo(function CallComponent (props){
     return (
         <AgoraRTCProvider client={client}>
             <Videos channelName={props.channelName} AppID={props.appId} type={props.type} />
-            <div className="fixed z-10 bottom-0 left-0 right-0 flex justify-center pb-4">
-                <a className="px-5 py-3 text-base font-medium text-center text-white bg-red-400 rounded-lg hover:bg-red-500 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900 w-40" href="/">End Call</a>
-            </div>
         </AgoraRTCProvider>
     );
 })

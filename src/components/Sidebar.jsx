@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from "react";
 import { SocialSync } from "../../public/svgs";
 import useStore from "@/lib/zustand";
 import {
@@ -16,14 +16,21 @@ import { IoMdHome } from "react-icons/io";
 import { IoCompassOutline } from "react-icons/io5";
 import { RiMenuAddLine } from "react-icons/ri";
 import { FaCircleUser } from "react-icons/fa6";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import axios from "axios";
+import {
+  ChevronRightIcon,
+  ChevronDownIcon,
+  CubeTransparentIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
+import { generateRandomColor } from "@/lib/utils";
 
-const Sidebar = () => {
-  const [open, setOpen] = useState(0);
-  const [subscriptions, setSubscriptions] = useState([]);
-  const { user } = useStore();
-
+const color = generateRandomColor()
+const Sidebar = memo(() => {
+  const [open, setOpen] = React.useState(0);
+  const {user} = useStore();
+  console.log(user)
+  const [openAlert, setOpenAlert] = React.useState(true);
+  const [subscriptions,setSubscriptions] = React.useState([])
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
   };
@@ -71,26 +78,12 @@ const Sidebar = () => {
           </a>
         </div>
         <div className="flex items-center ml-3 mb-5 mt-5 ">
-          <div className="bg-white rounded-full p-4 shadow-lg">
-            <img
-              src="full-name.png"
-              alt="Full Name"
-              className="w-7 h-7 rounded-full"
-            />
+          <div className=" rounded-full aspect-square px-4 shadow-lg flex justify-center items-center" style={{backgroundColor:color}}>
+            <h2 className=" text-xl font-semibold aspect-square text-center">{user?user.firstName[0].toUpperCase():"U"}</h2>
           </div>
           <div className="ml-3">
-            <h2 className="text-xl font-bold text-white">
-              {user?.firstName || ""} {user?.lastName || ""}
-            </h2>
-            <p className="text-gray-400 hover:cursor-pointer hover:text-gray-300 ">
-              @
-              <a
-                href={`/profile/${user?.userId}`}
-                className="hover:underline hover:underline-offset-4"
-              >
-                {user?.username || ""}
-              </a>
-            </p>
+            <h2 className="text-xl font-bold text-white">{user?user.firstName:"User"}</h2>
+            <p className="text-gray-400">@{user?user.username:"username"}</p>
           </div>
         </div>
         <List>
@@ -165,9 +158,9 @@ const Sidebar = () => {
               <List className="p-0 ml-5">
                 {subscriptions && subscriptions.length > 0 && (
                   <>
-                    {subscriptions.map((s) => {
+                    {subscriptions.map((s, idx) => {
                       return (
-                        <a href={`/profile/${s.userId}`}>
+                        <a key={`sub-${idx}`} href={`/profile/${s.userId}`}>
                           <ListItem className="hover:cursor-pointer hover:text-gray-200">
                             <ListItemPrefix>
                               <FaCircleUser
@@ -189,6 +182,6 @@ const Sidebar = () => {
       </Card>
     </div>
   );
-};
-
+});
+Sidebar.displayName="Sidebar"
 export default Sidebar;
