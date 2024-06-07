@@ -158,9 +158,9 @@ const Sidebar = memo(() => {
               <List className="p-0 ml-5">
                 {subscriptions && subscriptions.length > 0 && (
                   <>
-                    {subscriptions.map((s) => {
+                    {subscriptions.map((s, idx) => {
                       return (
-                        <a href={`/profile/${s.userId}`}>
+                        <a key={`sub-${idx}`} href={`/profile/${s.userId}`}>
                           <ListItem className="hover:cursor-pointer hover:text-gray-200">
                             <ListItemPrefix>
                               <FaCircleUser
@@ -183,5 +183,5 @@ const Sidebar = memo(() => {
     </div>
   );
 });
-
+Sidebar.displayName="Sidebar"
 export default Sidebar;

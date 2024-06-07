@@ -238,9 +238,10 @@ export default function Page({ params }) {
               </div>
               {subscriptions && subscriptions.length > 0 ? (
                 <div className="mt-4 grid screen:grid-cols-5 lg:grid-cols-4 size1:grid-cols-3 md:grid-cols-2 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1">
-                  {subscriptions.map((s) => {
+                  {subscriptions.map((s, idx) => {
                     return (
                       <Creator
+                        key={`creator-${idx}`}
                         firstName={s.firstName}
                         lastName={s.lastName}
                         username={s.username}
@@ -263,8 +264,8 @@ export default function Page({ params }) {
                   </div>
                   {likedStreams && likedStreams.length > 0 ? (
                     <div className="grid screen:grid-cols-3 size1:grid-cols-2 max-md:grid-cols-2 max-sm:grid-cols-1 grid-cols-1">
-                      {likedStreams.map((v) => (
-                        <div
+                      {likedStreams.map((v, idx) => (
+                        <div key={`like-${idx}`}
                           className="max-w-[400px] min-w-[256px] mx-auto w-full"
                         >
                           <Card
