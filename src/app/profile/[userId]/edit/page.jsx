@@ -6,12 +6,14 @@ import useStore from "@/lib/zustand"
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const Payment = () => {
 
     const url = process.env.NEXT_PUBLIC_API_URL
     const { auth, user, token, setToken, setAuth, setUser } = useStore()
     const path = usePathname()
+    const router = useRouter();
 
     const [fname, setFname] = useState("");
     const [lname, setLname] = useState("");
@@ -105,7 +107,7 @@ const Payment = () => {
   return (
     <>
     <div className="fixed backdrop-blur-md lg:backdrop-blur-0  w-full h-[100px] top-0 gap-2 flex justify-left items-center pl-10 z-10 " >
-        <ArrowLeft/><SocialSync/>
+        <div className="hover:cursor-pointer" onClick={() => router.back()}><ArrowLeft/></div><SocialSync/>
     </div>
     <div className="my-[150px] border-[#5F5F6B] border-4 rounded-3xl w-[95%] p-10 sm:w-[80%] md:w-[60%] lg:w-[40%] bg-[#1D1D2F] m-auto flex justify-evenly items-center flex-col text-gray-600 relative">
         <h1 className="absolute top-[-50px] text-4xl font-bold text-[#D9D9D9]">Personal Details</h1>

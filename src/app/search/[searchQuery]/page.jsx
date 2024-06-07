@@ -9,6 +9,7 @@ import {
   MenuIcon,
   CrossIcon,
 } from "../../../../public/svgs";
+import "../../../lib/fonts.css"
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -23,7 +24,7 @@ export default function Page({ params }) {
   const getResult = async () => {
     try {
       let searchV = await params.searchQuery.split("%2B").join(" ");
-      const res = await axios.get(`${url}/api/stream/search/?title=${searchV}`);
+      const res = await axios.get(`${url}/api/stream/search/${searchV}?title=${searchV}`);
       // const res = await axios.get(`${url}/api/stream/all`);
       console.log(res.data);
       setStreamData(res.data);
@@ -82,11 +83,13 @@ export default function Page({ params }) {
                 <SearchCard
                   title={stream.title}
                   views={stream.StreamView.length}
-                  user={stream.creator.username}
+                  username={stream.creator.username}
                   date={stream.startTimestamp?.split("T")[0]}
                   userId={stream.userUserId}
                   streamId={stream.streamId}
                   thumbnail={stream.thumbnailUrl}
+                  firstName={stream.creator.firstName}
+                  live={stream.endTimestamp === null? true : false}
                 />
               </div>
             ))}

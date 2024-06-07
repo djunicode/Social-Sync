@@ -6,6 +6,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { generateRandomColor } from "@/lib/utils";
+import "../../lib/fonts.css"
 
 const color = generateRandomColor()
 import AWSHelper from "@/lib/awsHelper";
@@ -54,7 +55,6 @@ export default function Page() {
         let date = d.toISOString();
         let token = localStorage.getItem("token");
         let res = await axios.post(`${url}/api/stream`, {
-          thumbnailUrl: "",
           title: title,
           description: desc,
           startTimestamp: date,
@@ -78,8 +78,6 @@ export default function Page() {
     }
   };
   
-
-
   useEffect(() => {
     const startVideo = async () => {
       try {

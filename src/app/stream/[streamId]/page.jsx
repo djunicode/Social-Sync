@@ -10,6 +10,7 @@ import {
   ArrowLeft,
   SendBtn,
 } from "../../../../public/svgs";
+import "../../../lib/fonts.css";
 import { useRouter } from "next/navigation";
 import LoadingScreen from "@/app/loading";
 import Message from "./(components)/Message";
@@ -19,8 +20,11 @@ import Donation from "./(components)/Donation";
 import useStore from "@/lib/zustand";
 import { apiHandler } from "@/lib/api";
 import { socket } from "@/lib/socket";
-import Call from '@/components/Call'
+import Call from "@/components/Call";
+import { generateRandomColor } from "@/lib/utils";
+import axios from "axios";
 
+const color = generateRandomColor();
 export default function Page({ params }) {
   const url = process.env.NEXT_PUBLIC_API_URL;
   const [render, setRender] = useState(false);
@@ -28,62 +32,63 @@ export default function Page({ params }) {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [creatorInfo, setCreatorInfo] = useState();
+  const [subscribed, setSubscribed] = useState(false);
   const [loading, setLoading] = useState(true);
   const [liked, setLiked] = useState(false); // temporary
-  const { user } = useStore()
+  const [viewers, setViewers] = useState(0);
+  const { user } = useStore();
   const router = useRouter();
-  
+
   const divRef = useRef(null);
   const scrollToBottom = () => {
     if (divRef.current) {
       divRef.current.scrollTo({
         top: divRef.current.scrollHeight,
-        behavior: 'smooth', 
+        behavior: "smooth",
       });
     }
   };
 
   useEffect(() => {
-    scrollToBottom()
-  }, [messages])
-  
+    scrollToBottom();
+  }, [messages]);
+
   useEffect(() => {
     socket.connect();
     if (socket.connected) {
       onConnect();
-      console.log("socket connected")
+      console.log("socket connected");
     }
 
     function onConnect() {
-
-      socket.io.engine.on('upgrade', (transport) => {
+      socket.io.engine.on("upgrade", (transport) => {
         // setTransport(transport.name);
-        console.log(transport.name)
+        console.log(transport.name);
       });
     }
 
     function onDisconnect() {
-      console.log("socket disconnceted")
+      console.log("socket disconnceted");
     }
-    socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
 
-    socket.on('chat', (msg) => {
-      console.log('Message:', msg);
+    socket.on("chat", (msg) => {
+      console.log("Message:", msg);
       setMessages((prevMessages) => [...prevMessages, msg]);
     });
 
-    socket.on('joined', (userId) => {
-      console.log('User joined:', userId);
+    socket.on("joined", (userId) => {
+      console.log("User joined:", userId);
     });
 
-    socket.emit("join", params.streamId)
+    socket.emit("join", params.streamId);
 
     return () => {
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-      socket.off('chat');
-      socket.off('joined');
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("chat");
+      socket.off("joined");
     };
   }, []);
   const streamBox = {
@@ -98,21 +103,21 @@ export default function Page({ params }) {
   };
 
   async function handleSend(e) {
-    e.preventDefault()
+    e.preventDefault();
     const token = localStorage.getItem("token");
-    if (!token) return toast("Please login to send messages!")
-    socket.emit('chat', params.streamId, token, message);
+    if (!token) return toast("Please login to send messages!");
+    socket.emit("chat", params.streamId, token, message);
     setMessage("");
   }
 
   const getPreviousMessages = async (streamId) => {
-    console.log({ streamId })
+    console.log({ streamId });
 
     toast("Loading Chat...");
     try {
       const res = await apiHandler.getLiveComments({ streamId });
       if (res.error) {
-        toast(res.error)
+        toast(res.error);
       } else {
         setMessages(res);
       }
@@ -120,18 +125,39 @@ export default function Page({ params }) {
       console.log("Failed to fetch chat messages", error);
       toast("Error fetching chat messages");
     }
-  }
+  };
 
   const getStream = async (streamId) => {
-    console.log({ streamId })
+    console.log({ streamId });
     toast("Loading Stream...");
     try {
-      const res = await apiHandler.getStream({ streamId })
+      const res = await apiHandler.getStream({ streamId });
       if (res.error) {
-        toast(res.error)
+        toast(res.error);
       } else {
         setStreamInfo(res);
         setCreatorInfo(res.creator);
+        const resp = await axios.get(`${url}/api/subscriptions/myStreams`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        console.log(resp.data);
+        console.log(res.userUserId);
+        const isSubscribed = await resp.data.some(
+          (subscription) => subscription.creatorUserId === res.userUserId
+        );
+        if (isSubscribed) {
+          setSubscribed(true);
+        }
+        const view = await axios.post(
+          `${url}/api/streamView/create`,
+          { streamId: streamId },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        console.log(view);
         setRender(true);
       }
     } catch (error) {
@@ -141,21 +167,82 @@ export default function Page({ params }) {
     }
   };
   useEffect(() => {
-    console.log(params)
+    console.log(params);
     getStream(params.streamId);
     getPreviousMessages(params.streamId);
   }, [params]);
 
-  
-
-  async function handleEnd(){
-    if(!(user && streamInfo && (streamInfo.userUserId === user.userId)))return
-    const res = await apiHandler.endStream({endTimestamp:(new Date(Date.now()).toISOString()), streamId:streamInfo.streamId, streamInfo:streamInfo})
-    console.log(res)
-    if(res.error) return toast(res.error)
-    toast("Stream ended!")
-    window.location.href="/videos";
+  async function handleEnd() {
+    if (!(user && streamInfo && streamInfo.userUserId === user.userId)) return;
+    const res = await apiHandler.endStream({
+      endTimestamp: new Date(Date.now()).toISOString(),
+      streamId: streamInfo.streamId,
+      streamInfo: streamInfo,
+    });
+    console.log(res);
+    if (res.error) return toast(res.error);
+    toast("Stream ended!");
+    window.location.href = "/videos";
   }
+
+  const toggleSubscribe = async () => {
+    try {
+      let token = localStorage.getItem("token");
+      const me = await axios.get(`${url}/api/user/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (subscribed) {
+        const res = axios.delete(
+          `${url}/api/subscriptions/delete/${streamInfo.userUserId}`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      } else {
+        const res = await axios.post(
+          `${url}/api/subscriptions/`,
+          {
+            userUserId: me?.data?.userId,
+            creatorUserId: streamInfo.userUserId,
+            streamStreamId: streamInfo.streamId,
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        if (res && res.data) {
+          setSubscribed(true);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleExitStream = async () => {
+    try {
+      const d = new Date();
+      let date = d.toISOString();
+      const res = await axios.post(
+        `${url}/api/streamExit/create`,
+        { streamStreamId: streamInfo?.streamId, videoTimestamp: date },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      console.log(res);
+      router.back();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const resviewers = await axios.get(
+        `${url}/api/streamView/viewers/${params?.streamId}`
+      );
+      setViewers(resviewers.data.liveViewers);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>
@@ -164,7 +251,7 @@ export default function Page({ params }) {
           <div className="flex items-center mt-9">
             <div
               className="ml-2.5 hover:cursor-pointer"
-              onClick={() => router.back()}
+              onClick={() => handleExitStream()}
             >
               <ArrowLeft />
             </div>
@@ -178,8 +265,30 @@ export default function Page({ params }) {
           <div className="mt-9 md:pl-16 md:pr-16 sm:pl-12 sm:pr-12 xs:pl-8 xs:pr-8 pl-4 pr-4 pt-1 h-5/6 ">
             <div className="lg:flex justify-between lg:h-full">
               <div className="lg:w-[64.5%]">
-                <div style={streamBox} className="lg:h-5/6 sm:h-[50vh] xs:h-[45vh] h-[35vh] relative">
-                  <Call channelName={params.streamId} AppID={"8a19575fdd7e4b2a93fcf5a01b9539aa"} type={(user && streamInfo && (streamInfo.userUserId === user.userId)?"host":"audience")} />
+                <div
+                  style={streamBox}
+                  className="lg:h-5/6 sm:h-[50vh] xs:h-[45vh] h-[35vh] overflow-clip relative"
+                >
+                  {streamInfo && streamInfo.storageUrl ? (
+                    <video
+                      controls
+                      autoPlay
+                      src={streamInfo.storageUrl}
+                      className=" w-full h-full  rounded-lg overflow-clip"
+                    />
+                  ) : (
+                    <Call
+                      channelName={params.streamId}
+                      AppID={"8a19575fdd7e4b2a93fcf5a01b9539aa"}
+                      type={
+                        user &&
+                        streamInfo &&
+                        streamInfo.userUserId === user.userId
+                          ? "host"
+                          : "audience"
+                      }
+                    />
+                  )}
                 </div>
                 <div className="h-2/6 p-2 mt-2">
                   <div>
@@ -187,8 +296,15 @@ export default function Page({ params }) {
                   </div>
                   <div className="mt-3 xs:flex justify-between items-center">
                     <div className="flex items-center">
-                      <div className="border rounded-full w-16 h-16 flex justify-center items-center">
-                        photo
+                      <div
+                        className=" rounded-full aspect-square w-16 h-16 shadow-lg flex justify-center items-center"
+                        style={{ backgroundColor: color }}
+                      >
+                        <h2 className="text-2xl font-semibold aspect-square text-center">
+                          {creatorInfo.username
+                            ? creatorInfo.username[0].toUpperCase()
+                            : "U"}
+                        </h2>
                       </div>
                       <div className="ml-2">
                         <div className="font-semibold sm:text-xl text-lg">
@@ -209,25 +325,24 @@ export default function Page({ params }) {
                           {streamInfo._count.Vote}
                         </span>
                       </div>
-                      <div className="rounded-full sm:w-9 sm:h-9 w-8 h-8 max-xs:w-9 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer"
-                      onClick={()=>{
-                        navigator.clipboard.writeText(window.location.href)
-                        toast("Share link copied to clipboard")
-                      }}
+                      <div
+                        className="rounded-full sm:w-9 sm:h-9 w-8 h-8 max-xs:w-9 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer"
+                        onClick={() => {
+                          navigator.clipboard.writeText(window.location.href);
+                          toast("Share link copied to clipboard");
+                        }}
                       >
                         <Share />
                       </div>
-                      <div className="rounded-full sm:w-9 sm:h-9 w-8 h-8 max-xs:w-9 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer">
-                        <ThreeDots />
-                      </div>
                       <div className="rounded-full sm:w-36 sm:h-9 w-28 h-8 max-xs:w-36 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-[#020317] text-xl font-semibold flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer">
-                        Subscribe
+                        {subscribed ? "Unsubscribe" : "Subscribe"}
                       </div>
-                    </div> 
+                    </div>
                   </div>
                   <div className="text-[#867D7D] mt-1">
                     <p className="font-semibold sm:text-base text-sm leading-4">
-                      {streamInfo._count.StreamView} views
+                      {/* {streamInfo._count.StreamView} views */}
+                      {viewers} users viewing
                     </p>
                     <p className="font-medium sm:text-lg text-base">
                       {streamInfo.description}
@@ -235,17 +350,30 @@ export default function Page({ params }) {
                   </div>
                 </div>
               </div>
-              <div className="lg:w-[31.5%] flex flex-col gap-5"> 
-              {(user && streamInfo && (streamInfo.userUserId === user.userId))?<button onClick={handleEnd} className=" py-3 px-6 rounded-xl w-full bg-red-500 hover:bg-red-600 text-white text-lg font-semibold">End Stream</button>:<></>}
+              <div className="lg:w-[31.5%] flex flex-col gap-5">
+                {user &&
+                streamInfo &&
+                streamInfo.userUserId === user.userId &&
+                !streamInfo.storageUrl ? (
+                  <button
+                    onClick={handleEnd}
+                    className=" py-3 px-6 rounded-xl w-full bg-red-500 hover:bg-red-600 text-white text-lg font-semibold"
+                  >
+                    End Stream
+                  </button>
+                ) : (
+                  <></>
+                )}
                 <div className="lg:h-full h-[75vh] border-[3px] rounded-3xl border-[#ffffff] bg-[#2E2F3F] bg-opacity-60 border-opacity-30 p-2 pr-3 pl-3 relative">
                   <div className="text-2xl font-bold leading-7 text-[#FF8E00] text-center m-2">
                     Live chat
                   </div>
-                  <div ref={divRef} className="mt-4 overflow-y-auto pr-2 h-[74%]">
+                  <div
+                    ref={divRef}
+                    className="mt-4 overflow-y-auto pr-2 h-[74%]"
+                  >
                     {messages.map((item, ind) => {
-                      return (
-                        <Message key={ind} message={item} />
-                      )
+                      return <Message key={ind} message={item} />;
                     })}
                     {/* <Message />
                     <Message />
@@ -253,7 +381,6 @@ export default function Page({ params }) {
                     <Message />
                     <Message />
                     <Reply /> */}
-
                   </div>
                   <div className="absolute bottom-5 w-[95%]">
                     <div className="flex justify-end mt-2 mb-2">
@@ -272,14 +399,19 @@ export default function Page({ params }) {
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             onSubmit={handleSend}
-                            onKeyDown={(e) => {if(e.key==="Enter"){
-                              handleSend(e)
-                            }}}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                handleSend(e);
+                              }
+                            }}
                             placeholder="Send message on chat"
                             className="font-medium text-xl bg-[#F4F3F3] w-full text-black focus:outline-none"
                           />
                         </div>
-                        <div onClick={handleSend} className="bg-[#020317] h-7 w-7 rounded-full flex ml-2 justify-center items-center hover:cursor-pointer">
+                        <div
+                          onClick={handleSend}
+                          className="bg-[#020317] h-7 w-7 rounded-full flex ml-2 justify-center items-center hover:cursor-pointer"
+                        >
                           <SendBtn />
                         </div>
                       </div>
