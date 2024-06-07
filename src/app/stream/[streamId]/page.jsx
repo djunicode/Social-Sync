@@ -192,11 +192,19 @@ export default function Page({ params }) {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (subscribed) {
-        const res = axios.delete(
+        const res = await axios.delete(
           `${url}/api/subscriptions/delete/${streamInfo.userUserId}`,
-          {},
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        console.log(res);
+        if(res && res.data){
+          setSubscribed(false);
+        }
+        else{
+          if(res.response.data.message === "Internal Server Error"){
+            setSubscribed(false);
+          }
+        }
       } else {
         const res = await axios.post(
           `${url}/api/subscriptions/`,
@@ -207,6 +215,7 @@ export default function Page({ params }) {
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        console.log(res)
         if (res && res.data) {
           setSubscribed(true);
         }
