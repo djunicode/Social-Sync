@@ -158,8 +158,6 @@ export default function Page({ params }) {
           }
         );
         console.log(view);
-        const resviewers = await axios.get(`${url}/api/streamView/viewers/${streamId}`)
-        setViewers(resviewers.data.liveViewers)
         setRender(true);
       }
     } catch (error) {
@@ -225,7 +223,9 @@ export default function Page({ params }) {
       const res = await axios.post(
         `${url}/api/streamExit/create`,
         { streamStreamId: streamInfo?.streamId, videoTimestamp: date },
-        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
       );
       console.log(res);
       router.back();
@@ -233,6 +233,16 @@ export default function Page({ params }) {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const resviewers = await axios.get(
+        `${url}/api/streamView/viewers/${params?.streamId}`
+      );
+      setViewers(resviewers.data.liveViewers);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>
