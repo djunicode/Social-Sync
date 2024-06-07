@@ -1,0 +1,25 @@
+meta {
+  name: Update Whole User
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{URL}}/api/user/
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
+
+body:json {
+  {
+      "email":"unicode@gmail.com",
+      "password":"unicode123",
+      "firstName":"DJ",
+      "username":"unicode",
+      "dob": "Wed Mar 20 2024 21:50:23 GMT+0530"
+  }
+}

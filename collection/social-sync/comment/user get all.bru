@@ -1,0 +1,15 @@
+meta {
+  name: user get all
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{URL}}/api/comment/my
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}

@@ -1,0 +1,26 @@
+meta {
+  name: create stream
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{URL}}/api/stream/
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
+
+body:json {
+  {
+    "thumbnailUrl": "testing url 2",
+    "startTimestamp": "2024-04-25T12:00:00Z", 
+    "endTimestamp": "2024-04-25T14:00:00Z",       //optional
+    "storageUrl": "testing url 2",                //optional
+    "title": "test title 4",
+    "description":"test desc"                     //optional
+  }
+}

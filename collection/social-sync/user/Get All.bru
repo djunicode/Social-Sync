@@ -1,0 +1,20 @@
+meta {
+  name: Get All
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{URL}}/api/user/all?limit=10&page=0
+  body: none
+  auth: bearer
+}
+
+query {
+  limit: 10
+  page: 0
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiMGQzODM5Yi0yODdiLTRjNDctOGUwYy1iZjhjYWNlZDhlMjgiLCJpYXQiOjE3MTA5NTg1NDl9.36Ql-cdxv5fWri9XYv-VHN4ZFcNXt2XZbd8-p_vODhQ
+}

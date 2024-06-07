@@ -1,0 +1,15 @@
+meta {
+  name: del vote
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{URL}}/api/vote/delete/96101f75-e7cb-417a-82bf-86e58234b8e4
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}

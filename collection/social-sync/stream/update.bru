@@ -1,0 +1,26 @@
+meta {
+  name: update
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{URL}}/api/stream/update/bacc7c15-9119-405d-9c1d-a9e3a816d845
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{TOKEN}}
+}
+
+body:json {
+  {
+    "thumbnailUrl": "testing url 1 updated",
+    "startTimestamp": "2024-03-25T12:00:00Z", 
+    "endTimestamp": "2024-03-25T14:00:00Z",       //optional
+    "storageUrl": "testing url 1",                //optional
+    "title": "test title 2",
+    "description":"test desc"                     //optional
+  }
+}
