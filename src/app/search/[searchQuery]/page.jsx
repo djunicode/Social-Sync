@@ -83,11 +83,13 @@ export default function Page({ params }) {
                 <SearchCard
                   title={stream.title}
                   views={stream.StreamView.length}
-                  user={stream.creator.username}
+                  username={stream.creator.username}
                   date={stream.startTimestamp?.split("T")[0]}
                   userId={stream.userUserId}
                   streamId={stream.streamId}
                   thumbnail={stream.thumbnailUrl}
+                  firstName={stream.creator.firstName}
+                  live={stream.endTimestamp === null? true : false}
                 />
               </div>
             ))}

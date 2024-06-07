@@ -46,7 +46,9 @@ export default function Page({ params }) {
         setIsUserTheSame(true);
       }
       const livestreamData = await Promise.all(
-        res.data.Stream.map(async (stream) => {
+        res.data.Stream
+        .filter((stream) => stream.endTimestamp === null)
+        .map(async (stream) => {
           const res1 = await axios.get(`${url}/api/stream/${stream.streamId}`);
           console.log(res1.data);
           return res1.data;
@@ -229,6 +231,7 @@ export default function Page({ params }) {
                             username={user.username}
                             views={0}
                             streamId={str.streamId}
+                            userId={str.userUserId}
                           />
                         </div>
                       );
