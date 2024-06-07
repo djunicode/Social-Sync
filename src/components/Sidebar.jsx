@@ -23,6 +23,7 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 import { generateRandomColor } from "@/lib/utils";
+import axios from "axios";
 
 const color = generateRandomColor()
 const Sidebar = memo(() => {
