@@ -14,7 +14,10 @@ import {
   MenuIcon,
   CrossIcon,
 } from "../../../../public/svgs";
+import "../../../lib/fonts.css";
+import { generateRandomColor } from "@/lib/utils";
 
+const color = generateRandomColor();
 export default function Page({ params }) {
   const [render, setRender] = useState(false);
   const [user, setUser] = useState();
@@ -89,7 +92,7 @@ export default function Page({ params }) {
       const res = await axios.get(`${url}/api/vote/my`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(res)
+      console.log(res);
       if (res && res.data) {
         const likedStreamsData = await Promise.all(
           res.data.map(async (v) => {
@@ -98,14 +101,14 @@ export default function Page({ params }) {
                 `${url}/api/stream/${v.streamStreamId}`
               );
               if (res1 && res1.data) {
-                console.log(res1)
+                console.log(res1);
                 return {
                   title: res1.data.title,
                   thumbnailUrl: res1.data.thumbnailUrl,
                   startTimestamp: res1.data.startTimestamp,
                   username: res1.data.creator.username,
                   views: res1.data._count.streamView,
-                  streamId: res1.data.streamId
+                  streamId: res1.data.streamId,
                 };
               }
               return null;
@@ -147,8 +150,13 @@ export default function Page({ params }) {
             {isSideBarOpen ? <CrossIcon /> : <MenuIcon />}
           </div>
           <div className="mt-8 flex justify-center items-center">
-            <div className="w-24 h-24 rounded-full bg-[#D9D9D9] border border-[#D9D9D9]">
-              <img src="" alt="pfp" className="rounded-full w-full h-full" />
+            <div
+              className=" rounded-full aspect-square w-36 h-36 shadow-lg flex justify-center items-center"
+              style={{ backgroundColor: color }}
+            >
+              <h2 className="text-5xl font-semibold aspect-square text-center">
+                {user?.firstName ? user?.firstName[0].toUpperCase() : "U"}
+              </h2>
             </div>
             <div className="ml-2">
               <div className="font-semibold text-3xl text-white">
@@ -203,7 +211,9 @@ export default function Page({ params }) {
               <div className="font-medium text-2xl text-white">
                 {isUserTheSame ? "Your" : `${user?.username}'s`} livestreams
               </div>
-              {user.Stream && livestreamsData && livestreamsData.length !== 0 ? (
+              {user.Stream &&
+              livestreamsData &&
+              livestreamsData.length !== 0 ? (
                 <div className="grid screen:grid-cols-3 size1:grid-cols-2 max-md:grid-cols-2 max-sm:grid-cols-1 grid-cols-1">
                   <>
                     {livestreamsData.map((str) => {
@@ -265,7 +275,8 @@ export default function Page({ params }) {
                   {likedStreams && likedStreams.length > 0 ? (
                     <div className="grid screen:grid-cols-3 size1:grid-cols-2 max-md:grid-cols-2 max-sm:grid-cols-1 grid-cols-1">
                       {likedStreams.map((v, idx) => (
-                        <div key={`like-${idx}`}
+                        <div
+                          key={`like-${idx}`}
                           className="max-w-[400px] min-w-[256px] mx-auto w-full"
                         >
                           <Card

@@ -9,6 +9,7 @@ import {
   MenuIcon,
   CrossIcon,
 } from "../../../../public/svgs";
+import "../../../lib/fonts.css"
 import { useEffect, useState } from "react";
 import axios from "axios";
 

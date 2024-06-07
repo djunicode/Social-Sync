@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import useStore from "@/lib/zustand";
 import { generateRandomColor } from "@/lib/utils";
+import "../../lib/fonts.css"
 
 const color = generateRandomColor()
 

@@ -4,6 +4,7 @@ import SearchBar from "@/components/SearchBar";
 import Sidebar from "@/components/Sidebar";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import "../../lib/fonts.css"
 import Cards from "@/components/Card";
 
 import {
