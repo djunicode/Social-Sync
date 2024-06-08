@@ -82,7 +82,7 @@ export default function SidebarWithSearch() {
 
   return (
     <>
-      <div className="flex mb-4">
+      <div className="flex w-full">
         <div
           className={`${
             isSideBarOpen
@@ -92,7 +92,7 @@ export default function SidebarWithSearch() {
         >
           <Sidebar />
         </div>
-        <div className="flex flex-col pt-12 items-center h-full w-full md:ml-[18rem] bg-[#030421] z-0">
+        <div className="flex flex-col pt-12 items-center h-full w-full md:ml-[18rem] bg-[#030421] pb-8 z-0">
           <SearchBar />
           <div
             className={`absolute right-0 mr-5 w-6 h-10 max-md:flex items-center hidden`}

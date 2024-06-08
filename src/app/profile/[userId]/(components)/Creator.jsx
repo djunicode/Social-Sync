@@ -1,10 +1,11 @@
 "use client";
 import { generateRandomColor } from "@/lib/utils";
+import Link from "next/link";
 
-export default function Page({ firstName, lastName, username, userId }) {
+export default function  Creator({ firstName, lastName, username, userId }) {
   const color = generateRandomColor();
   return (
-    <div className="flex flex-col items-center mt-4">
+    <Link href={`/profile/${userId}`} className="flex flex-col items-center mt-4 ">
       <div
         className=" rounded-full aspect-square w-36 h-36 shadow-lg flex justify-center items-center"
         style={{ backgroundColor: color }}
@@ -14,12 +15,12 @@ export default function Page({ firstName, lastName, username, userId }) {
         </h2>
       </div>
       <div className="font-bold text-xl text-white">{`${firstName} ${lastName}`}</div>
-      <a
-        href={`/profile/${userId}`}
+      <div
+        
         className="underline underline-offset-4 decoration-[#867D7D] decoration-solid decoration-2 text-[#867D7D] text-base font-bold hover:cursor-pointer"
       >
         @{username}
-      </a>
-    </div>
+      </div>
+    </Link>
   );
 }

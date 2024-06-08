@@ -69,7 +69,7 @@ export default function Page() {
       </nav>
 
       {/* Landing Page Content */}
-      <div className="flex  lg:h-[calc(100vh-80px)] h-[calc(200vh-80px)] flex-col w-screen justify-center">
+      <div className="flex  lg:h-[calc(100vh-80px)] h-[calc(200vh-80px)] flex-col  justify-center">
 
           <div className="pl-20 pt-20">
             {/* Hello {user?user.username:"user"} */}
@@ -80,7 +80,7 @@ export default function Page() {
               Social Sync
             </h1>
 
-            <button
+            <button onClick={()=>{router.push("/videos")}}
               style={negDiv}
               className="w-[auto] py-2 px-5 font-semibold hover:bg-primary/90 transition-all text-md rounded-full "
             >
