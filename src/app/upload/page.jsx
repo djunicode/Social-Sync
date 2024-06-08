@@ -96,7 +96,7 @@ export default function Page() {
   };
 
   return (
-    <div className="bg-[#020317]  h-full min-h-screen flex flex-col md:flex-row relative">
+    <div className="bg-[#020317] w-[100%] h-screen flex flex-col md:flex-row relative">
       {fileUploading?<div className=" flex w-full h-full bg-black bg-opacity-55 absolute top-0 right-0 justify-center items-center">
         <h3 className=" text-2xl font-bold text-slate-50 animate-ping">Uploading Video...</h3>
       </div>:<></>}
