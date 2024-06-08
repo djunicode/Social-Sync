@@ -94,7 +94,7 @@ export default function Page() {
   };
 
   return (
-    <div className="bg-[#020317] w-screen h-screen flex flex-col md:flex-row relative">
+    <div className="bg-[#020317]  h-full  flex flex-col md:flex-row relative">
       {fileUploading?<div className=" flex w-full h-full bg-black bg-opacity-55 absolute top-0 right-0 justify-center items-center">
         <h3 className=" text-2xl font-bold text-slate-50 animate-ping">Uploading Video...</h3>
       </div>:<></>}
@@ -104,10 +104,10 @@ export default function Page() {
       <div className="md:w-8/12 md:pl-14 md:pt-20 md:pr-12 w-full px-5 pt-10">
         <div
           style={uploadBox}
-          className="w-full h-[55%] bg-[#040629] flex items-center justify-center overflow-clip"
+          className="w-full h-[55%] bg-[#040629] flex items-center justify-center  overflow-clip"
         >
           {storageUrl!==""?
-          <div className=" flex justify-center overflow-clip">
+          <div className=" flex justify-center overflow-clip ">
             <video src={storageUrl} controls autoPlay className=" w-full h-full"/>
           </div>
           :
@@ -130,7 +130,7 @@ export default function Page() {
         </div>
         <div
           style={uploadBox}
-          className=" cursor-pointer overflow-clip m-auto w-[50%] h-[40%] mt-5 bg-[#040629] flex items-center justify-center "
+          className=" cursor-pointer overflow-clip m-auto w-[50%] h-[40%] mt-5 bg-[#040629] flex items-center justify-center  "
           onClick={handleDivClick}
         >
           
@@ -138,6 +138,7 @@ export default function Page() {
             <img
               src={fileUrl}
               alt="Uploaded Thumbnail"
+              className=" rounded-lg"
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           ) : (

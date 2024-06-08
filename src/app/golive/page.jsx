@@ -103,7 +103,7 @@ export default function Page() {
   }, []);
 
   return (
-    <div className="bg-[#020317] w-screen h-screen flex flex-col md:flex-row">
+    <div className="bg-[#020317]  h-screen flex flex-col md:flex-row">
       <div className="md:w-2/12 pl-5 pt-10 w-full">
         <SocialSync />
       </div>

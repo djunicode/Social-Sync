@@ -2,7 +2,7 @@
 import React from "react";
 import dynamic from "next/dynamic";
 
-const payment = () => {
+const Payment = () => {
   return (
     <div className="m-10">
       <h4 className="">Payment page</h4>
@@ -23,4 +23,4 @@ const payment = () => {
   );
 };
 
-export default payment;
+export default Payment;
