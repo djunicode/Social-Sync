@@ -6,6 +6,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { PaginationQuery } from "../../utils/globalSchemas";
 import { streamExists } from "../../utils/stream";
 import { createStreamView } from "../streamView/streamViewController";
+import { addToxicityToComments, cleanPastLiveStrems, startPastLiveVideos } from "../../utils/scripts/cleanup";
 
 // 
 
@@ -306,6 +307,28 @@ export async function deleteStream(request: FastifyRequest<{ Params: { streamId:
         return reply.status(200).send(deletedStream);
     } catch (error) {
         console.error("Error deleting stream:", error);
+        return reply.status(500).send({ error: "Internal Server Error" });
+    }
+}
+
+
+export async function cleanupPastStreams(request: FastifyRequest, reply: FastifyReply) {
+    try {
+        const cleanup = await cleanPastLiveStrems()
+        return reply.status(200).send({updatedStreams: cleanup});
+    } catch (error) {
+        console.error("Error cleaning stream:", error);
+        return reply.status(500).send({ error: "Internal Server Error" });
+    }
+}
+
+
+export async function startPastUploads(request: FastifyRequest, reply: FastifyReply) {
+    try {
+        const cleanup = await addToxicityToComments()
+        return reply.status(200).send({updatedStreams: cleanup});
+    } catch (error) {
+        console.error("Error cleaning stream:", error);
         return reply.status(500).send({ error: "Internal Server Error" });
     }
 }
