@@ -30,6 +30,7 @@ export default function Page({ params }) {
   const [render, setRender] = useState(false);
   const [streamInfo, setStreamInfo] = useState();
   const [messages, setMessages] = useState([]);
+  const [censorhsip, setCensorship] = useState(0.6);
   const [message, setMessage] = useState("");
   const [creatorInfo, setCreatorInfo] = useState();
   const [subscribed, setSubscribed] = useState(false);
@@ -133,7 +134,8 @@ export default function Page({ params }) {
     try {
       const res = await apiHandler.getStream({ streamId });
       if (res.error) {
-        toast(res.error);
+        toast("Stream not found!");
+        router.replace("/videos")
       } else {
         setStreamInfo(res);
         setCreatorInfo(res.creator);
@@ -172,8 +174,8 @@ export default function Page({ params }) {
     getPreviousMessages(params.streamId);
   }, [params]);
 
-  async function handleEnd() {
-    if (!(user && streamInfo && streamInfo.userUserId === user.userId)) return;
+  async function handleEnd(route) {
+    if (!(user && streamInfo && streamInfo.userUserId === user.userId && streamInfo.storageUrl==="")) return window.location.href = route?route:"/videos";
     const res = await apiHandler.endStream({
       endTimestamp: new Date(Date.now()).toISOString(),
       streamId: streamInfo.streamId,
@@ -182,7 +184,7 @@ export default function Page({ params }) {
     console.log(res);
     if (res.error) return toast(res.error);
     toast("Stream ended!");
-    window.location.href = "/videos";
+    window.location.href = route?route:"/videos";
   }
 
   const toggleSubscribe = async () => {
@@ -192,11 +194,19 @@ export default function Page({ params }) {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (subscribed) {
-        const res = axios.delete(
+        const res = await axios.delete(
           `${url}/api/subscriptions/delete/${streamInfo.userUserId}`,
-          {},
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        console.log(res);
+        if(res && res.data){
+          setSubscribed(false);
+        }
+        else{
+          if(res.response.data.message === "Internal Server Error"){
+            setSubscribed(false);
+          }
+        }
       } else {
         const res = await axios.post(
           `${url}/api/subscriptions/`,
@@ -207,6 +217,7 @@ export default function Page({ params }) {
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        console.log(res)
         if (res && res.data) {
           setSubscribed(true);
         }
@@ -228,7 +239,6 @@ export default function Page({ params }) {
         }
       );
       console.log(res);
-      router.back();
     } catch (error) {
       console.error(error);
     }
@@ -236,10 +246,15 @@ export default function Page({ params }) {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const resviewers = await axios.get(
-        `${url}/api/streamView/viewers/${params?.streamId}`
-      );
+      try{
+
+        const resviewers = await axios.get(
+          `${url}/api/streamView/viewers/${params?.streamId}`
+        );
       setViewers(resviewers.data.liveViewers);
+      } catch(error){
+        console.log(error)
+      }
     }, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -247,27 +262,27 @@ export default function Page({ params }) {
   return (
     <>
       {render && streamInfo && creatorInfo ? (
-        <div className="bg-[#020317] h-[96vh]">
-          <div className="flex items-center mt-9">
+        <div className="bg-[#020317] h-full flex flex-grow flex-col min-h-screen">
+          <div className="flex items-center pt-8">
             <div
               className="ml-2.5 hover:cursor-pointer"
-              onClick={() => handleExitStream()}
+              onClick={() => {handleExitStream(); handleEnd("/videos")}}
             >
               <ArrowLeft />
             </div>
             <div
               className="ml-3.5 mt-1 hover:cursor-pointer"
-              onClick={() => router.replace("/home")}
+              onClick={() => {handleExitStream();handleEnd("/")}}
             >
               <SocialSync />
             </div>
           </div>
           <div className="mt-9 md:pl-16 md:pr-16 sm:pl-12 sm:pr-12 xs:pl-8 xs:pr-8 pl-4 pr-4 pt-1 h-5/6 ">
             <div className="lg:flex justify-between lg:h-full">
-              <div className="lg:w-[64.5%]">
+              <div className="lg:w-[64.5%] flex flex-col">
                 <div
                   style={streamBox}
-                  className="lg:h-5/6 sm:h-[50vh] xs:h-[45vh] h-[35vh] overflow-clip relative"
+                  className="lg:h-full w-full aspect-video sm:h-[50vh] xs:h-[45vh] h-[35vh] overflow-clip relative"
                 >
                   {streamInfo && streamInfo.storageUrl ? (
                     <video
@@ -290,7 +305,7 @@ export default function Page({ params }) {
                     />
                   )}
                 </div>
-                <div className="h-2/6 p-2 mt-2">
+                <div className="bg-[#020317] py-5 mt-2 w-full">
                   <div>
                     <h1 className="text-4xl font-bold">{streamInfo.title}</h1>
                   </div>
@@ -342,8 +357,7 @@ export default function Page({ params }) {
                   </div>
                   <div className="text-[#867D7D] mt-1">
                     <p className="font-semibold sm:text-base text-sm leading-4">
-                      {/* {streamInfo._count.StreamView} views */}
-                      {viewers} users viewing
+                      {streamInfo?._count?.StreamView || viewers} views
                     </p>
                     <p className="font-medium sm:text-lg text-base">
                       {streamInfo.description}
@@ -351,20 +365,31 @@ export default function Page({ params }) {
                   </div>
                 </div>
               </div>
+
               <div className="lg:w-[31.5%] flex flex-col gap-5">
                 {user &&
                 streamInfo &&
                 streamInfo.userUserId === user.userId &&
                 !streamInfo.storageUrl ? (
                   <button
-                    onClick={handleEnd}
+                    onClick={()=>handleEnd("/videos")}
                     className=" py-3 px-6 rounded-xl w-full bg-red-500 hover:bg-red-600 text-white text-lg font-semibold"
                   >
                     End Stream
                   </button>
                 ) : (
+                  
                   <></>
                 )}
+                {user &&
+                streamInfo &&
+                streamInfo.userUserId === user.userId?
+                <div className=" flex flex-col">
+                  <label htmlFor="censorship">Censorship: {censorhsip}</label>
+                   <input className=" w-full bg-red-500" type="range" step={0.05} name="censorship" id="censorship" value={censorhsip} onChange={(e)=>setCensorship(parseFloat(e.target.value))} max={1} min={0} />
+                   </div>
+                  :<></>
+                }
                 <div className="lg:h-full h-[75vh] border-[3px] rounded-3xl border-[#ffffff] bg-[#2E2F3F] bg-opacity-60 border-opacity-30 p-2 pr-3 pl-3 relative">
                   <div className="text-2xl font-bold leading-7 text-[#FF8E00] text-center m-2">
                     Live chat
@@ -374,7 +399,7 @@ export default function Page({ params }) {
                     className="mt-4 overflow-y-auto pr-2 h-[74%]"
                   >
                     {messages.map((item, ind) => {
-                      return <Message key={ind} message={item} />;
+                      return <Message censorhsip={censorhsip} key={ind} message={item} />;
                     })}
                     {/* <Message />
                     <Message />
@@ -420,6 +445,7 @@ export default function Page({ params }) {
                   </div>
                 </div>
               </div>
+
               <div className="max-lg:h-16"></div>
             </div>
           </div>

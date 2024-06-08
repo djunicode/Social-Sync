@@ -1,13 +1,14 @@
 "use client";
 import React from "react";
 import { generateRandomColor } from "@/lib/utils";
+import Link from "next/link";
 
-const color = generateRandomColor()
 const Cards = ({ thumbnail, title, username, views, date, streamId, userId }) => {
+  const color = generateRandomColor()
   return (
     <div className="m-2">
-      <div className="bg-gray-800 rounded-lg ">
-        <a
+      <div className="bg-gray-800 rounded-lg overflow-clip ">
+        <Link
           href={`/stream/${streamId}`}
           className="rounded-lg overflow-hidden mb-3"
         >
@@ -19,7 +20,7 @@ const Cards = ({ thumbnail, title, username, views, date, streamId, userId }) =>
             alt="Thumbnail"
             className="w-full h-40 object-cover"
           />
-        </a>
+        </Link>
         <h3 className="text-white text-lg ml-3 mt-2 mb-1">
           {title || "Title of stream here"}
         </h3>
@@ -32,10 +33,10 @@ const Cards = ({ thumbnail, title, username, views, date, streamId, userId }) =>
               {username ? username[0].toUpperCase() : "U"}
             </h2>
           </div>
-          <a href={`/profile/${userId}`} className="text-white text-sm">{username || "@user123"}</a>
+          <Link href={`/profile/${userId}`} className="text-white text-sm">{username || "@user123"}</Link>
         </div>
 
-        <p className="text-gray-400 ml-3 mb-3 text-sm">
+        <p className="text-gray-400 ml-3 pb-2 text-sm">
           {views || "00,000"} views · {date?.split("T")[0] || "dd/mm/yyyy"}
         </p>
       </div>

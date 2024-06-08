@@ -7,7 +7,7 @@ export default function Page() {
       <div className=' w-fit flex flex-col gap-6 justify-center items-center'>
         <Link href={'/'} className='flex flex-row w-full gap-2 justify-center items-center'>
           <div className=' w-16 h-16 bg-primary rounded-full'></div>
-          <h1 className=' md:text-6xl text-4xl font-semibold text-slate-50'>SiteName</h1>
+          <h1 className=' md:text-6xl text-4xl font-semibold text-slate-50'>SocialSync</h1>
         </Link>
         <section className=' flex w-[80vw] lg:max-w-[35vw] md:max-w-[60vw] flex-col justify-start items-center md:p-12 p-6 bg-[#1d1d2f] rounded-3xl border-2 border-slate-50'>
           <h2 className=' md:text-4xl text-2xl font-semibold'>Login to your account</h2>

@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { generateRandomColor } from "@/lib/utils";
 
-const color = generateRandomColor();
 const SearchCard = ({
   title,
   views,
@@ -13,8 +12,9 @@ const SearchCard = ({
   streamId,
   thumbnail,
   firstName,
-}) => {
-  return (
+  }) => {
+    const color = generateRandomColor();
+    return (
     <div className="flex items-center w-full h-40 rounded-3xl relative border-2 border-white border-opacity-20 bg-[#2E2F3F] bg-opacity-60">
       <Link
         href={`/stream/${streamId}`}

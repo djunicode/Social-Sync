@@ -21,6 +21,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { generateRandomColor } from "@/lib/utils";
 import axios from "axios";
+import Link from "next/link";
 
 const color = generateRandomColor()
 const Sidebar = memo(() => {
@@ -67,21 +68,21 @@ const Sidebar = memo(() => {
 
   return (
     <div className="flex">
-      <Card className="h-screen fixed bg-[#1C1D2F] md:w-full max-w-[18rem] p-4 pt-6 shadow-xl shadow-blue-gray-900/5">
+      <Card className="h-screen fixed bg-[#1C1D2F] rounded-none md:w-full max-w-[18rem] p-4 pt-6 shadow-xl shadow-blue-gray-900/5">
         <div className="flex justify-center text-3xl items-center mb-8 mt-5 text-[#FF8E00]">
-          <a href="/home">
+          <Link href="/">
             <SocialSync />
-          </a>
+          </Link>
         </div>
-        <div className="flex items-center ml-3 mb-5 mt-5 ">
+        <Link href={`/profile/${user?.userId}`}  className="flex items-center ml-3 mb-5 mt-5 ">
           <div className=" rounded-full aspect-square px-4 shadow-lg flex justify-center items-center" style={{backgroundColor:color}}>
             <h2 className=" text-xl font-semibold aspect-square text-center">{user?user.firstName[0].toUpperCase():"U"}</h2>
           </div>
           <div className="ml-3">
             <h2 className="text-xl font-bold text-white">{user?user.firstName:"User"}</h2>
-            <a href={`/profile/${user?.userId}`} className="text-gray-400 hover:text-gray-300">@{user?user.username:"username"}</a>
+            <div className="text-gray-400 hover:text-gray-300">@{user?user.username:"username"}</div>
           </div>
-        </div>
+        </Link>
         <List>
           <Accordion
             open={open === 1}
@@ -102,7 +103,7 @@ const Sidebar = memo(() => {
                 color="blue-gray"
                 className="mr-auto focus:bg-[#F16602] font-normal"
               >
-                <a href="/videos">Home</a>
+                <Link href="/videos">Home</Link>
               </Typography>
             </ListItem>
           </Accordion>
@@ -122,7 +123,7 @@ const Sidebar = memo(() => {
                 <IoCompassOutline className="h-7 w-7 mr-2" />
               </ListItemPrefix>
               <Typography color="blue-gray" className="mr-auto font-normal">
-                <a href="/explore">Explore</a>
+                <Link href="/explore">Explore</Link>
               </Typography>
             </ListItem>
           </Accordion>
@@ -156,7 +157,7 @@ const Sidebar = memo(() => {
                   <>
                     {subscriptions.map((s, idx) => {
                       return (
-                        <a key={`sub-${idx}`} href={`/profile/${s.userId}`}>
+                        <Link key={`sub-${idx}`} href={`/profile/${s.userId}`}>
                           <ListItem className="hover:cursor-pointer hover:text-gray-200">
                             <ListItemPrefix>
                               <FaCircleUser
@@ -166,7 +167,7 @@ const Sidebar = memo(() => {
                             </ListItemPrefix>
                             {s.username}
                           </ListItem>
-                        </a>
+                        </Link>
                       );
                     })}
                   </>
