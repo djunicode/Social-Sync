@@ -64,6 +64,7 @@ model Vote {
 model Comment {
   commentId      String        @id @default(uuid())
   content        String
+  toxicity         Float?
   createdAt      DateTime      @default(now())
   videoTimestamp DateTime
   streamStreamId String

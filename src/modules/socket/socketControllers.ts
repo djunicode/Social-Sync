@@ -17,31 +17,33 @@ export async function sendMessage(app: FastifyInstance, stream: string, token:st
     app.log.info({message,stream})
     if(message.trim()===""||!token)return
     const toxicity = await detectHateSpeech({text:message});
-    let tolerable = await new Promise<boolean>((resolve, reject)=>{
-        if(!toxicity){
-            console.warn("TOXICITY UNDEFINED!");
-            resolve(true)
-        }else{
-            const toleranceStr = process.env.TOXICITY_TOLERANCE
-            const tolerance = parseFloat(toleranceStr?toleranceStr:"0.6")
-            console.log({tolerance, toxicity})
-            resolve(tolerance>=toxicity)
-        }
-    })
-    const displayDetection = process.env.DISPLAY_TOXICITY_DETECTION;
-    const toxicityMessage = process.env.TOXICITY_MESSAGE
-    console.log({displayDetection, toxicityMessage})
-    if(!tolerable&&displayDetection==="false")return;
+    // let tolerable = await new Promise<boolean>((resolve, reject)=>{
+    //     if(!toxicity){
+    //         console.warn("TOXICITY UNDEFINED!");
+    //         resolve(true)
+    //     }else{
+    //         const toleranceStr = process.env.TOXICITY_TOLERANCE
+    //         const tolerance = parseFloat(toleranceStr?toleranceStr:"0.6")
+    //         console.log({tolerance, toxicity})
+    //         resolve(tolerance>=toxicity)
+    //     }
+    // })
+    // const displayDetection = process.env.DISPLAY_TOXICITY_DETECTION;
+    // const toxicityMessage = process.env.TOXICITY_MESSAGE
+    // console.log({displayDetection, toxicityMessage})
+    // if(!tolerable&&displayDetection==="false")return;
     if(!(await isStream(stream)))return;
     const decoded : {userId:string} = await app.jwt.verify(token);
     const user:User|null = await getUser(decoded.userId);
     if(!user)return;
     const comment = await prisma.comment.create({
         data: {
-            content:tolerable?message:toxicityMessage?toxicityMessage:"[TOXICITY DETECTED]",
+            // content:tolerable?message:toxicityMessage?toxicityMessage:"[TOXICITY DETECTED]",
+            content:message,
             videoTimestamp:new Date(),
             userUserId: user.userId,
-            streamStreamId: stream
+            streamStreamId: stream,
+            toxicity:toxicity
         },
     });
     console.log({comment})

@@ -36,6 +36,7 @@ export async function getComments(request: FastifyRequest<{ Querystring: GetComm
                 content:true,
                 videoTimestamp:true,
                 userUserId:true,
+                toxicity:true,
                 streamStreamId:true,
                 createdAt:true,
                 user:{

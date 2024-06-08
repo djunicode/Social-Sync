@@ -1,7 +1,8 @@
 import { FastifyInstance } from "fastify";
 import { $ref } from "./streamSchema";
-import { createStream, deleteStream , getStream , getStreams,getLiveStreams , getMyStream , updateStream, getMyLikedStreams, getMyDislikedStreams,getStreamBySearch, getStreamByTags } from "./streamControllers";
+import { createStream, deleteStream , getStream , getStreams,getLiveStreams , getMyStream , updateStream, getMyLikedStreams, getMyDislikedStreams,getStreamBySearch, getStreamByTags, startPastUploads } from "./streamControllers";
 import { $globalRef } from "../../utils/globalSchemas";
+import { cleanPastLiveStrems } from "../../utils/scripts/cleanup";
 
 async function streamRoutes(app: FastifyInstance) {
 
@@ -115,6 +116,14 @@ async function streamRoutes(app: FastifyInstance) {
   },
     deleteStream
   );
+
+  app.get("/test/cleanup", {
+    // preHandler: [app.authenticate],
+  },
+    startPastUploads
+  );
 }
+
+
 
 export default streamRoutes;
