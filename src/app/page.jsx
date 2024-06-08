@@ -80,7 +80,7 @@ export default function Page() {
               Social Sync
             </h1>
 
-            <button
+            <button onClick={()=>{router.push("/videos")}}
               style={negDiv}
               className="w-[auto] py-2 px-5 font-semibold hover:bg-primary/90 transition-all text-md rounded-full "
             >

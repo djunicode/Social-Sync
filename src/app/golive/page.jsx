@@ -14,6 +14,7 @@ import useStore from "@/lib/zustand";
 
 export default function Page() {
   const [title, setTitle] = useState("");
+  const [tags, setTags] = useState("");
   const [desc, setDesc] = useState("");
   const videoRef = useRef(null)  
   const fileInputRef = useRef(null);
@@ -58,6 +59,7 @@ export default function Page() {
           title: title,
           description: desc,
           startTimestamp: date,
+          tags:tags.split(","),
           thumbnailUrl: turl,
         },
           {
@@ -152,6 +154,16 @@ export default function Page() {
               className="rounded-lg pl-2 pr-2 outline-none mt-2 md:mt-0 min-[1130px]:ml-2 flex-grow lg:text-2xl text-xl text-[#867D7D]"
               onChange={(e) => setTitle(e.target.value)}
               value={title}
+            />
+          </div>
+          <div className="font-bold min-[1170px]:text-[28px] lg:text-[26px] md:text-[24px] text-[20px] text-white flex flex-col min-[1130px]:flex-row pt-4">
+            <label htmlFor="title">Give the stream some tags:</label>
+            <input
+              type="text"
+              id="tags"
+              className="rounded-lg pl-2 pr-2 outline-none mt-2 md:mt-0 min-[1130px]:ml-2 flex-grow lg:text-2xl text-xl text-[#867D7D]"
+              onChange={(e) => setTags(e.target.value.trim())}
+              value={tags}
             />
           </div>
           <div className="font-bold min-[1170px]:text-[28px] lg:text-[26px] md:text-[24px] text-[20px] text-white mt-4">

@@ -18,6 +18,7 @@ const color = generateRandomColor()
 
 export default function Page() {
   const [title, setTitle] = useState("");
+  const [tags, setTags] = useState("");
   const [desc, setDesc] = useState("");
   const [fileUploading, setFileUploading] = useState(false)
   const [storageUrl, setStorageUrl] = useState("")
@@ -74,6 +75,7 @@ export default function Page() {
           thumbnailUrl: fileUrl,
           storageUrl:storageUrl,
           title: title,
+          tags:tags.split(","),
           description: desc,
           startTimestamp: date,
         },
@@ -94,21 +96,21 @@ export default function Page() {
   };
 
   return (
-    <div className="bg-[#020317]  h-full  flex flex-col md:flex-row relative">
+    <div className="bg-[#020317]  h-full min-h-screen flex flex-col md:flex-row relative">
       {fileUploading?<div className=" flex w-full h-full bg-black bg-opacity-55 absolute top-0 right-0 justify-center items-center">
         <h3 className=" text-2xl font-bold text-slate-50 animate-ping">Uploading Video...</h3>
       </div>:<></>}
       <div className="md:w-2/12 pl-5 pt-10 w-full">
         <SocialSync />
       </div>
-      <div className="md:w-8/12 md:pl-14 md:pt-20 md:pr-12 w-full px-5 pt-10">
+      <div className="md:w-8/12 md:pl-14 md:pt-20 md:pr-12 w-full flex flex-col px-5 pt-10">
         <div
           style={uploadBox}
-          className="w-full h-[55%] bg-[#040629] flex items-center justify-center  overflow-clip"
+          className=" h-[40vh] md:h-[80vh] aspect-video bg-[#040629] pb-10 flex items-center justify-center  overflow-clip"
         >
           {storageUrl!==""?
           <div className=" flex justify-center overflow-clip ">
-            <video src={storageUrl} controls autoPlay className=" w-full h-full"/>
+            <video src={storageUrl} controls autoPlay className=" w-full aspect-video"/>
           </div>
           :
             <div>
@@ -151,7 +153,7 @@ export default function Page() {
             onChange={handleFileChange}
           />
         </div>
-        <div className="pt-8">
+        <div className="py-8 flex flex-col ">
           <div className="font-bold min-[1170px]:text-[28px] lg:text-[26px] md:text-[24px] text-[20px] text-white flex flex-col min-[1130px]:flex-row">
             <label htmlFor="title">Give the stream a title:</label>
             <input
@@ -162,7 +164,17 @@ export default function Page() {
               value={title}
             />
           </div>
-          <div className="font-bold min-[1170px]:text-[28px] lg:text-[26px] md:text-[24px] text-[20px] text-white mt-4">
+          <div className="font-bold min-[1170px]:text-[28px] lg:text-[26px] md:text-[24px] text-[20px] text-white flex flex-col min-[1130px]:flex-row pt-4">
+            <label htmlFor="title">Give the stream some tags:</label>
+            <input
+              type="text"
+              id="tags"
+              className="rounded-lg pl-2 pr-2 outline-none mt-2 md:mt-0 min-[1130px]:ml-2 flex-grow lg:text-2xl text-xl text-[#867D7D]"
+              onChange={(e) => setTags(e.target.value.trim())}
+              value={tags}
+            />
+          </div>
+          <div className="font-bold min-[1170px]:text-[28px] lg:text-[26px] md:text-[24px] text-[20px] text-white pt-4">
             <label htmlFor="desc">
               Enter paragraph description for stream here:
             </label>
