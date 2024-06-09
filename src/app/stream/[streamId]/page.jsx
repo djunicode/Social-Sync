@@ -6,7 +6,6 @@ import {
   Like,
   LikeFilled,
   Share,
-  ThreeDots,
   ArrowLeft,
   SendBtn,
 } from "../../../../public/svgs";
@@ -135,7 +134,7 @@ export default function Page({ params }) {
       const res = await apiHandler.getStream({ streamId });
       if (res.error) {
         toast("Stream not found!");
-        router.replace("/videos")
+        router.replace("/videos");
       } else {
         setStreamInfo(res);
         setCreatorInfo(res.creator);
@@ -160,6 +159,19 @@ export default function Page({ params }) {
           }
         );
         console.log(view);
+        const me = await axios.get(`${url}/api/user/me`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        const record = await axios.post(
+          "https://social-sync-6c4b.onrender.com/record",
+          { userId: me?.data?.userId, streamId: params?.streamId },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        console.log(record)
         setRender(true);
       }
     } catch (error) {
@@ -175,7 +187,15 @@ export default function Page({ params }) {
   }, [params]);
 
   async function handleEnd(route) {
-    if (!(user && streamInfo && streamInfo.userUserId === user.userId && streamInfo.storageUrl==="")) return window.location.href = route?route:"/videos";
+    if (
+      !(
+        user &&
+        streamInfo &&
+        streamInfo.userUserId === user.userId &&
+        streamInfo.storageUrl === ""
+      )
+    )
+      return (window.location.href = route ? route : "/videos");
     const res = await apiHandler.endStream({
       endTimestamp: new Date(Date.now()).toISOString(),
       streamId: streamInfo.streamId,
@@ -184,7 +204,7 @@ export default function Page({ params }) {
     console.log(res);
     if (res.error) return toast(res.error);
     toast("Stream ended!");
-    window.location.href = route?route:"/videos";
+    window.location.href = route ? route : "/videos";
   }
 
   const toggleSubscribe = async () => {
@@ -199,11 +219,10 @@ export default function Page({ params }) {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         console.log(res);
-        if(res && res.data){
+        if (res && res.data) {
           setSubscribed(false);
-        }
-        else{
-          if(res.response.data.message === "Internal Server Error"){
+        } else {
+          if (res.response.data.message === "Internal Server Error") {
             setSubscribed(false);
           }
         }
@@ -217,7 +236,7 @@ export default function Page({ params }) {
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        console.log(res)
+        console.log(res);
         if (res && res.data) {
           setSubscribed(true);
         }
@@ -246,14 +265,13 @@ export default function Page({ params }) {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      try{
-
+      try {
         const resviewers = await axios.get(
           `${url}/api/streamView/viewers/${params?.streamId}`
         );
-      setViewers(resviewers.data.liveViewers);
-      } catch(error){
-        console.log(error)
+        setViewers(resviewers.data.liveViewers);
+      } catch (error) {
+        console.log(error);
       }
     }, 5000);
     return () => clearInterval(interval);
@@ -266,13 +284,19 @@ export default function Page({ params }) {
           <div className="flex items-center pt-8">
             <div
               className="ml-2.5 hover:cursor-pointer"
-              onClick={() => {handleExitStream(); handleEnd("/videos")}}
+              onClick={() => {
+                handleExitStream();
+                handleEnd("/videos");
+              }}
             >
               <ArrowLeft />
             </div>
             <div
               className="ml-3.5 mt-1 hover:cursor-pointer"
-              onClick={() => {handleExitStream();handleEnd("/")}}
+              onClick={() => {
+                handleExitStream();
+                handleEnd("/");
+              }}
             >
               <SocialSync />
             </div>
@@ -349,8 +373,10 @@ export default function Page({ params }) {
                       >
                         <Share />
                       </div>
-                      <div className="rounded-full sm:w-36 sm:h-9 w-28 h-8 max-xs:w-36 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-[#020317] text-xl font-semibold flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer"
-                      onClick={() => toggleSubscribe()}>
+                      <div
+                        className="rounded-full sm:w-36 sm:h-9 w-28 h-8 max-xs:w-36 max-xs:h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-[#020317] text-xl font-semibold flex justify-center items-center sm:ml-4 ml-2 max-xs:ml-3 hover:cursor-pointer"
+                        onClick={() => toggleSubscribe()}
+                      >
                         {subscribed ? "Unsubscribe" : "Subscribe"}
                       </div>
                     </div>
@@ -372,24 +398,34 @@ export default function Page({ params }) {
                 streamInfo.userUserId === user.userId &&
                 !streamInfo.storageUrl ? (
                   <button
-                    onClick={()=>handleEnd("/videos")}
+                    onClick={() => handleEnd("/videos")}
                     className=" py-3 px-6 rounded-xl w-full bg-red-500 hover:bg-red-600 text-white text-lg font-semibold"
                   >
                     End Stream
                   </button>
                 ) : (
-                  
                   <></>
                 )}
-                {user &&
-                streamInfo &&
-                streamInfo.userUserId === user.userId?
-                <div className=" flex flex-col">
-                  <label htmlFor="censorship">Censorship: {censorhsip}</label>
-                   <input className=" w-full bg-red-500" type="range" step={0.05} name="censorship" id="censorship" value={censorhsip} onChange={(e)=>setCensorship(parseFloat(e.target.value))} max={1} min={0} />
-                   </div>
-                  :<></>
-                }
+                {user && streamInfo && streamInfo.userUserId === user.userId ? (
+                  <div className=" flex flex-col">
+                    <label htmlFor="censorship">Censorship: {censorhsip}</label>
+                    <input
+                      className=" w-full bg-red-500"
+                      type="range"
+                      step={0.05}
+                      name="censorship"
+                      id="censorship"
+                      value={censorhsip}
+                      onChange={(e) =>
+                        setCensorship(parseFloat(e.target.value))
+                      }
+                      max={1}
+                      min={0}
+                    />
+                  </div>
+                ) : (
+                  <></>
+                )}
                 <div className="lg:h-full h-[75vh] border-[3px] rounded-3xl border-[#ffffff] bg-[#2E2F3F] bg-opacity-60 border-opacity-30 p-2 pr-3 pl-3 relative">
                   <div className="text-2xl font-bold leading-7 text-[#FF8E00] text-center m-2">
                     Live chat
@@ -399,7 +435,13 @@ export default function Page({ params }) {
                     className="mt-4 overflow-y-auto pr-2 h-[74%]"
                   >
                     {messages.map((item, ind) => {
-                      return <Message censorhsip={censorhsip} key={ind} message={item} />;
+                      return (
+                        <Message
+                          censorhsip={censorhsip}
+                          key={ind}
+                          message={item}
+                        />
+                      );
                     })}
                     {/* <Message />
                     <Message />
