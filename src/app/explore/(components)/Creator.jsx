@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function  Creator({ firstName, lastName, username, userId }) {
   const color = generateRandomColor();
   return (
-    <Link href={`/profile/${userId}`} className="flex flex-col items-center mt-4 ">
+    <Link href={`/profile/${userId}`} className="flex flex-col items-center mt-4 md:w-fit ml-4 mr-4">
       <div
         className=" rounded-full aspect-square w-36 h-36 shadow-lg flex justify-center items-center"
         style={{ backgroundColor: color }}

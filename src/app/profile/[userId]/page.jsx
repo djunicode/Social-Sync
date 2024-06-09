@@ -21,12 +21,12 @@ const color = generateRandomColor();
 export default function Page({ params }) {
   const [render, setRender] = useState(false);
   const [user, setUser] = useState();
-  const [me, setMe] = useState();
   const [isUserTheSame, setIsUserTheSame] = useState(false);
   const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const [livestreamsData, setLivestreamsData] = useState([]);
   const [subscriptions, setSubscriptions] = useState([]);
   const [likedStreams, setLikedStreams] = useState([]);
+  const [watchHistory, setWatchHistory] = useState([]);
 
   const url = process.env.NEXT_PUBLIC_API_URL;
 
@@ -41,20 +41,22 @@ export default function Page({ params }) {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log("Me", response.data);
-      setMe(response.data);
       if (res.data.userId === response.data.userId) {
         setIsUserTheSame(true);
       }
       const livestreamData = await Promise.all(
-        res.data.Stream
-        .filter((stream) => stream.endTimestamp === null)
-        .map(async (stream) => {
-          const res1 = await axios.get(`${url}/api/stream/${stream.streamId}`);
-          console.log(res1.data);
-          return res1.data;
-        })
+        res.data.Stream.filter((stream) => stream.endTimestamp === null).map(
+          async (stream) => {
+            const res1 = await axios.get(
+              `${url}/api/stream/${stream.streamId}`
+            );
+            console.log(res1.data);
+            return res1.data;
+          }
+        )
       );
       setLivestreamsData(livestreamData);
+      console.log(livestreamData)
     } catch (error) {
       console.error(error);
     }
@@ -90,11 +92,9 @@ export default function Page({ params }) {
 
   const getLikedStreams = async () => {
     try {
-      const token = localStorage.getItem("token");
       const res = await axios.get(`${url}/api/vote/my`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      console.log(res);
       if (res && res.data) {
         const likedStreamsData = await Promise.all(
           res.data.map(async (v) => {
@@ -107,10 +107,13 @@ export default function Page({ params }) {
                 return {
                   title: res1.data.title,
                   thumbnailUrl: res1.data.thumbnailUrl,
+                  userUserId: res1.data.userUserId,
                   startTimestamp: res1.data.startTimestamp,
+                  endTimestamp: res1.data.endTimestamp,
                   username: res1.data.creator.username,
-                  views: res1.data._count.streamView,
+                  views: res1.data._count.StreamView,
                   streamId: res1.data.streamId,
+                  storageUrl: res1.data.storageUrl,
                 };
               }
               return null;
@@ -124,10 +127,31 @@ export default function Page({ params }) {
     }
   };
 
+  const getWatchHistory = async () => {
+    try {
+      const res = await axios.get(`${url}/api/streamView/my`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
+      const uniqueStreams = [];
+      const visitedStreamIds = new Set();
+      res.data.forEach((entry) => {
+        if (!visitedStreamIds.has(entry.streamId)) {
+          uniqueStreams.push(entry);
+          visitedStreamIds.add(entry.streamId);
+        }
+      });
+      console.log(uniqueStreams);
+      setWatchHistory(uniqueStreams);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     getData();
     getSubscriptionData();
     getLikedStreams();
+    getWatchHistory();
     setRender(true);
   }, []);
 
@@ -156,7 +180,7 @@ export default function Page({ params }) {
               className=" rounded-full aspect-square w-36 h-36 shadow-lg flex justify-center items-center"
               style={{ backgroundColor: color }}
             >
-              <h2 className="text-5xl font-semibold aspect-square text-center">
+              <h2 className="text-6xl font-semibold aspect-square text-center">
                 {user?.firstName ? user?.firstName[0].toUpperCase() : "U"}
               </h2>
             </div>
@@ -228,10 +252,15 @@ export default function Page({ params }) {
                             title={str.title}
                             thumbnail={str.thumbnailUrl}
                             date={str.startTimestamp}
-                            username={user.username}
-                            views={0}
+                            username={str.creator.username}
+                            views={str._count.StreamView}
                             streamId={str.streamId}
                             userId={str.userUserId}
+                            live={
+                              str.storageUrl === "" && str.endTimestamp === null
+                                ? true
+                                : false
+                            }
                           />
                         </div>
                       );
@@ -244,7 +273,9 @@ export default function Page({ params }) {
                 </div>
               )}
             </div>
-            <div className="mt-6">
+            {isUserTheSame && (
+              <>
+              <div className="mt-6">
               <div className="font-medium text-2xl text-white">
                 Creators {isUserTheSame ? "you're" : `${user?.username} is`}{" "}
                 subscribed to
@@ -269,8 +300,6 @@ export default function Page({ params }) {
                 </div>
               )}
             </div>
-            {isUserTheSame && (
-              <>
                 <div className="mt-7">
                   <div className="font-medium text-2xl text-white">
                     Liked streams
@@ -304,17 +333,29 @@ export default function Page({ params }) {
                   <div className="font-medium text-2xl text-white">
                     Watch history
                   </div>
-                  <div className="grid screen:grid-cols-3 size1:grid-cols-2 max-md:grid-cols-2 max-sm:grid-cols-1 grid-cols-1">
-                    <div className="max-w-[400px] min-w-[256px] mx-auto w-full">
-                      <Card />
+                  {watchHistory && watchHistory.length !== 0 ? (
+                    <div className="grid screen:grid-cols-3 size1:grid-cols-2 max-md:grid-cols-2 max-sm:grid-cols-1 grid-cols-1">
+                      {watchHistory.map((v, idx) => (
+                        <div
+                          key={idx}
+                          className="max-w-[400px] min-w-[256px] mx-auto w-full"
+                        >
+                          <Card
+                            title={v.Stream.title}
+                            thumbnail={v.Stream.thumbnailUrl}
+                            date={v.Stream.startTimestamp}
+                            username={v.Stream.creator.username}
+                            streamId={v.streamId}
+                            watchTime={v.createdAt}
+                          />
+                        </div>
+                      ))}
                     </div>
-                    <div className="max-w-[400px] min-w-[256px] mx-auto w-full">
-                      <Card />
+                  ) : (
+                    <div className="mt-8 mb-8 text-center text-red-400">
+                      No liked streams
                     </div>
-                    <div className="max-w-[400px] min-w-[256px] mx-auto w-full">
-                      <Card />
-                    </div>
-                  </div>
+                  )}
                 </div>
               </>
             )}

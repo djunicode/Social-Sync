@@ -12,6 +12,7 @@ const Cards = ({
   streamId,
   userId,
   live,
+  watchTime,
 }) => {
   const color = generateRandomColor();
   return (
@@ -50,11 +51,23 @@ const Cards = ({
           </Link>
         </div>
 
-        <p className="text-gray-400 ml-3 pb-2 text-base font-semibold mr-3 flex justify-between">
-          <span>{views || "00,000"} views</span>
-          <span>
-            {live ? <div className="text-base text-medium text-white"><span className="text-[#D20713]">· </span> Live</div> : <>{date?.split("T")[0] || "dd/mm/yyyy"}</>}
-          </span>
+        <p className="text-gray-400 ml-3 pb-2 text-base font-semibold mr-3">
+          {watchTime ? (
+            <div>Watched on {watchTime?.split("T")[0]}</div>
+          ) : (
+            <div className="flex justify-between">
+              <span>{views || "00,000"} views</span>
+              <span>
+                {live ? (
+                  <div className="text-base text-medium text-white">
+                    <span className="text-[#D20713]">· </span> Live
+                  </div>
+                ) : (
+                  <>{date?.split("T")[0] || "dd/mm/yyyy"}</>
+                )}
+              </span>
+            </div>
+          )}
         </p>
       </div>
     </div>

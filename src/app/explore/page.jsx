@@ -172,7 +172,7 @@ export default function ExplorePage() {
             </h2>
           </div>
           {exploreCreators && exploreCreators.length !== 0 ? (
-            <div className="mt-4 grid screen:grid-cols-5 lg:grid-cols-4 size1:grid-cols-3 md:grid-cols-2 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 w-full">
+            <div className="mt-4 grid screen:grid-cols-5 lg:grid-cols-4 size1:grid-cols-3 md:grid-cols-2 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 md:w-full md:pl-16 md:pr-10">
               {exploreCreators.slice(0, 8).map((s, idx) => {
                 return (
                   <Creator
