@@ -9,15 +9,15 @@ import "../../lib/fonts.css";
 import { MenuIcon, CrossIcon } from "lucide-react";
 
 export default function SidebarWithSearch() {
-  const [isSideBarOpen, setIsSideBarOpen] = React.useState(false);
-  const [livestreams, setLivestreams] = React.useState([]);
-  const [tagStreams, setTagStreams] = React.useState([]);
-  const [selectedTag, setSelectedTag] = React.useState("all");
+  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+  const [livestreams, setLivestreams] = useState([]);
+  const [tagStreams, setTagStreams] = useState([]);
+  const [selectedTag, setSelectedTag] = useState("all");
   const url = process.env.NEXT_PUBLIC_API_URL;
 
   const fetchData = async () => {
     try {
-      const resp1 = await axios.get(`${url}/api/subscriptions/myStreams`, {
+      const resp1 = await axios.get(`${url}/api/subscriptions/myLive`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       const streamIds = [];
@@ -33,7 +33,6 @@ export default function SidebarWithSearch() {
           const response = await axios.get(`${url}/api/stream/${sId}`);
           return response.data;
         } catch (error) {
-          console.log(`Stream with ID ${sId} does not exist`);
           return null;
         }
       });
@@ -41,7 +40,6 @@ export default function SidebarWithSearch() {
       const validLiveStreams = liveStreamDetails.filter(
         (details) => details !== null
       );
-      console.log(validLiveStreams);
       setLivestreams(validLiveStreams);
     } catch (error) {
       console.error("Error fetching data from API:", error);
@@ -112,10 +110,10 @@ export default function SidebarWithSearch() {
                   className="hidden"
                 />
                 <span
-                  className={`inline-block bg-[#1C1D2F] hover:bg-gray-800 border border-b-1 max-sm:text-sm max-sm:px-4 text-white font-bold py-2 px-7 rounded-[30px] cursor-pointer ${
+                  className={`inline-block hover:bg-gray-600 border border-[#FFFFFF] border-opacity-30 max-sm:text-sm max-sm:px-4 font-bold py-2 px-7 rounded-3xl hover:cursor-pointer ${
                     selectedTag === "all"
-                      ? "focus:bg-[#F16602] bg-[#F16602]"
-                      : ""
+                      ? "focus:bg-[#F16602] bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-black"
+                      : "bg-[#2E2F3F] text-white"
                   }`}
                 >
                   All
@@ -133,10 +131,10 @@ export default function SidebarWithSearch() {
                   className="hidden"
                 />
                 <span
-                  className={`inline-block bg-[#1C1D2F] hover:bg-gray-800 border border-b-1 max-sm:text-sm max-sm:px-4 text-white font-bold py-2 px-7 rounded-[30px] cursor-pointer ${
+                  className={`inline-block hover:bg-gray-600 border border-[#FFFFFF] border-opacity-30 max-sm:text-sm max-sm:px-4 font-bold py-2 px-7 rounded-3xl hover:cursor-pointer ${
                     selectedTag === "project"
-                      ? "focus:bg-[#F16602] bg-[#F16602]"
-                      : ""
+                      ? "focus:bg-[#F16602] bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-black"
+                      : "bg-[#2E2F3F] text-white"
                   }`}
                 >
                   Project
@@ -154,10 +152,10 @@ export default function SidebarWithSearch() {
                   className="hidden"
                 />
                 <span
-                  className={`inline-block bg-[#1C1D2F] hover:bg-gray-800 border border-b-1 max-sm:text-sm max-sm:px-4 text-white font-bold py-2 px-7 rounded-[30px] cursor-pointer ${
+                  className={`inline-block hover:bg-gray-600 border border-[#FFFFFF] border-opacity-30 max-sm:text-sm max-sm:px-4 font-bold py-2 px-7 rounded-3xl hover:cursor-pointer ${
                     selectedTag === "unicode"
-                      ? "focus:bg-[#F16602] bg-[#F16602]"
-                      : ""
+                      ? "focus:bg-[#F16602] bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-black"
+                      : "bg-[#2E2F3F] text-white"
                   }`}
                 >
                   Unicode
@@ -175,10 +173,10 @@ export default function SidebarWithSearch() {
                   className="hidden"
                 />
                 <span
-                  className={`inline-block bg-[#1C1D2F] hover:bg-gray-800 border border-b-1 max-sm:text-sm max-sm:px-4 text-white font-bold py-2 px-7 rounded-[30px] cursor-pointer ${
+                  className={`inline-block hover:bg-gray-600 border border-[#FFFFFF] border-opacity-30 max-sm:text-sm max-sm:px-4 font-bold py-2 px-7 rounded-3xl hover:cursor-pointer ${
                     selectedTag === "science"
-                      ? "focus:bg-[#F16602] bg-[#F16602]"
-                      : ""
+                      ? "focus:bg-[#F16602] bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-black"
+                      : "bg-[#2E2F3F] text-white"
                   }`}
                 >
                   Science
@@ -186,8 +184,8 @@ export default function SidebarWithSearch() {
               </label>
             </div>
           </div>
-          <div className="items-start flex-1">
-            <h2 className="text-white text-xl mt-10 flex m-4">
+          <div className="w-full pl-10 pr-10 max-xs:pl-2">
+            <h2 className="text-white text-2xl max-xs:text-lg font-medium mt-10 m-4">
               From famous creators
             </h2>
           </div>
@@ -205,11 +203,14 @@ export default function SidebarWithSearch() {
                         thumbnail={str.thumbnailUrl}
                         date={str.startTimestamp}
                         username={str.creator.username}
-                        views={
-                          str?._count?.StreamView || str?.StreamView?.length
-                        }
+                        views={str?._count?.StreamView}
                         streamId={str.streamId}
                         userId={str.userUserId}
+                        live={
+                          str.storageUrl === "" && str.endTimestamp === null
+                            ? true
+                            : false
+                        }
                       />
                     </div>
                   );
@@ -218,13 +219,15 @@ export default function SidebarWithSearch() {
             </div>
           ) : (
             <div className="mt-8 mb-8 text-center text-red-400">
-              No livestreams!
+              No videos available!
             </div>
           )}
           <hr className="w-1/2 mx-auto my-5 border-0 h-px bg-slate-500" />
-          <h2 className="text-white text-xl mb-4 text-center">
-            Creators currently live from your subscriptions
-          </h2>
+          <div className="w-full pl-10 pr-10 max-xs:pl-2 ">
+            <h2 className="text-white text-2xl max-xs:text-lg font-medium m-4">
+              Creators currently live from your subscriptions
+            </h2>
+          </div>
           {livestreams && livestreams.length !== 0 ? (
             <div className="grid screen:grid-cols-3 size1:grid-cols-2 max-md:grid-cols-2 max-sm:grid-cols-1 grid-cols-1 w-full">
               <>
@@ -242,6 +245,11 @@ export default function SidebarWithSearch() {
                         views={str._count.StreamView}
                         streamId={str.streamId}
                         userId={str.userUserId}
+                        live={
+                          str.storageUrl === "" && str.endTimestamp === null
+                            ? true
+                            : false
+                        }
                       />
                     </div>
                   );
@@ -250,7 +258,7 @@ export default function SidebarWithSearch() {
             </div>
           ) : (
             <div className="mt-8 mb-8 text-center text-red-400">
-              No livestreams!
+              No livestreams from your subscriptions!
             </div>
           )}
         </div>

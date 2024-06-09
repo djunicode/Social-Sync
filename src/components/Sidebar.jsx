@@ -1,6 +1,13 @@
 "use client";
 import React, { useEffect, useState, memo } from "react";
-import { SocialSync } from "../../public/svgs";
+import {
+  SocialSync,
+  HomeIcon,
+  HomeIconSelected,
+  ExploreIcon,
+  ExploreIconSelected,
+  SubscriptionIcon,
+} from "../../public/svgs";
 import useStore from "@/lib/zustand";
 import {
   Card,
@@ -12,23 +19,19 @@ import {
   AccordionHeader,
   AccordionBody,
 } from "@material-tailwind/react";
-import { IoMdHome } from "react-icons/io";
-import { IoCompassOutline } from "react-icons/io5";
-import { RiMenuAddLine } from "react-icons/ri";
 import { FaCircleUser } from "react-icons/fa6";
-import {
-  ChevronDownIcon,
-} from "@heroicons/react/24/outline";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { generateRandomColor } from "@/lib/utils";
 import axios from "axios";
 import Link from "next/link";
 
-const color = generateRandomColor()
+const color = generateRandomColor();
 const Sidebar = memo(() => {
   const [open, setOpen] = React.useState(0);
-  const {user} = useStore();
-  console.log(user)
-  const [subscriptions,setSubscriptions] = React.useState([])
+  const { user } = useStore();
+  console.log(user);
+  const [subscriptions, setSubscriptions] = React.useState([]);
+  const [location, setLocation] = React.useState("");
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
   };
@@ -64,26 +67,39 @@ const Sidebar = memo(() => {
   };
   useEffect(() => {
     getData();
+    setLocation(window?.location?.pathname);
   }, []);
 
   return (
     <div className="flex">
-      <Card className="h-screen fixed bg-[#1C1D2F] rounded-none md:w-full max-w-[18rem] p-4 pt-6 shadow-xl shadow-blue-gray-900/5">
+      <Card className="h-screen fixed bg-[#1C1D2F] rounded-none md:w-full max-w-[18rem] p-4 pt-6 shadow-xl shadow-blue-gray-900/5 border-r-2 rounded-r-3xl border-[#FFFFFF] border-opacity-30">
         <div className="flex justify-center text-3xl items-center mb-8 mt-5 text-[#FF8E00]">
           <Link href="/">
             <SocialSync />
           </Link>
         </div>
-        <Link href={`/profile/${user?.userId}`}  className="flex items-center ml-3 mb-5 mt-5 ">
-          <div className=" rounded-full aspect-square px-4 shadow-lg flex justify-center items-center" style={{backgroundColor:color}}>
-            <h2 className=" text-xl font-semibold aspect-square text-center">{user?user.firstName[0].toUpperCase():"U"}</h2>
+        <Link
+          href={`/profile/${user?.userId}`}
+          className="flex items-center ml-3 mb-5 mt-10"
+        >
+          <div
+            className=" rounded-full aspect-square px-4 shadow-lg flex justify-center items-center"
+            style={{ backgroundColor: color }}
+          >
+            <h2 className=" text-xl font-semibold aspect-square text-center">
+              {user ? user.firstName[0].toUpperCase() : "U"}
+            </h2>
           </div>
           <div className="ml-3">
-            <h2 className="text-xl font-bold text-white">{user?user.firstName:"User"}</h2>
-            <div className="text-gray-400 hover:text-gray-300">@{user?user.username:"username"}</div>
+            <h2 className="text-xl font-bold text-white">
+              {user ? user.firstName : "User"} {user ? user.lastName : "123"}
+            </h2>
+            <div className="text-gray-400 hover:text-gray-300 underline underline-offset-[4px]">
+              @{user ? user.username : "username"}
+            </div>
           </div>
         </Link>
-        <List>
+        <List className="mt-10">
           <Accordion
             open={open === 1}
             icon={
@@ -95,13 +111,22 @@ const Sidebar = memo(() => {
               />
             }
           >
-            <ListItem className="p-3 border-b-0" selected={open === 1}>
+            <ListItem
+              className={`p-3 border-b-0 ${
+                location === "/videos" ? "text-[#FF8E00]" : ""
+              }`}
+              selected={open === 1}
+            >
               <ListItemPrefix>
-                <IoMdHome className="h-7 w-7 mr-2" />
+                {location === "/videos" ? (
+                  <HomeIconSelected />
+                ) : (
+                  <HomeIcon />
+                )}
               </ListItemPrefix>
               <Typography
                 color="blue-gray"
-                className="mr-auto focus:bg-[#F16602] font-normal"
+                className="mr-auto focus:bg-[#F16602] font-semibold text-xl"
               >
                 <Link href="/videos">Home</Link>
               </Typography>
@@ -118,11 +143,23 @@ const Sidebar = memo(() => {
               />
             }
           >
-            <ListItem className="border-b-0 p-3" selected={open === 2}>
+            <ListItem
+              className={`border-b-0 p-3 ${
+                location === "/explore" ? "text-[#FF8E00]" : ""
+              }`}
+              selected={open === 2}
+            >
               <ListItemPrefix>
-                <IoCompassOutline className="h-7 w-7 mr-2" />
+                {location === "/explore" ? (
+                  <ExploreIconSelected />
+                ) : (
+                  <ExploreIcon />
+                )}
               </ListItemPrefix>
-              <Typography color="blue-gray" className="mr-auto font-normal">
+              <Typography
+                color="blue-gray"
+                className="mr-auto font-semibold text-xl"
+              >
                 <Link href="/explore">Explore</Link>
               </Typography>
             </ListItem>
@@ -144,9 +181,12 @@ const Sidebar = memo(() => {
                 className="border-b-0 p-3"
               >
                 <ListItemPrefix>
-                  <RiMenuAddLine className="h-7 w-7 mr-2" />
+                  <SubscriptionIcon />
                 </ListItemPrefix>
-                <Typography color="blue-gray" className="mr-auto font-normal">
+                <Typography
+                  color="blue-gray"
+                  className="mr-auto font-semibold text-xl"
+                >
                   Subscription
                 </Typography>
               </AccordionHeader>
@@ -158,14 +198,14 @@ const Sidebar = memo(() => {
                     {subscriptions.map((s, idx) => {
                       return (
                         <Link key={`sub-${idx}`} href={`/profile/${s.userId}`}>
-                          <ListItem className="hover:cursor-pointer hover:text-gray-200">
+                          <ListItem className="hover:cursor-pointer hover:text-gray-200 text-gray-400 underline underline-offset-[3px]">
                             <ListItemPrefix>
                               <FaCircleUser
                                 strokeWidth={4}
                                 className="h-5 w-5 mr-2"
                               />
                             </ListItemPrefix>
-                            {s.username}
+                            @{s.username}
                           </ListItem>
                         </Link>
                       );
@@ -180,5 +220,5 @@ const Sidebar = memo(() => {
     </div>
   );
 });
-Sidebar.displayName="Sidebar"
+Sidebar.displayName = "Sidebar";
 export default Sidebar;

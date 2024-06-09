@@ -10,88 +10,62 @@ import "../../lib/fonts.css";
 
 export default function ExplorePage() {
   const [isSideBarOpen, setIsSideBarOpen] = React.useState(false);
-  const [streams1, setStreams1] = React.useState([]);
-  const [streams2, setStreams2] = React.useState([]);
+  const [videos, setVideos] = React.useState([]);
+  const [streams, setStreams] = React.useState([]);
   const [exploreCreators, setExploreCreators] = React.useState([]);
+
   const url = process.env.NEXT_PUBLIC_API_URL;
+
   const getData = async () => {
     try {
       const user = await axios.get(`${url}/api/user/me`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-      const res = await axios.get(
+      const recommend = await axios.get(
         `https://social-sync-6c4b.onrender.com/recommend/${user?.data?.userId}`
       );
-      const recommendedStreamIds = res.data;
-      const streamDetailsPromise = recommendedStreamIds.map((streamId) =>
+      const recommendPromise = await recommend.data.map((streamId) =>
         axios.get(`${url}/api/stream/${streamId}`)
       );
-      const streamDetails = await Promise.all(streamDetailsPromise);
-      const streams = streamDetails.map((response) => response.data);
-      console.log(streams);
-      setStreams1(streams);
-      if (streams.length === 0) {
-        const s1 = await axios.get(`${url}/api/stream/all`);
-        let s1data = [];
-        s1data.push(s1.data?.[0]);
-        s1data.push(s1.data?.[1]);
-        s1data.push(s1.data?.[2]);
-        setStreams1(s1data);
+      const recommendDetails = await Promise.all(recommendPromise);
+      const recommendVideos = recommendDetails.map((response) => response.data);
+      setVideos(recommendVideos);
+      if (recommendVideos.length === 0) {
+        const v1 = await axios.get(`${url}/api/stream/all`);
+        let v1data = await v1.data.filter((v) => v.storageUrl !== "");
+        setVideos(v1data.slice(0, 6));
       }
-      const resp1 = await axios.get(`${url}/api/subscriptions/myStreams`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-      const resp2 = await axios.get(`${url}/api/user/all`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-      let userIdsFromResp1 = [];
-      if (resp1) {
-        userIdsFromResp1 = await resp1.data.map((user) => user.creatorUserId);
-        userIdsFromResp1.push(resp1.data[0].userUserId);
-      }
-      const filteredResp2 = await resp2.data.filter(
-        (user) => !userIdsFromResp1.includes(user.userId)
+      const s1 = await axios.get(`${url}/api/stream/all`);
+      let s1data = await s1.data.filter(
+        (s) => s.storageUrl === "" && s.endTimestamp === null
       );
-      setExploreCreators(filteredResp2);
-      const streamIds = [];
-      resp1.data.forEach((subscription) => {
-        subscription.User_Subscriptions_creatorUserIdToUser.Stream.forEach(
-          (stream) => {
-            streamIds.push(stream.streamId);
-          }
-        );
-      });
-      const streamsPromises = streamIds.map(async (sId) => {
-        try {
-          const response = await axios.get(`${url}/api/stream/${sId}`);
-          return response.data;
-        } catch (error) {
-          console.log(`Stream with ID ${sId} does not exist`);
-          return null;
-        }
-      });
-      const liveStreamDetails = await Promise.all(streamsPromises);
-      const validLiveStreams = liveStreamDetails.filter(
-        (details) => details !== null
-      );
-      console.log(validLiveStreams);
-      setStreams2(validLiveStreams);
-      if (!validLiveStreams || validLiveStreams.length === 0) {
-        const s2 = await axios.get(`${url}/api/stream/all`);
-        let s2data = [];
-        s2data.push(s2.data?.[3]);
-        s2data.push(s2.data?.[4]);
-        s2data.push(s2.data?.[5]);
-        setStreams2(s2data);
-        console.log(s2);
-      }
+      setStreams(s1data.slice(0, 6));
     } catch (error) {
       console.error(error);
     }
   };
 
+  const getCreators = async () => {
+    const resp1 = await axios.get(`${url}/api/subscriptions/myStreams`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    const resp2 = await axios.get(`${url}/api/user/all`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    let userIdsFromResp1 = [];
+    if (resp1) {
+      userIdsFromResp1 = await resp1.data.map((user) => user.creatorUserId);
+      userIdsFromResp1.push(resp1.data[0].userUserId);
+    }
+    const filteredResp2 = await resp2.data.filter(
+      (user) => !userIdsFromResp1.includes(user.userId)
+    );
+    setExploreCreators(filteredResp2);
+  };
+
   React.useEffect(() => {
     getData();
+    getCreators();
   }, []);
 
   return (
@@ -114,15 +88,15 @@ export default function ExplorePage() {
           >
             {isSideBarOpen ? <CrossIcon /> : <MenuIcon />}
           </div>
-          <div className="items-start flex-1">
-            <h2 className="text-white text-xl mt-10 flex m-4 text-center">
-              Explore streams
+          <div className="w-full pl-10 pr-10 max-xs:pl-2">
+            <h2 className="text-white text-2xl max-xs:text-lg font-medium mt-10 m-4">
+              Explore streams from other creators
             </h2>
           </div>
-          {streams1 && streams1.length !== 0 ? (
-            <div className="grid screen:grid-cols-3 size1:grid-cols-2 max-md:grid-cols-2 max-sm:grid-cols-1 grid-cols-1">
+          {videos && videos.length !== 0 ? (
+            <div className="grid screen:grid-cols-3 size1:grid-cols-2 max-md:grid-cols-2 max-sm:grid-cols-1 grid-cols-1 w-full">
               <>
-                {streams1.map((str) => {
+                {videos.map((str) => {
                   return (
                     <div
                       key={str.streamId}
@@ -136,6 +110,11 @@ export default function ExplorePage() {
                         views={str._count.StreamView}
                         streamId={str.streamId}
                         userId={str.userUserId}
+                        live={
+                          str.storageUrl === "" && str.endTimestamp === null
+                            ? true
+                            : false
+                        }
                       />
                     </div>
                   );
@@ -148,13 +127,15 @@ export default function ExplorePage() {
             </div>
           )}
           <hr className="w-1/2 mx-auto my-5 border-0 h-px bg-slate-500" />
-          <h2 className="text-white text-xl mb-4 text-center">
-            Explore creators that are currently live
-          </h2>
-          {streams2 && streams2.length !== 0 ? (
+          <div className="w-full pl-10 pr-10 max-xs:pl-2">
+            <h2 className="text-white text-2xl max-xs:text-lg font-medium mt-10 m-4">
+              Explore creators that are currently live
+            </h2>
+          </div>
+          {streams && streams.length !== 0 ? (
             <div className="grid screen:grid-cols-3 size1:grid-cols-2 max-md:grid-cols-2 max-sm:grid-cols-1 grid-cols-1 w-full">
               <>
-                {streams2.map((str) => {
+                {streams.map((str) => {
                   return (
                     <div
                       key={str.streamId}
@@ -168,6 +149,11 @@ export default function ExplorePage() {
                         views={str._count.StreamView}
                         streamId={str.streamId}
                         userId={str.userUserId}
+                        live={
+                          str.storageUrl === "" && str.endTimestamp === null
+                            ? true
+                            : false
+                        }
                       />
                     </div>
                   );
@@ -180,12 +166,14 @@ export default function ExplorePage() {
             </div>
           )}
           <hr className="w-1/2 mx-auto my-5 border-0 h-px bg-slate-500" />
-          <h2 className="text-white text-xl mb-4 text-center">
-            Explore creators similar to your subscriptions
-          </h2>
+          <div className="w-full pl-10 pr-10 max-xs:pl-2">
+            <h2 className="text-white text-2xl max-xs:text-lg font-medium mt-10 m-4">
+              Explore creators similar to your subscriptions
+            </h2>
+          </div>
           {exploreCreators && exploreCreators.length !== 0 ? (
             <div className="mt-4 grid screen:grid-cols-5 lg:grid-cols-4 size1:grid-cols-3 md:grid-cols-2 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 w-full">
-              {exploreCreators.map((s, idx) => {
+              {exploreCreators.slice(0, 8).map((s, idx) => {
                 return (
                   <Creator
                     key={`creator-${idx}`}
