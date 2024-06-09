@@ -17,7 +17,7 @@ export default function SidebarWithSearch() {
 
   const fetchData = async () => {
     try {
-      const resp1 = await axios.get(`${url}/api/subscriptions/myStreams`, {
+      const resp1 = await axios.get(`${url}/api/subscriptions/myLive`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       const streamIds = [];
@@ -33,7 +33,6 @@ export default function SidebarWithSearch() {
           const response = await axios.get(`${url}/api/stream/${sId}`);
           return response.data;
         } catch (error) {
-          console.log(`Stream with ID ${sId} does not exist`);
           return null;
         }
       });
@@ -41,7 +40,6 @@ export default function SidebarWithSearch() {
       const validLiveStreams = liveStreamDetails.filter(
         (details) => details !== null
       );
-      console.log(validLiveStreams);
       setLivestreams(validLiveStreams);
     } catch (error) {
       console.error("Error fetching data from API:", error);
@@ -188,7 +186,7 @@ export default function SidebarWithSearch() {
           </div>
           <div className="w-full pl-10 pr-10 max-xs:pl-2">
             <h2 className="text-white text-2xl max-xs:text-lg font-medium mt-10 m-4">
-              From your subscribed creators
+              From famous creators
             </h2>
           </div>
           {tagStreams && tagStreams.length !== 0 ? (
@@ -205,11 +203,14 @@ export default function SidebarWithSearch() {
                         thumbnail={str.thumbnailUrl}
                         date={str.startTimestamp}
                         username={str.creator.username}
-                        views={
-                          str?._count?.StreamView || str?.StreamView?.length
-                        }
+                        views={str?._count?.StreamView}
                         streamId={str.streamId}
                         userId={str.userUserId}
+                        live={
+                          str.storageUrl === "" && str.endTimestamp === null
+                            ? true
+                            : false
+                        }
                       />
                     </div>
                   );
@@ -218,7 +219,7 @@ export default function SidebarWithSearch() {
             </div>
           ) : (
             <div className="mt-8 mb-8 text-center text-red-400">
-              No livestreams!
+              No videos available!
             </div>
           )}
           <hr className="w-1/2 mx-auto my-5 border-0 h-px bg-slate-500" />
@@ -244,6 +245,11 @@ export default function SidebarWithSearch() {
                         views={str._count.StreamView}
                         streamId={str.streamId}
                         userId={str.userUserId}
+                        live={
+                          str.storageUrl === "" && str.endTimestamp === null
+                            ? true
+                            : false
+                        }
                       />
                     </div>
                   );
@@ -252,7 +258,7 @@ export default function SidebarWithSearch() {
             </div>
           ) : (
             <div className="mt-8 mb-8 text-center text-red-400">
-              No livestreams!
+              No livestreams from your subscriptions!
             </div>
           )}
         </div>

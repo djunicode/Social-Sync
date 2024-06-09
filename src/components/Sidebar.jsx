@@ -31,6 +31,7 @@ const Sidebar = memo(() => {
   const { user } = useStore();
   console.log(user);
   const [subscriptions, setSubscriptions] = React.useState([]);
+  const [location, setLocation] = React.useState("");
   const handleOpen = (value) => {
     setOpen(open === value ? 0 : value);
   };
@@ -66,6 +67,7 @@ const Sidebar = memo(() => {
   };
   useEffect(() => {
     getData();
+    setLocation(window?.location?.pathname);
   }, []);
 
   return (
@@ -111,12 +113,12 @@ const Sidebar = memo(() => {
           >
             <ListItem
               className={`p-3 border-b-0 ${
-                window.location.pathname === "/videos" ? "text-[#FF8E00]" : ""
+                location === "/videos" ? "text-[#FF8E00]" : ""
               }`}
               selected={open === 1}
             >
               <ListItemPrefix>
-                {window.location.pathname === "/videos" ? (
+                {location === "/videos" ? (
                   <HomeIconSelected />
                 ) : (
                   <HomeIcon />
@@ -143,12 +145,12 @@ const Sidebar = memo(() => {
           >
             <ListItem
               className={`border-b-0 p-3 ${
-                window.location.pathname === "/explore" ? "text-[#FF8E00]" : ""
+                location === "/explore" ? "text-[#FF8E00]" : ""
               }`}
               selected={open === 2}
             >
               <ListItemPrefix>
-                {window.location.pathname === "/explore" ? (
+                {location === "/explore" ? (
                   <ExploreIconSelected />
                 ) : (
                   <ExploreIcon />

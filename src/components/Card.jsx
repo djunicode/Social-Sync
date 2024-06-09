@@ -3,8 +3,17 @@ import React from "react";
 import { generateRandomColor } from "@/lib/utils";
 import Link from "next/link";
 
-const Cards = ({ thumbnail, title, username, views, date, streamId, userId }) => {
-  const color = generateRandomColor()
+const Cards = ({
+  thumbnail,
+  title,
+  username,
+  views,
+  date,
+  streamId,
+  userId,
+  live,
+}) => {
+  const color = generateRandomColor();
   return (
     <div className="m-2">
       <div className="bg-gray-800 rounded-2xl border border-[#FFFFFF] border-opacity-25 overflow-clip ">
@@ -33,12 +42,19 @@ const Cards = ({ thumbnail, title, username, views, date, streamId, userId }) =>
               {username ? username[0].toUpperCase() : "U"}
             </h2>
           </div>
-          <Link href={`/profile/${userId}`} className="text-gray-400 text-lg font-medium underline underline-offset-[3px]">@{username || "@user123"}</Link>
+          <Link
+            href={`/profile/${userId}`}
+            className="text-gray-400 text-lg font-medium underline underline-offset-[3px]"
+          >
+            @{username || "@user123"}
+          </Link>
         </div>
 
         <p className="text-gray-400 ml-3 pb-2 text-base font-semibold mr-3 flex justify-between">
           <span>{views || "00,000"} views</span>
-          <span>{date?.split("T")[0] || "dd/mm/yyyy"}</span>
+          <span>
+            {live ? <div className="text-base text-medium text-white"><span className="text-[#D20713]">· </span> Live</div> : <>{date?.split("T")[0] || "dd/mm/yyyy"}</>}
+          </span>
         </p>
       </div>
     </div>
