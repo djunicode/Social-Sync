@@ -20,15 +20,15 @@ export default function SearchBar({ query }) {
 
   const handleSearch = async () => {
     const searchValue = document.getElementById("searchInput").value;
-    let previouSearcHistory = localStorage.getItem("searchHistory") || "";
-    if (!previouSearcHistory.includes(searchValue)) {
+    let previouSearcHistory = localStorage.getItem("searchHistory") || ",";
+    if (!previouSearcHistory.includes(`,${searchValue},`)) {
       let newSearchHistory = `${searchValue},` + previouSearcHistory;
       localStorage.setItem("searchHistory", newSearchHistory);
     } else {
-      let newSearchHistoryArray = previouSearcHistory.split(`${searchValue},`);
+      let newSearchHistoryArray = previouSearcHistory.split(`,${searchValue},`);
       let newSearchHistory =
-        `${searchValue},` +
-        `${newSearchHistoryArray[0]}` +
+        `,${searchValue},` +
+        `${newSearchHistoryArray[0]},` +
         `${newSearchHistoryArray[1]}`;
       localStorage.setItem("searchHistory", newSearchHistory);
     }
