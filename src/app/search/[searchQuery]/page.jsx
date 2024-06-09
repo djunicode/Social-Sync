@@ -25,14 +25,21 @@ export default function Page({ params }) {
     try {
       let searchV = await params.searchQuery.split("%2B").join(" ");
       const res = await axios.get(`${url}/api/stream/search/${searchV}?title=${searchV}`);
-      // const res = await axios.get(`${url}/api/stream/all`);
-      console.log(res.data);
-      setStreamData(res.data);
+      let resp = await res.data.filter((r) => r.endTimestamp === null)
+      console.log(resp);
+      setStreamData(resp);
       setRender(true);
     } catch (error) {
       console.log("Error", error);
     }
   };
+
+  const sortStreams = async () => {
+    setRender(false);
+    let streams = await streamData.reverse();
+    await setStreamData(streams);
+    setRender(true)
+  }
 
   useEffect(() => {
     setSearchValue(params.searchQuery.split("%2B").join(" "));
@@ -63,7 +70,7 @@ export default function Page({ params }) {
             {streamData?.length || 0} Results found
           </div>
           <div className="flex justify-between">
-            <div className="rounded-full sm:w-36 w-24 h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-[#020317] sm:text-xl text-lg font-semibold flex justify-center items-center ml-4 hover:cursor-pointer">
+            <div className="rounded-full sm:w-36 w-24 h-9 bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-[#020317] sm:text-xl text-lg font-semibold flex justify-center items-center ml-4 hover:cursor-pointer" onClick={() => sortStreams()}>
               <span className="pr-2">Sort </span>
               <SortIcon />
             </div>
@@ -89,7 +96,7 @@ export default function Page({ params }) {
                   streamId={stream.streamId}
                   thumbnail={stream.thumbnailUrl}
                   firstName={stream.creator.firstName}
-                  live={stream.endTimestamp === null? true : false}
+                  live={stream.endTimestamp === null && stream.storageUrl === ""? true : false}
                 />
               </div>
             ))}
