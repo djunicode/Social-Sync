@@ -1,14 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { SearchHistory } from "../../public/svgs";
 
 export default function SearchBar({ query }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchHistory, setSearchHistory] = useState([]);
 
   const router = useRouter();
 
-  const handleSearchSuggestons = () => {
+  const handleSearchSuggestons = async () => {
     const searchValue = document.getElementById("searchInput").value;
     if (searchValue && searchValue.trim() !== "") {
       setIsOpen(true);
@@ -19,6 +20,18 @@ export default function SearchBar({ query }) {
 
   const handleSearch = async () => {
     const searchValue = document.getElementById("searchInput").value;
+    let previouSearcHistory = localStorage.getItem("searchHistory") || "";
+    if (!previouSearcHistory.includes(searchValue)) {
+      let newSearchHistory = `${searchValue},` + previouSearcHistory;
+      localStorage.setItem("searchHistory", newSearchHistory);
+    } else {
+      let newSearchHistoryArray = previouSearcHistory.split(`${searchValue},`);
+      let newSearchHistory =
+        `${searchValue},` +
+        `${newSearchHistoryArray[0]}` +
+        `${newSearchHistoryArray[1]}`;
+      localStorage.setItem("searchHistory", newSearchHistory);
+    }
     if (searchValue && searchValue.trim() !== "") {
       const searchQuery = searchValue.split(" ").join("+");
       console.log(searchQuery);
@@ -28,15 +41,13 @@ export default function SearchBar({ query }) {
     }
   };
 
-  const searchHistory = [
-    "Past search here Lorem, ispum. hi",
-    "Past search here Lorem, ispum. hello",
-    "Past search here Lorem, ispum. world",
-    "Past search here Lorem, ispum. code",
-    "Past search here Lorem, ispum. unicode",
-    "Past search here Lorem, ispum. stream",
-    "Past search here Lorem, ispum. video",
-  ];
+  useEffect(() => {
+    let previouSearcHistory = localStorage.getItem("searchHistory") || "";
+    let history = [];
+    history = previouSearcHistory.split(",").filter(Boolean);
+    console.log(history);
+    setSearchHistory(history);
+  }, []);
 
   return (
     <div className="lg:w-[50%] md:w-[80%] w-[70%] relative">
@@ -49,6 +60,7 @@ export default function SearchBar({ query }) {
             onChange={handleSearchSuggestons}
             onClick={() => setIsOpen(!isOpen)}
             id="searchInput"
+            autoComplete="off"
           />
         </div>
         <div
@@ -62,7 +74,7 @@ export default function SearchBar({ query }) {
         <div className="bg-[#D9D9D9] absolute top-5 z-10 w-9/12 ml-1 text-[#867D7D] font-medium text-xl rounded-b-2xl">
           <div className="border-l-[3px] border-r-[3px] border-[#867D7D] border-opacity-55 w-full h-7"></div>
           <div className="max-h-64 overflow-y-hidden">
-            {searchHistory.map((val) => {
+            {searchHistory.slice(0, 6).map((val) => {
               return (
                 <div
                   key={val}
