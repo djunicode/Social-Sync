@@ -9,10 +9,10 @@ import "../../lib/fonts.css";
 import { MenuIcon, CrossIcon } from "lucide-react";
 
 export default function SidebarWithSearch() {
-  const [isSideBarOpen, setIsSideBarOpen] = React.useState(false);
-  const [livestreams, setLivestreams] = React.useState([]);
-  const [tagStreams, setTagStreams] = React.useState([]);
-  const [selectedTag, setSelectedTag] = React.useState("all");
+  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
+  const [livestreams, setLivestreams] = useState([]);
+  const [tagStreams, setTagStreams] = useState([]);
+  const [selectedTag, setSelectedTag] = useState("all");
   const url = process.env.NEXT_PUBLIC_API_URL;
 
   const fetchData = async () => {
@@ -112,10 +112,10 @@ export default function SidebarWithSearch() {
                   className="hidden"
                 />
                 <span
-                  className={`inline-block bg-[#1C1D2F] hover:bg-gray-800 border border-b-1 max-sm:text-sm max-sm:px-4 text-white font-bold py-2 px-7 rounded-[30px] cursor-pointer ${
+                  className={`inline-block hover:bg-gray-600 border border-[#FFFFFF] border-opacity-30 max-sm:text-sm max-sm:px-4 font-bold py-2 px-7 rounded-3xl hover:cursor-pointer ${
                     selectedTag === "all"
-                      ? "focus:bg-[#F16602] bg-[#F16602]"
-                      : ""
+                      ? "focus:bg-[#F16602] bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-black"
+                      : "bg-[#2E2F3F] text-white"
                   }`}
                 >
                   All
@@ -133,10 +133,10 @@ export default function SidebarWithSearch() {
                   className="hidden"
                 />
                 <span
-                  className={`inline-block bg-[#1C1D2F] hover:bg-gray-800 border border-b-1 max-sm:text-sm max-sm:px-4 text-white font-bold py-2 px-7 rounded-[30px] cursor-pointer ${
+                  className={`inline-block hover:bg-gray-600 border border-[#FFFFFF] border-opacity-30 max-sm:text-sm max-sm:px-4 font-bold py-2 px-7 rounded-3xl hover:cursor-pointer ${
                     selectedTag === "project"
-                      ? "focus:bg-[#F16602] bg-[#F16602]"
-                      : ""
+                      ? "focus:bg-[#F16602] bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-black"
+                      : "bg-[#2E2F3F] text-white"
                   }`}
                 >
                   Project
@@ -154,10 +154,10 @@ export default function SidebarWithSearch() {
                   className="hidden"
                 />
                 <span
-                  className={`inline-block bg-[#1C1D2F] hover:bg-gray-800 border border-b-1 max-sm:text-sm max-sm:px-4 text-white font-bold py-2 px-7 rounded-[30px] cursor-pointer ${
+                  className={`inline-block hover:bg-gray-600 border border-[#FFFFFF] border-opacity-30 max-sm:text-sm max-sm:px-4 font-bold py-2 px-7 rounded-3xl hover:cursor-pointer ${
                     selectedTag === "unicode"
-                      ? "focus:bg-[#F16602] bg-[#F16602]"
-                      : ""
+                      ? "focus:bg-[#F16602] bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-black"
+                      : "bg-[#2E2F3F] text-white"
                   }`}
                 >
                   Unicode
@@ -175,10 +175,10 @@ export default function SidebarWithSearch() {
                   className="hidden"
                 />
                 <span
-                  className={`inline-block bg-[#1C1D2F] hover:bg-gray-800 border border-b-1 max-sm:text-sm max-sm:px-4 text-white font-bold py-2 px-7 rounded-[30px] cursor-pointer ${
+                  className={`inline-block hover:bg-gray-600 border border-[#FFFFFF] border-opacity-30 max-sm:text-sm max-sm:px-4 font-bold py-2 px-7 rounded-3xl hover:cursor-pointer ${
                     selectedTag === "science"
-                      ? "focus:bg-[#F16602] bg-[#F16602]"
-                      : ""
+                      ? "focus:bg-[#F16602] bg-gradient-to-r from-[#F16602] to-[#FF8E00] text-black"
+                      : "bg-[#2E2F3F] text-white"
                   }`}
                 >
                   Science
@@ -186,9 +186,9 @@ export default function SidebarWithSearch() {
               </label>
             </div>
           </div>
-          <div className="items-start flex-1">
-            <h2 className="text-white text-xl mt-10 flex m-4">
-              From famous creators
+          <div className="w-full pl-10 pr-10 max-xs:pl-2">
+            <h2 className="text-white text-2xl max-xs:text-lg font-medium mt-10 m-4">
+              From your subscribed creators
             </h2>
           </div>
           {tagStreams && tagStreams.length !== 0 ? (
@@ -222,9 +222,11 @@ export default function SidebarWithSearch() {
             </div>
           )}
           <hr className="w-1/2 mx-auto my-5 border-0 h-px bg-slate-500" />
-          <h2 className="text-white text-xl mb-4 text-center">
-            Creators currently live from your subscriptions
-          </h2>
+          <div className="w-full pl-10 pr-10 max-xs:pl-2 ">
+            <h2 className="text-white text-2xl max-xs:text-lg font-medium m-4">
+              Creators currently live from your subscriptions
+            </h2>
+          </div>
           {livestreams && livestreams.length !== 0 ? (
             <div className="grid screen:grid-cols-3 size1:grid-cols-2 max-md:grid-cols-2 max-sm:grid-cols-1 grid-cols-1 w-full">
               <>
